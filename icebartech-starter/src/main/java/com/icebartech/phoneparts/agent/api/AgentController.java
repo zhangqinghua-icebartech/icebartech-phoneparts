@@ -34,7 +34,7 @@ import static com.icebartech.core.vo.QueryParam.eq;
  * @desc
  */
 @Slf4j
-@Api(tags = "代理商模块接口")
+@Api(tags = "代理商模块接口1")
 @RestController
 @RequestMapping(value = "/agent", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AgentController extends BaseController {

@@ -194,7 +194,7 @@ public class UserServiceImpl extends AbstractService
 
     @Override
     public UserDto login(String email, String pwd) {
-        log.info("登录，邮箱{}密码{}",email,pwd);
+        log.info("登录，邮箱{}",email);
         UserDto userDTO = findByEmailAndPwd(email);
         if (userDTO == null || !passwordEncoder.matches(pwd, userDTO.getPassword())) {
             throw new ServiceException(CommonResultCodeEnum.LOGIN_ERROR, "账号或密码错误");

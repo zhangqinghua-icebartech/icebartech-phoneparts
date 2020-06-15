@@ -5,8 +5,12 @@ import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
+import com.icebartech.core.local.LocalUser;
+import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
+import com.icebartech.phoneparts.agent.po.Agent;
+import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.system.dto.SysClassOneDto;
 import com.icebartech.phoneparts.system.param.SysClassOneInsertParam;
 import com.icebartech.phoneparts.system.param.SysClassOneListParam;
@@ -15,6 +19,8 @@ import com.icebartech.phoneparts.system.param.SysClassOneUpdateParam;
 import com.icebartech.phoneparts.system.po.SysClassTwo;
 import com.icebartech.phoneparts.system.service.SysClassOneService;
 import com.icebartech.phoneparts.system.service.SysClassTwoService;
+import com.icebartech.phoneparts.user.po.User;
+import com.icebartech.phoneparts.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,21 +40,34 @@ import java.util.List;
 @RequestMapping(value = "/sysClassOne", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class SysClassOneController extends BaseController {
 
+    @Autowired
     private SysClassOneService service;
-    private SysClassTwoService sysClassTwoService;
-
 
     @Autowired
-    public SysClassOneController(SysClassOneService service,
-                                 SysClassTwoService sysClassTwoService) {
-        this.service = service;
-        this.sysClassTwoService = sysClassTwoService;
-    }
+    private SysClassTwoService sysClassTwoService;
+
+    @Autowired
+    private AgentService agentService;
+
+    @Autowired
+    private UserService userService;
+
 
     @ApiOperation("获取分页")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_page")
     public RespPage<SysClassOneDto> findPage(@Valid @RequestBody SysClassOnePageParam param) {
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+        if(localUser.getUserEnum() == UserEnum.app){
+            User user = userService.findOne(localUser.getUserId());
+            Agent agent = agentService.findOneOrNull(user.getAgentId());
+            List<Long> list = new ArrayList<>();
+            list.add(0L);
+            if(agent!=null){
+                list.add(agent.getId());
+            }
+            param.setAgentIdIn(list);
+        }
         return getPageRtnDate(service.findPage(param));
     }
 
@@ -55,7 +75,19 @@ public class SysClassOneController extends BaseController {
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_list")
     public RespDate<List<SysClassOneDto>> findList() {
-        return getRtnDate(service.findList(new SysClassOneListParam()));
+        SysClassOneListParam param = new SysClassOneListParam();
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+        if(localUser.getUserEnum() == UserEnum.app){
+            User user = userService.findOne(localUser.getUserId());
+            Agent agent = agentService.findOneOrNull(user.getAgentId());
+            List<Long> list = new ArrayList<>();
+            list.add(0L);
+            if(agent!=null){
+                list.add(agent.getId());
+            }
+            param.setAgentIdIn(list);
+        }
+        return getRtnDate(service.findList(param));
     }
 
     @ApiOperation("获取详情")

@@ -16,4 +16,6 @@ public interface ProductService extends BaseService
     Boolean changeSort(Long id, Integer sort);
 
     ProductDto findByClassTwoId(Long id);
+
+    ProductDto findByClassThreeId(Long id);
 }

@@ -27,4 +27,7 @@ public class ProductDto extends Product{
     @ApiModelProperty(value = "二级分类名称",example = "二级分类名称")
     private String twoClassName;
 
+    @ApiModelProperty(value = "三级分类名称",example = "三级分类名称")
+    private String threeClassName;
+
 }

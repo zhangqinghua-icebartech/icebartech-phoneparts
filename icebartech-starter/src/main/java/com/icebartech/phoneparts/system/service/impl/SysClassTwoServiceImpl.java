@@ -58,4 +58,9 @@ public class SysClassTwoServiceImpl extends AbstractService
         }
         return sysClassTwo.getPassword().equals(password);
     }
+
+    @Override
+    public String findName(Long classTwoId) {
+        return repository.findName(classTwoId);
+    }
 }

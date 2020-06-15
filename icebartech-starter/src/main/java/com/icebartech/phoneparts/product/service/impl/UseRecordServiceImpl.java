@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -59,6 +60,14 @@ public class UseRecordServiceImpl extends AbstractService
             return repository.findProductRecordDESC(param,pageable);
         }
         return repository.findProductRecordASC(param,pageable);
+    }
+
+    @Override
+    public Map<String, Object> findUserRecordCount(UseRecordUserPageParam param) {
+        Integer countRecord = repository.findUserCountRecord(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("countRecord",countRecord);
+        return map;
     }
 
 }

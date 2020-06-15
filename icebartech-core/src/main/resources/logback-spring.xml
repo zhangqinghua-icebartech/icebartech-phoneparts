@@ -100,7 +100,7 @@
 
     <!-- 开发环境日志级别为DEBUG/并且开发环境不写日志文件 -->
     <springProfile name="dev">
-        <root level="DEBUG">
+        <root level="INFO">
             <appender-ref ref="console"/>
             <!--<appender-ref ref="fileInfoLog" />-->
             <!--<appender-ref ref="fileErrorLog" />-->

@@ -9,11 +9,12 @@ import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.phoneparts.product.dto.ProductDto;
 import com.icebartech.phoneparts.product.service.ProductService;
-import com.icebartech.phoneparts.system.dto.SysClassTwoDto;
-import com.icebartech.phoneparts.system.param.*;
-import com.icebartech.phoneparts.system.po.SysClassThree;
+import com.icebartech.phoneparts.system.dto.SysClassThreeDTO;
+import com.icebartech.phoneparts.system.param.SysClassThreeInsertParam;
+import com.icebartech.phoneparts.system.param.SysClassThreeListParam;
+import com.icebartech.phoneparts.system.param.SysClassThreePageParam;
+import com.icebartech.phoneparts.system.param.SysClassThreeUpdateParam;
 import com.icebartech.phoneparts.system.service.SysClassThreeService;
-import com.icebartech.phoneparts.system.service.SysClassTwoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,58 +24,54 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.icebartech.core.vo.QueryParam.eq;
 
 /**
- * @author Created by liuao on 2019/6/18.
+ * @author Created by liuao on 2020/6/8 0008$.
  * @desc
  */
-@Api(tags = "二级分类接口")
+@Api(tags = "三级分类接口")
 @RestController
-@RequestMapping(value = "/sysClassTwo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class SysClassTwoController extends BaseController {
+@RequestMapping(value = "/sysClassThree", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+public class SysClassThreeController extends BaseController {
 
     @Autowired
-    private SysClassTwoService service;
+    private SysClassThreeService service;
 
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private SysClassThreeService sysClassThreeService;
-
     @ApiOperation("获取分页")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_page")
-    public RespPage<SysClassTwoDto> findPage(@Valid @RequestBody SysClassTwoPageParam param) {
+    public RespPage<SysClassThreeDTO> findPage(@Valid @RequestBody SysClassThreePageParam param) {
         return getPageRtnDate(service.findPage(param));
     }
 
     @ApiOperation("获取列表")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_list")
-    public RespDate<List<SysClassTwoDto>> findList() {
-        return getRtnDate(service.findList(new SysClassTwoListParam()));
+    public RespDate<List<SysClassThreeDTO>> findList() {
+        return getRtnDate(service.findList(new SysClassThreeListParam()));
     }
 
     @ApiOperation("获取详情")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_detail")
-    public RespDate<SysClassTwoDto> findDetail(@RequestParam Long id) {
+    public RespDate<SysClassThreeDTO> findDetail(@RequestParam Long id) {
         return getRtnDate(service.findDetail(id));
     }
 
     @ApiOperation("新增")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/insert")
-    public RespDate<Long> insert(@Valid @RequestBody SysClassTwoInsertParam param) {
+    public RespDate<Long> insert(@Valid @RequestBody SysClassThreeInsertParam param) {
         return getRtnDate(service.insert(param));
     }
 
     @ApiOperation("修改")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/update")
-    public RespDate<Boolean> update(@Valid @RequestBody SysClassTwoUpdateParam param) {
+    public RespDate<Boolean> update(@Valid @RequestBody SysClassThreeUpdateParam param) {
         return getRtnDate(service.update(param));
     }
 
@@ -90,21 +87,9 @@ public class SysClassTwoController extends BaseController {
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/delete")
     public RespDate<Boolean> delete(@RequestParam Long id) {
-        ProductDto product = productService.findByClassTwoId(id);
+        ProductDto product = productService.findByClassThreeId(id);
         if(product!=null)
             throw new ServiceException(CommonResultCodeEnum.INVALID_OPERATION, "请先删除其菜单下的单品");
-
-        SysClassThree classThree = sysClassThreeService.findOneOrNull(eq(SysClassThree::getClassTwoId,id));
-        if(classThree!=null)
-            throw new ServiceException(CommonResultCodeEnum.INVALID_OPERATION, "请先删除其菜单下的三级分类");
         return getRtnDate(service.delete(id));
-    }
-
-    @ApiOperation("核实密码")
-    @RequireLogin({UserEnum.admin,UserEnum.app})
-    @PostMapping("/verify_pwd")
-    public RespDate<Boolean> verifyPwd(@RequestParam Long id,
-                                        @RequestParam String password) {
-        return getRtnDate(service.verifyPwd(id,password));
     }
 }

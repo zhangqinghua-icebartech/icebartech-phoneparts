@@ -6,14 +6,14 @@ site:
 
 spring:
   redis:
-    database: 1
-    host: 120.76.102.155
+    database: 5
+    host: 119.23.223.42
     port: 6379
-    password: ENC(9MVPGuwIk+iW6h7BKK0Ssb+adoK96EGrXHyhhu+t7ers3Jf+fCd5H5KoaBnX06N+)
+    password: 123456
   datasource:
-    url: jdbc:mysql://47.244.193.248:3306/phoneparts_dev?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: Bg360123456
+    url: jdbc:mysql://120.78.135.29:3306/phoneparts_test?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
+    username: phoneparts
+    password: phoneparts
   jpa:
     #open-in-view: true # 多对多关系相互引用中，需要让session在相应过程中保持开启状态，懒加载用到
     show-sql: true # 不显示sql
@@ -27,7 +27,7 @@ spring:
     appKey: f3e60c0666da2fe043cbf03e0a030026
     mode: prod
     project-codes:
-    - bFI3q2 #验证码模板
+      - bFI3q2 #验证码模板
   #SUBMAIL邮箱
   mail:
     from: phone
@@ -35,7 +35,7 @@ spring:
     appid: 14561
     appKey: fe8dfa6bf7883c20cbb7f14ab8abe35a
     templates:
-    - 1f12C2
+      - 1f12C2
 
 #aliyun:
 #  access-id: ENC(UnP3gTfd/TsB1vJqbfNt9I6rot75wvx9r7Pz6Yefx/w=)

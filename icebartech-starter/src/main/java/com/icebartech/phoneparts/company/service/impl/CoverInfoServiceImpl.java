@@ -5,10 +5,7 @@ import com.icebartech.core.enums.ChooseType;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.modules.AbstractService;
-import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.service.AgentService;
-import com.icebartech.phoneparts.company.dto.CompanyInfoDto;
-import com.icebartech.phoneparts.company.po.CompanyInfo;
 import com.icebartech.phoneparts.company.repository.CoverInfoRepository;
 import com.icebartech.phoneparts.company.service.CoverInfoService;
 import com.icebartech.phoneparts.company.dto.CoverInfoDTO;
@@ -38,9 +35,20 @@ public class CoverInfoServiceImpl extends AbstractService
     private UserService userService;
 
     @Override
-    protected void warpDTO(Long id, CoverInfoDTO companyInfo) {
-        companyInfo.setIconOne(aliyunOSSComponent.generateDownloadUrl(companyInfo.getIconOne()));
-        companyInfo.setIconTwo(aliyunOSSComponent.generateDownloadUrl(companyInfo.getIconTwo()));
+    protected void warpDTO(Long id, CoverInfoDTO coverInfo) {
+        coverInfo.setIconOne(aliyunOSSComponent.generateDownloadUrl(coverInfo.getIconOne()));
+        coverInfo.setIconTwo(aliyunOSSComponent.generateDownloadUrl(coverInfo.getIconTwo()));
+
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+        if(localUser.getLevel() == 1){
+            if(coverInfo.getSecondAgentId() !=0){
+                coverInfo.setAgentName(agentService.findOne(coverInfo.getSecondAgentId()).getCompanyName());
+            }
+        }else {
+            if(coverInfo.getAgentId() !=0){
+                coverInfo.setAgentName(agentService.findOne(coverInfo.getAgentId()).getCompanyName());
+            }
+        }
     }
 
     @Override
@@ -48,32 +56,23 @@ public class CoverInfoServiceImpl extends AbstractService
 
         LocalUser localUser = UserThreadLocal.getUserInfo();
 
+
         //一级代理商
         if(localUser.getLevel() == 1){
 
+            coverInfo.setSecondAgentId(coverInfo.getAgentId());
             coverInfo.setAgentId(localUser.getUserId());
-            coverInfo.setAgentName(agentService.findOne(coverInfo.getAgentId()).getCompanyName());
 
+            if(coverInfo.getEnable() == ChooseType.y){
+                super.findList(eq(CoverInfoDTO::getSecondAgentId,coverInfo.getSecondAgentId()),eq(CoverInfoDTO::getEnable,ChooseType.y))
+                        .forEach(coverInfoDTO -> super.update(eq(CoverInfoDTO::getId,coverInfoDTO.getId()),eq(CoverInfoDTO::getEnable,ChooseType.n)));
+            }
+        }else {
             if(coverInfo.getEnable() == ChooseType.y){
                 super.findList(eq(CoverInfoDTO::getAgentId,coverInfo.getAgentId()),eq(CoverInfoDTO::getEnable,ChooseType.y))
                         .forEach(coverInfoDTO -> super.update(eq(CoverInfoDTO::getId,coverInfoDTO.getId()),eq(CoverInfoDTO::getEnable,ChooseType.n)));
             }
-
-        }else if(localUser.getLevel() == 2){
-
-            AgentDTO agent = agentService.findOne(localUser.getUserId());
-            coverInfo.setAgentId(agent.getParentId());
-            coverInfo.setAgentName(agentService.findOne(agent.getParentId()).getCompanyName());
-            coverInfo.setSecondAgentId(localUser.getUserId());
-            coverInfo.setAgentName(agentService.findOne(coverInfo.getSecondAgentId()).getCompanyName());
-
-            if(coverInfo.getEnable() == ChooseType.y){
-                super.findList(eq(CoverInfoDTO::getSecondAgentId,agent.getParentId()),eq(CoverInfoDTO::getEnable,ChooseType.y))
-                        .forEach(coverInfoDTO -> super.update(eq(CoverInfoDTO::getId,coverInfoDTO.getId()),eq(CoverInfoDTO::getEnable,ChooseType.n)));
-            }
-
         }
-
     }
 
     @Override
@@ -87,10 +86,10 @@ public class CoverInfoServiceImpl extends AbstractService
         CoverInfoDTO coverInfo = super.findOne(id);
         if(enable == ChooseType.y){
             if(coverInfo.getSecondAgentId()!=0){
-                super.findList(eq(CoverInfoDTO::getAgentId,coverInfo.getAgentId()),eq(CoverInfoDTO::getEnable,ChooseType.y))
+                super.findList(eq(CoverInfoDTO::getSecondAgentId,coverInfo.getSecondAgentId()),eq(CoverInfoDTO::getEnable,ChooseType.y))
                         .forEach(coverInfoDTO -> super.update(eq(CoverInfoDTO::getId,coverInfoDTO.getId()),eq(CoverInfoDTO::getEnable,ChooseType.n)));
             }else {
-                super.findList(eq(CoverInfoDTO::getSecondAgentId,coverInfo.getSecondAgentId()),eq(CoverInfoDTO::getEnable,ChooseType.y))
+                super.findList(eq(CoverInfoDTO::getAgentId,coverInfo.getAgentId()),eq(CoverInfoDTO::getEnable,ChooseType.y))
                         .forEach(coverInfoDTO -> super.update(eq(CoverInfoDTO::getId,coverInfoDTO.getId()),eq(CoverInfoDTO::getEnable,ChooseType.n)));
             }
 

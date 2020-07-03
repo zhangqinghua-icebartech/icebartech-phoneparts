@@ -35,4 +35,7 @@ public class CoverInsertParam {
     @ApiModelProperty(value = "代理商名称",hidden = true)
     private String agentName;
 
+    @ApiModelProperty(value = "次级代理商名称",example = "次级代理商名称")
+    private String secondAgentName;
+
 }

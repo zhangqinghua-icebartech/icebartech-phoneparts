@@ -47,6 +47,7 @@ public class CompanyInfoController extends BaseController {
             //一级代理商
         }else if(localUser.getLevel() == 1){
             param.setAgentId(localUser.getUserId());
+            param.setSecondAgentIdNotIn(0L);
         //二级代理商
         }else if(localUser.getLevel() == 2){
             param.setSecondAgentId(localUser.getUserId());

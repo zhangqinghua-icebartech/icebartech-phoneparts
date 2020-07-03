@@ -24,4 +24,8 @@ public class CoverPageParam extends PageParam {
     @ApiModelProperty(value = "代理商名称",hidden = true)
     private String agentNameLike;
 
+    @ApiModelProperty(value = "次级代理商id",hidden = true)
+    private Long secondAgentIdNotIn;
+
+
 }

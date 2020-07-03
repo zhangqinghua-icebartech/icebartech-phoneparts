@@ -42,6 +42,7 @@ public class CoverInfoController extends BaseController {
             //一级代理商
         } else if(localUser.getLevel() == 1){
             param.setAgentId(localUser.getUserId());
+            param.setSecondAgentIdNotIn(0L);
             //二级代理商
         }else if(localUser.getLevel() == 2){
             param.setSecondAgentId(localUser.getUserId());
@@ -64,6 +65,7 @@ public class CoverInfoController extends BaseController {
     }
 
     @ApiOperation("获取详情")
+    @RequireLogin({UserEnum.admin,UserEnum.agent})
     @PostMapping("/find_detail")
     public RespDate<CoverInfoDTO> findDetail(@RequestParam Long id) {
         return getRtnDate(service.findDetail(id));

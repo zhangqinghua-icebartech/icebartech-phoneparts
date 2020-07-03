@@ -38,6 +38,16 @@ public class CompanyInfoServiceImpl extends AbstractService
     @Override
     protected void warpDTO(Long id, CompanyInfoDto companyInfo) {
         companyInfo.setIcon(aliyunOSSComponent.generateDownloadUrl(companyInfo.getIcon()));
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+        if(localUser.getLevel() == 1){
+            if(companyInfo.getSecondAgentId() !=0){
+                companyInfo.setAgentName(agentService.findOne(companyInfo.getSecondAgentId()).getCompanyName());
+            }
+        }else {
+            if(companyInfo.getAgentId() !=0){
+                companyInfo.setAgentName(agentService.findOne(companyInfo.getAgentId()).getCompanyName());
+            }
+        }
     }
 
     @Override
@@ -46,25 +56,17 @@ public class CompanyInfoServiceImpl extends AbstractService
 
         //一级代理商
         if(localUser.getLevel() == 1){
-
+            companyInfo.setSecondAgentId(companyInfo.getAgentId());
             companyInfo.setAgentId(localUser.getUserId());
-            companyInfo.setAgentName(agentService.findOne(companyInfo.getAgentId()).getCompanyName());
-
             if(companyInfo.getEnable() == ChooseType.y){
-                super.findList(eq(CompanyInfoDto::getAgentId,companyInfo.getAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y))
+                super.findList(eq(CompanyInfoDto::getSecondAgentId,companyInfo.getSecondAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y))
                         .forEach(companyInfoDto -> super.update(eq(CompanyInfo::getId,companyInfoDto.getId()),eq(CompanyInfoDto::getEnable,ChooseType.n)));
             }
 
-        }else if(localUser.getLevel() == 2){
-
-            AgentDTO agent = agentService.findOne(localUser.getUserId());
-            companyInfo.setAgentId(agent.getParentId());
-            companyInfo.setAgentName(agentService.findOne(agent.getParentId()).getCompanyName());
-            companyInfo.setSecondAgentId(localUser.getUserId());
-            companyInfo.setAgentName(agentService.findOne(companyInfo.getSecondAgentId()).getCompanyName());
+        }else{
 
             if(companyInfo.getEnable() == ChooseType.y){
-                super.findList(eq(CompanyInfoDto::getSecondAgentId,agent.getParentId()),eq(CompanyInfoDto::getEnable,ChooseType.y))
+                super.findList(eq(CompanyInfoDto::getAgentId,companyInfo.getAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y))
                         .forEach(companyInfoDto -> super.update(eq(CompanyInfo::getId,companyInfoDto.getId()),eq(CompanyInfoDto::getEnable,ChooseType.n)));
             }
 
@@ -85,10 +87,10 @@ public class CompanyInfoServiceImpl extends AbstractService
         if(enable == ChooseType.y){
 
             if(companyInfo.getSecondAgentId()!=0){
-                super.findList(eq(CompanyInfoDto::getAgentId,companyInfo.getAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y))
+                super.findList(eq(CompanyInfoDto::getSecondAgentId,companyInfo.getSecondAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y))
                         .forEach(companyInfoDto -> super.update(eq(CompanyInfo::getId,companyInfoDto.getId()),eq(CompanyInfoDto::getEnable,ChooseType.n)));
             }else {
-                super.findList(eq(CompanyInfoDto::getSecondAgentId,companyInfo.getSecondAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y))
+                super.findList(eq(CompanyInfoDto::getAgentId,companyInfo.getAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y))
                         .forEach(companyInfoDto -> super.update(eq(CompanyInfo::getId,companyInfoDto.getId()),eq(CompanyInfoDto::getEnable,ChooseType.n)));
 
             }

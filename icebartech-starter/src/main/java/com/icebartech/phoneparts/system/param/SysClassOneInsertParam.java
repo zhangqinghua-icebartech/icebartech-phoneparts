@@ -25,4 +25,8 @@ public class SysClassOneInsertParam {
     @NotBlank
     private String icon;
 
+    @NotBlank
+    @ApiModelProperty(value = "英文图标",example = "英文图标")
+    private String englishIcon;
+
 }

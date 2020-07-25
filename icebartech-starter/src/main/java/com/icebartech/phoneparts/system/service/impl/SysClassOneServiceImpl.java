@@ -31,6 +31,7 @@ public class SysClassOneServiceImpl extends AbstractService
     @Override
     protected void warpDTO(Long id, SysClassOneDto sysClassOne) {
         sysClassOne.setIcon(aliyunOSSComponent.generateDownloadUrl(sysClassOne.getIcon()));
+        sysClassOne.setEnglishIcon(aliyunOSSComponent.generateDownloadUrl(sysClassOne.getEnglishIcon()));
     }
 
 

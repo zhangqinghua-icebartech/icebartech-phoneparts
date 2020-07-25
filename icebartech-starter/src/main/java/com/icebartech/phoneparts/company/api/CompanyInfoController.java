@@ -20,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Created by liuao on 2019/6/18.
@@ -47,7 +49,7 @@ public class CompanyInfoController extends BaseController {
             //一级代理商
         }else if(localUser.getLevel() == 1){
             param.setAgentId(localUser.getUserId());
-            param.setSecondAgentIdNotIn(0L);
+            param.setSecondAgentIdNotEq(0L);
         //二级代理商
         }else if(localUser.getLevel() == 2){
             param.setSecondAgentId(localUser.getUserId());

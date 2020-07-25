@@ -5,6 +5,8 @@ import com.icebartech.core.params.PageParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Created by liuao on 2019/9/10.
  * @desc
@@ -25,7 +27,7 @@ public class CoverPageParam extends PageParam {
     private String agentNameLike;
 
     @ApiModelProperty(value = "次级代理商id",hidden = true)
-    private Long secondAgentIdNotIn;
+    private Long secondAgentIdNotEq;
 
 
 }

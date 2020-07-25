@@ -27,4 +27,6 @@ public class SysClassOneUpdateParam {
     @ApiModelProperty(value = "图标",example = "图标")
     private String icon;
 
+    @ApiModelProperty(value = "英文图标",example = "英文图标")
+    private String englishIcon;
 }

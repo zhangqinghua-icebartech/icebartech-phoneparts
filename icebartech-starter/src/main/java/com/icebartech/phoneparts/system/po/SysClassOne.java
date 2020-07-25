@@ -38,6 +38,10 @@ public class SysClassOne extends BasePo {
     @Column(columnDefinition = "varchar(225) NOT NULL COMMENT '图标'")
     private String icon;
 
+    @ApiModelProperty(value = "英文图标",example = "英文图标")
+    @Column(columnDefinition = "varchar(225) NOT NULL COMMENT '英文图标'")
+    private String englishIcon;
+
     @ApiModelProperty(value = "一级分类id代理商id",example = "一级分类id代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '代理商id'")
     private Long agentId;

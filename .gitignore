@@ -1,5 +1,6 @@
 logs/
 /*/target/
+/META-INF/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -29,4 +30,5 @@ mvnw.cmd
 
 ### VS Code ###
 .vscode/
+
 

@@ -1,0 +1,224 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.icebartech.core.properties.AliyunProperties",
+      "name": "aliyun",
+      "type": "com.icebartech.core.properties.AliyunProperties"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.QCloudProperties",
+      "name": "qcloud",
+      "type": "com.icebartech.core.properties.QCloudProperties"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SiteProperties",
+      "name": "site",
+      "type": "com.icebartech.core.properties.SiteProperties"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.MailProperties",
+      "name": "spring.mail",
+      "type": "com.icebartech.core.properties.MailProperties"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SmsProperties",
+      "name": "spring.sms",
+      "type": "com.icebartech.core.properties.SmsProperties"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinAppProperties",
+      "name": "weixin.app",
+      "type": "com.icebartech.core.properties.WeixinAppProperties"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinMiniProperties",
+      "name": "weixin.mini",
+      "type": "com.icebartech.core.properties.WeixinMiniProperties"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinMpProperties",
+      "name": "weixin.mp",
+      "type": "com.icebartech.core.properties.WeixinMpProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.icebartech.core.properties.AliyunProperties",
+      "name": "aliyun.access-id",
+      "description": "access_id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.AliyunProperties",
+      "name": "aliyun.access-key",
+      "description": "access_key",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.AliyunProperties",
+      "name": "aliyun.bucket-name",
+      "description": "bucket名称",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.AliyunProperties",
+      "name": "aliyun.oss-endpoint",
+      "description": "endpoint",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.AliyunProperties",
+      "name": "aliyun.oss-url",
+      "description": "域名配置",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.QCloudProperties",
+      "name": "qcloud.appid",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.QCloudProperties",
+      "name": "qcloud.bucket-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.QCloudProperties",
+      "name": "qcloud.cos-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.QCloudProperties",
+      "name": "qcloud.region",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.QCloudProperties",
+      "name": "qcloud.secret-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.QCloudProperties",
+      "name": "qcloud.secret-key",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SiteProperties",
+      "name": "site.app-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SiteProperties",
+      "name": "site.explanation",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SiteProperties",
+      "name": "site.host",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SiteProperties",
+      "defaultValue": "30ms",
+      "name": "site.session-expires",
+      "type": "java.time.Duration"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SiteProperties",
+      "defaultValue": 1,
+      "name": "site.version",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.MailProperties",
+      "name": "spring.mail.app-key",
+      "description": "秘钥",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.MailProperties",
+      "name": "spring.mail.appid",
+      "description": "设备id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.MailProperties",
+      "name": "spring.mail.from",
+      "description": "收件人",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.MailProperties",
+      "name": "spring.mail.templates",
+      "description": "内容模板",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.MailProperties",
+      "name": "spring.mail.url",
+      "description": "路径",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SmsProperties",
+      "name": "spring.sms.app-id",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SmsProperties",
+      "name": "spring.sms.app-key",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SmsProperties",
+      "name": "spring.sms.mode",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SmsProperties",
+      "name": "spring.sms.project-codes",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.SmsProperties",
+      "name": "spring.sms.url",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinAppProperties",
+      "name": "weixin.app.app-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinAppProperties",
+      "name": "weixin.app.app-secret",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinMiniProperties",
+      "name": "weixin.mini.app-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinMiniProperties",
+      "name": "weixin.mini.app-secret",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinMpProperties",
+      "name": "weixin.mp.app-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinMpProperties",
+      "name": "weixin.mp.app-secret",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.icebartech.core.properties.WeixinMpProperties",
+      "name": "weixin.mp.token",
+      "type": "java.lang.String"
+    }
+  ]
+}

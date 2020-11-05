@@ -209,9 +209,6 @@ public class UserServiceImpl extends AbstractService
 
         SysSerialDto sysSerial = sysSerialService.findOne(user.getSerialId());
 
-        if(sysSerial.getEndTime() != null && new Date().compareTo(sysSerial.getEndTime())>0)
-            throw new ServiceException(CommonResultCodeEnum.NO_SERIAL, "序列号已过期");
-
         user.setPastTime(sysSerial.getEndTime());
         return user;
     }

@@ -1,5 +1,5 @@
 logs/
-/target/
+/*/target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -27,3 +27,4 @@ logs/
 
 ### VS Code ###
 .vscode/
+

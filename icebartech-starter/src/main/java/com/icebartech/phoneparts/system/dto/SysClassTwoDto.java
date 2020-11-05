@@ -1,5 +1,6 @@
 package com.icebartech.phoneparts.system.dto;
 
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.system.po.SysClassTwo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,8 +22,9 @@ public class SysClassTwoDto extends SysClassTwo{
 
     private static final long serialVersionUID = 1L;
 
-
     @ApiModelProperty(value = "一级分类中文名称",example = "一级分类中文名称")
     private String classOneName;
 
+    @ApiModelProperty(value = "用户可见")
+    private AgentDTO agent;
 }

@@ -6,7 +6,7 @@
 database: 0
 host: 120.78.135.29
 port: 6579
-password: bH360891
+password:
 
 ## MySQL
 url: jdbc:mysql://120.78.135.29:3306/phoneparts_test?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull

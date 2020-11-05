@@ -5,10 +5,15 @@ import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
+import com.icebartech.core.vo.QueryParam;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
+import com.icebartech.phoneparts.agent.po.Agent;
+import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.product.dto.ProductDto;
 import com.icebartech.phoneparts.product.service.ProductService;
+import com.icebartech.phoneparts.system.dto.SysClassOneDto;
 import com.icebartech.phoneparts.system.dto.SysClassThreeDTO;
 import com.icebartech.phoneparts.system.param.SysClassThreeInsertParam;
 import com.icebartech.phoneparts.system.param.SysClassThreeListParam;
@@ -18,11 +23,13 @@ import com.icebartech.phoneparts.system.service.SysClassThreeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -35,44 +42,51 @@ import java.util.List;
 public class SysClassThreeController extends BaseController {
 
     @Autowired
-    private SysClassThreeService service;
-
+    private AgentService agentService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private SysClassThreeService sysClassThreeService;
 
     @ApiOperation("获取分页")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_page")
     public RespPage<SysClassThreeDTO> findPage(@Valid @RequestBody SysClassThreePageParam param) {
-        return getPageRtnDate(service.findPage(param));
+        Page<SysClassThreeDTO> page = sysClassThreeService.findPage(param);
+
+        // 获取代理商数据
+        List<Long> agentIds = page.getContent().stream().map(SysClassThreeDTO::getAgentId).collect(Collectors.toList());
+        List<AgentDTO> agents = agentService.findList(QueryParam.in(Agent::getId, agentIds));
+        page.getContent().forEach(d->d.setAgent(agents.stream().filter(a->a.getId().equals(d.getAgentId())).findAny().orElse(null)));
+        return getPageRtnDate(page);
     }
 
     @ApiOperation("获取列表")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_list")
     public RespDate<List<SysClassThreeDTO>> findList() {
-        return getRtnDate(service.findList(new SysClassThreeListParam()));
+        return getRtnDate(sysClassThreeService.findList(new SysClassThreeListParam()));
     }
 
     @ApiOperation("获取详情")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_detail")
     public RespDate<SysClassThreeDTO> findDetail(@RequestParam Long id) {
-        return getRtnDate(service.findDetail(id));
+        return getRtnDate(sysClassThreeService.findDetail(id));
     }
 
     @ApiOperation("新增")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/insert")
     public RespDate<Long> insert(@Valid @RequestBody SysClassThreeInsertParam param) {
-        return getRtnDate(service.insert(param));
+        return getRtnDate(sysClassThreeService.insert(param));
     }
 
     @ApiOperation("修改")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/update")
     public RespDate<Boolean> update(@Valid @RequestBody SysClassThreeUpdateParam param) {
-        return getRtnDate(service.update(param));
+        return getRtnDate(sysClassThreeService.update(param));
     }
 
     @ApiOperation("修改排序")
@@ -80,7 +94,7 @@ public class SysClassThreeController extends BaseController {
     @PostMapping("/changeSort")
     public RespDate<Boolean> changeSort(@RequestParam("id") Long id,
                                         @RequestParam("sort") Integer sort) {
-        return getRtnDate(service.changeSort(id,sort));
+        return getRtnDate(sysClassThreeService.changeSort(id, sort));
     }
 
     @ApiOperation("删除")
@@ -90,6 +104,6 @@ public class SysClassThreeController extends BaseController {
         ProductDto product = productService.findByClassThreeId(id);
         if(product!=null)
             throw new ServiceException(CommonResultCodeEnum.INVALID_OPERATION, "请先删除其菜单下的单品");
-        return getRtnDate(service.delete(id));
+        return getRtnDate(sysClassThreeService.delete(id));
     }
 }

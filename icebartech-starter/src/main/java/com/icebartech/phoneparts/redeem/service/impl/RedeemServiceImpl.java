@@ -3,6 +3,8 @@ package com.icebartech.phoneparts.redeem.service.impl;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.modules.AbstractService;
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
+import com.icebartech.phoneparts.agent.po.Agent;
 import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.redeem.dto.RedeemCodeDTO;
 import com.icebartech.phoneparts.redeem.dto.RedeemDTO;
@@ -29,16 +31,15 @@ public class RedeemServiceImpl extends AbstractService
 <RedeemDTO, Redeem, RedeemRepository> implements RedeemService {
 
     @Autowired
+    AgentService agentService;
+    @Autowired
     RedeemCodeService redeemCodeService;
 
-    @Autowired
-    AgentService agentService;
+
 
     @Override
     protected void warpDTO(Long id, RedeemDTO redeemDTO) {
-
         redeemDTO.setAgent(agentService.findOneOrNull(redeemDTO.getAgentId()));
-
     }
 
 
@@ -46,10 +47,20 @@ public class RedeemServiceImpl extends AbstractService
     @Transactional
     public Boolean insertAll(RedeemInsertParam param) {
         Long id = super.insert(param);
+
+        // 查询代理商所属的设备分类名称
+        String className = "";
+        if (param.getAgentId() != null) {
+            className = agentService.findOne(param.getAgentId()).getClassName();
+        }
+
         //添加兑换码
         for(int i=0;i<param.getRedeemNum();i++){
-            redeemCodeService.insert(new RedeemCodeInsertParam(id,param.getTitle(),
-                    ProduceCodeUtil.findRedeemCode(),param.getUseNum()));
+            // code 需要加上agentId设备一级分类
+            redeemCodeService.insert(new RedeemCodeInsertParam(id,
+                                                               param.getTitle(),
+                                                               className + ProduceCodeUtil.findRedeemCode(),
+                                                               param.getUseNum()));
         }
         return true;
     }

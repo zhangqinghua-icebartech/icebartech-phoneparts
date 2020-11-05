@@ -38,6 +38,4 @@ public class RedeemCodeInsertParam {
         this.code=code;
         this.useNum=useNum;
     }
-
-
 }

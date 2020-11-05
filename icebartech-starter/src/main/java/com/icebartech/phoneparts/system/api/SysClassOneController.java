@@ -7,8 +7,11 @@ import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
+import com.icebartech.core.vo.PageData;
+import com.icebartech.core.vo.QueryParam;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.po.Agent;
 import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.system.dto.SysClassOneDto;
@@ -24,12 +27,14 @@ import com.icebartech.phoneparts.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Created by liuao on 2019/6/18.
@@ -68,7 +73,13 @@ public class SysClassOneController extends BaseController {
             }
             param.setAgentIdIn(list);
         }
-        return getPageRtnDate(service.findPage(param));
+        Page<SysClassOneDto> page = service.findPage(param);
+
+        // 获取代理商数据
+        List<Long> agentIds = page.getContent().stream().map(SysClassOneDto::getAgentId).collect(Collectors.toList());
+        List<AgentDTO> agents = agentService.findList(QueryParam.in(Agent::getId, agentIds));
+        page.getContent().forEach(d->d.setAgent(agents.stream().filter(a->a.getId().equals(d.getAgentId())).findAny().orElse(null)));
+        return getPageRtnDate(page);
     }
 
     @ApiOperation("获取列表")

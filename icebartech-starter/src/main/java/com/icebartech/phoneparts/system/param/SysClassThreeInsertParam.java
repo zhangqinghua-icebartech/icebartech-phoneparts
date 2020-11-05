@@ -3,6 +3,7 @@ package com.icebartech.phoneparts.system.param;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -31,4 +32,6 @@ public class SysClassThreeInsertParam {
     @NotBlank
     private String icon;
 
+    @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '代理商id'")
+    private Long agentId;
 }

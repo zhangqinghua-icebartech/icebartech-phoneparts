@@ -5,10 +5,15 @@ import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
+import com.icebartech.core.vo.QueryParam;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
+import com.icebartech.phoneparts.agent.po.Agent;
+import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.product.dto.ProductDto;
 import com.icebartech.phoneparts.product.service.ProductService;
+import com.icebartech.phoneparts.system.dto.SysClassThreeDTO;
 import com.icebartech.phoneparts.system.dto.SysClassTwoDto;
 import com.icebartech.phoneparts.system.param.*;
 import com.icebartech.phoneparts.system.po.SysClassThree;
@@ -17,11 +22,13 @@ import com.icebartech.phoneparts.system.service.SysClassTwoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.icebartech.core.vo.QueryParam.eq;
 
@@ -35,11 +42,11 @@ import static com.icebartech.core.vo.QueryParam.eq;
 public class SysClassTwoController extends BaseController {
 
     @Autowired
-    private SysClassTwoService service;
-
+    private AgentService agentService;
     @Autowired
     private ProductService productService;
-
+    @Autowired
+    private SysClassTwoService sysClassTwoService;
     @Autowired
     private SysClassThreeService sysClassThreeService;
 
@@ -47,35 +54,41 @@ public class SysClassTwoController extends BaseController {
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_page")
     public RespPage<SysClassTwoDto> findPage(@Valid @RequestBody SysClassTwoPageParam param) {
-        return getPageRtnDate(service.findPage(param));
+        Page<SysClassTwoDto> page = sysClassTwoService.findPage(param);
+
+        // 获取代理商数据
+        List<Long> agentIds = page.getContent().stream().map(SysClassTwoDto::getAgentId).collect(Collectors.toList());
+        List<AgentDTO> agents = agentService.findList(QueryParam.in(Agent::getId, agentIds));
+        page.getContent().forEach(d->d.setAgent(agents.stream().filter(a->a.getId().equals(d.getAgentId())).findAny().orElse(null)));
+        return getPageRtnDate(page);
     }
 
     @ApiOperation("获取列表")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_list")
     public RespDate<List<SysClassTwoDto>> findList() {
-        return getRtnDate(service.findList(new SysClassTwoListParam()));
+        return getRtnDate(sysClassTwoService.findList(new SysClassTwoListParam()));
     }
 
     @ApiOperation("获取详情")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_detail")
     public RespDate<SysClassTwoDto> findDetail(@RequestParam Long id) {
-        return getRtnDate(service.findDetail(id));
+        return getRtnDate(sysClassTwoService.findDetail(id));
     }
 
     @ApiOperation("新增")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/insert")
     public RespDate<Long> insert(@Valid @RequestBody SysClassTwoInsertParam param) {
-        return getRtnDate(service.insert(param));
+        return getRtnDate(sysClassTwoService.insert(param));
     }
 
     @ApiOperation("修改")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/update")
     public RespDate<Boolean> update(@Valid @RequestBody SysClassTwoUpdateParam param) {
-        return getRtnDate(service.update(param));
+        return getRtnDate(sysClassTwoService.update(param));
     }
 
     @ApiOperation("修改排序")
@@ -83,7 +96,7 @@ public class SysClassTwoController extends BaseController {
     @PostMapping("/changeSort")
     public RespDate<Boolean> changeSort(@RequestParam("id") Long id,
                                         @RequestParam("sort") Integer sort) {
-        return getRtnDate(service.changeSort(id,sort));
+        return getRtnDate(sysClassTwoService.changeSort(id, sort));
     }
 
     @ApiOperation("删除")
@@ -97,7 +110,7 @@ public class SysClassTwoController extends BaseController {
         SysClassThree classThree = sysClassThreeService.findOneOrNull(eq(SysClassThree::getClassTwoId,id));
         if(classThree!=null)
             throw new ServiceException(CommonResultCodeEnum.INVALID_OPERATION, "请先删除其菜单下的三级分类");
-        return getRtnDate(service.delete(id));
+        return getRtnDate(sysClassTwoService.delete(id));
     }
 
     @ApiOperation("核实密码")
@@ -105,6 +118,6 @@ public class SysClassTwoController extends BaseController {
     @PostMapping("/verify_pwd")
     public RespDate<Boolean> verifyPwd(@RequestParam Long id,
                                         @RequestParam String password) {
-        return getRtnDate(service.verifyPwd(id,password));
+        return getRtnDate(sysClassTwoService.verifyPwd(id, password));
     }
 }

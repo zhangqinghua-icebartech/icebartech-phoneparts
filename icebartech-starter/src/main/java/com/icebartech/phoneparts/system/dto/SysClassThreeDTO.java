@@ -1,5 +1,7 @@
 package com.icebartech.phoneparts.system.dto;
 
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
+import com.icebartech.phoneparts.agent.po.Agent;
 import com.icebartech.phoneparts.system.po.SysClassThree;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,4 +25,6 @@ public class SysClassThreeDTO extends SysClassThree {
     @ApiModelProperty(value = "二级分类中文名称",example = "二级分类中文名称")
     private String classTwoName;
 
+    @ApiModelProperty(value = "用户可见")
+    private AgentDTO agent;
 }

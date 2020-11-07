@@ -4,6 +4,8 @@ import com.icebartech.core.params.PageParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 
 /**
  * @author Created by liuao on 2020/6/8 0008$.
@@ -30,4 +32,6 @@ public class SysClassThreePageParam extends PageParam {
     @ApiModelProperty(value = "递增排序", hidden = true)
     private Boolean idASC = true;
 
+    @ApiModelProperty(value = "代理商ids", hidden = true)
+    private List<Long> agentIdIn;
 }

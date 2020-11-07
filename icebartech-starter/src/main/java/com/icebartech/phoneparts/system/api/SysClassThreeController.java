@@ -5,6 +5,8 @@ import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
+import com.icebartech.core.local.LocalUser;
+import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.vo.QueryParam;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
@@ -20,6 +22,8 @@ import com.icebartech.phoneparts.system.param.SysClassThreeListParam;
 import com.icebartech.phoneparts.system.param.SysClassThreePageParam;
 import com.icebartech.phoneparts.system.param.SysClassThreeUpdateParam;
 import com.icebartech.phoneparts.system.service.SysClassThreeService;
+import com.icebartech.phoneparts.user.po.User;
+import com.icebartech.phoneparts.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +47,8 @@ import java.util.stream.Collectors;
 public class SysClassThreeController extends BaseController {
 
     @Autowired
+    private UserService userService;
+    @Autowired
     private AgentService agentService;
     @Autowired
     private ProductService productService;
@@ -52,12 +59,22 @@ public class SysClassThreeController extends BaseController {
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_page")
     public RespPage<SysClassThreeDTO> findPage(@Valid @RequestBody SysClassThreePageParam param) {
+        // 1. 查询所有代理商可见和当前APP用户可见的数据
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+        if(localUser.getUserEnum() == UserEnum.app){
+            param.setAgentIdIn(new ArrayList<>());
+            param.getAgentIdIn().add(0L);
+            User user = userService.findOne(localUser.getUserId());
+            param.getAgentIdIn().add(user.getAgentId());
+        }
+
+        // 2. 查询分页
         Page<SysClassThreeDTO> page = sysClassThreeService.findPage(param);
 
-        // 获取代理商数据
+        // 3. 获取代理商数据
         List<Long> agentIds = page.getContent().stream().map(SysClassThreeDTO::getAgentId).collect(Collectors.toList());
         List<AgentDTO> agents = agentService.findList(QueryParam.in(Agent::getId, agentIds));
-        page.getContent().forEach(d->d.setAgent(agents.stream().filter(a->a.getId().equals(d.getAgentId())).findAny().orElse(null)));
+        page.getContent().forEach(d->d.setAgent(agents.stream().filter(a->a.getId().equals(d.getAgentId())).findAny().orElse(new AgentDTO("全部"))));
         return getPageRtnDate(page);
     }
 

@@ -30,6 +30,4 @@ public class SysClassOnePageParam extends PageParam {
 
     @ApiModelProperty(value = "代理商ids", hidden = true)
     private List<Long> agentIdIn;
-
-
 }

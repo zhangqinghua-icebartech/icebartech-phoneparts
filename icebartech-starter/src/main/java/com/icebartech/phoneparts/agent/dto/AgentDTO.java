@@ -21,4 +21,11 @@ public class AgentDTO extends Agent {
     private static final long serialVersionUID = 1L;
 
 
+    public AgentDTO() {
+
+    }
+
+    public AgentDTO(String className) {
+        super.setClassName(className);
+    }
 }

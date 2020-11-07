@@ -7,6 +7,7 @@ import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
+import com.icebartech.core.utils.hibernate.Query;
 import com.icebartech.core.vo.PageData;
 import com.icebartech.core.vo.QueryParam;
 import com.icebartech.core.vo.RespDate;
@@ -62,23 +63,22 @@ public class SysClassOneController extends BaseController {
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_page")
     public RespPage<SysClassOneDto> findPage(@Valid @RequestBody SysClassOnePageParam param) {
+        // 1. 查询所有代理商可见和当前APP用户可见的数据
         LocalUser localUser = UserThreadLocal.getUserInfo();
         if(localUser.getUserEnum() == UserEnum.app){
+            param.setAgentIdIn(new ArrayList<>());
+            param.getAgentIdIn().add(0L);
             User user = userService.findOne(localUser.getUserId());
-            Agent agent = agentService.findOneOrNull(user.getAgentId());
-            List<Long> list = new ArrayList<>();
-            list.add(0L);
-            if(agent!=null){
-                list.add(agent.getId());
-            }
-            param.setAgentIdIn(list);
+            param.getAgentIdIn().add(user.getAgentId());
         }
+
+        // 2. 查询分页
         Page<SysClassOneDto> page = service.findPage(param);
 
-        // 获取代理商数据
+        // 3. 获取代理商数据
         List<Long> agentIds = page.getContent().stream().map(SysClassOneDto::getAgentId).collect(Collectors.toList());
         List<AgentDTO> agents = agentService.findList(QueryParam.in(Agent::getId, agentIds));
-        page.getContent().forEach(d->d.setAgent(agents.stream().filter(a->a.getId().equals(d.getAgentId())).findAny().orElse(null)));
+        page.getContent().forEach(d->d.setAgent(agents.stream().filter(a->a.getId().equals(d.getAgentId())).findAny().orElse(new AgentDTO("全部"))));
         return getPageRtnDate(page);
     }
 

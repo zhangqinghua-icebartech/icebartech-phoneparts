@@ -1,5 +1,6 @@
 package com.icebartech.phoneparts.user.service.impl;
 
+import com.github.utils.DateUtils;
 import com.icebartech.core.components.AliyunOSSComponent;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
@@ -25,18 +26,26 @@ import com.icebartech.phoneparts.system.service.SysSerialService;
 import com.icebartech.phoneparts.system.service.SysUseConfigService;
 import com.icebartech.phoneparts.user.dto.UserDto;
 import com.icebartech.phoneparts.user.param.UserInsertParam;
-import com.icebartech.phoneparts.user.po.LoginDto;
+import com.icebartech.phoneparts.user.param.UserOutParam;
+import com.icebartech.phoneparts.user.po.User;
 import com.icebartech.phoneparts.user.repository.UserRepository;
 import com.icebartech.phoneparts.user.service.UserService;
-import com.icebartech.phoneparts.user.po.User;
 import com.icebartech.phoneparts.util.ProduceCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.icebartech.core.vo.QueryParam.eq;
 
@@ -49,7 +58,7 @@ import static com.icebartech.core.vo.QueryParam.eq;
 @Service
 @Slf4j
 public class UserServiceImpl extends AbstractService
-<UserDto, User, UserRepository> implements UserService {
+                                             <UserDto, User, UserRepository> implements UserService {
 
     private SysSerialService sysSerialService;
     private AliyunOSSComponent aliyunOSSComponent;
@@ -85,39 +94,37 @@ public class UserServiceImpl extends AbstractService
     @Override
     protected void warpDTO(Long id, UserDto user) {
         user.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(user.getHeadPortrait()));
-        user.setPastTime(DateTimeUtility.delayTime(user.getGmtCreated(),1));
+        user.setPastTime(DateTimeUtility.delayTime(user.getGmtCreated(), 1));
 
         LocalUser localUser = UserThreadLocal.getUserInfo();
 
-        if(user.getAgentId()!=0){
+        if (user.getAgentId() != 0) {
             Agent agent = agentService.findOne(user.getAgentId());
             user.setOrigin(agent.getCompanyName());
             //总后台
-            if(localUser.getLevel() == 0){
+            if (localUser.getLevel() == 0) {
                 user.setAgentClassName(agent.getClassName());
-            //一级代理商
-            }else if(localUser.getLevel() == 1 || localUser.getLevel() == 2){
+                //一级代理商
+            } else if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
                 Agent agent2 = agentService.findOneOrNull(user.getSecondAgentId());
-                if(agent2!=null){
+                if (agent2 != null) {
                     user.setAgentClassName(agent2.getClassName());
                 }
             }
         }
     }
 
-
-
     @Override
     @Transactional
     public Long register(UserInsertParam param) {
-        log.info("注册{}",param.toString());
+        log.info("注册{}", param.toString());
         //邮箱重复
-        if(findByEmail(param.getEmail())!=null)
+        if (findByEmail(param.getEmail()) != null)
             throw new ServiceException(CommonResultCodeEnum.EAIL_REPET, "邮箱已重复");
         //序列号
         SysSerialDto serialDTO = sysSerialService.findBySerialNum(param.getSerialNum());
 
-        if(!sysSerialService.isValid(param.getSerialNum()))
+        if (!sysSerialService.isValid(param.getSerialNum()))
             throw new ServiceException(CommonResultCodeEnum.NO_SERIAL, "序列号不存在或已过期");
 
         //用户所属代理商
@@ -135,13 +142,13 @@ public class UserServiceImpl extends AbstractService
         serialDTO.setStartTime(date);
         serialDTO.setIsBindMail(SerialEnum.IS_BIND.getKey());
         serialDTO.setStatus(SerialEnum.IS_STATUS.getKey());
-        if(serialDTO.getEndTime() == null)
-            serialDTO.setEndTime(DateTimeUtility.delayTime(date,1));
-        if(!sysSerialService.useNumAdd(serialDTO))
+        if (serialDTO.getEndTime() == null)
+            serialDTO.setEndTime(DateTimeUtility.delayTime(date, 1));
+        if (!sysSerialService.useNumAdd(serialDTO))
             throw new ServiceException(CommonResultCodeEnum.NO_SERIAL, "序列号使用失败");
 
         //失效使用该序列值用户
-        if(!passUser(param.getSerialNum()))
+        if (!passUser(param.getSerialNum()))
             throw new ServiceException(CommonResultCodeEnum.INVALID_OPERATION, "注册失败");
 
         //密码加密
@@ -158,16 +165,15 @@ public class UserServiceImpl extends AbstractService
     @Override
     @Transactional
     public UserDto codeLogin(String serialNum) {
-        UserDto user = super.findOneOrNull(eq(User::getSerialNum,serialNum));
-        if(user!=null) return checkLogin(user);
+        UserDto user = super.findOneOrNull(eq(User::getSerialNum, serialNum));
+        if (user != null) return checkLogin(user);
         String email = ProduceCodeUtil.findRedeemCode() + "@sys.com";
         String pwd = "dev123456";
-        UserInsertParam userInsertParam = new UserInsertParam(serialNum,email,pwd);
+        UserInsertParam userInsertParam = new UserInsertParam(serialNum, email, pwd);
         Long id = this.register(userInsertParam);
         UserDto user2 = super.findOne(id);
         return checkLogin(user2);
     }
-
 
 
     /**
@@ -178,7 +184,7 @@ public class UserServiceImpl extends AbstractService
     private Boolean passUser(String serialNum) {
         //有效用户
         UserDto userDTO = findValidBySerialNum(serialNum);
-        if(userDTO==null) return true;
+        if (userDTO == null) return true;
         //userDTO.setEnable(UserEnum.NO_ENABLE.getKey());
         return super.delete(userDTO.getId());
     }
@@ -188,13 +194,13 @@ public class UserServiceImpl extends AbstractService
      * @param serialNum 序列值
      * @return 用户
      */
-    private UserDto findValidBySerialNum(String serialNum){
-        return super.findOneOrNull(eq(UserDto::getSerialNum,serialNum),eq(UserDto::getEnable, UserEnableEnum.Y_ENABLE.getKey()));
+    private UserDto findValidBySerialNum(String serialNum) {
+        return super.findOneOrNull(eq(UserDto::getSerialNum, serialNum), eq(UserDto::getEnable, UserEnableEnum.Y_ENABLE.getKey()));
     }
 
     @Override
     public UserDto login(String email, String pwd) {
-        log.info("登录，邮箱{}",email);
+        log.info("登录，邮箱{}", email);
         UserDto userDTO = findByEmailAndPwd(email);
         if (userDTO == null || !passwordEncoder.matches(pwd, userDTO.getPassword())) {
             throw new ServiceException(CommonResultCodeEnum.LOGIN_ERROR, "账号或密码错误");
@@ -215,56 +221,56 @@ public class UserServiceImpl extends AbstractService
 
 
     @Override
-    public Boolean changeHead(Long id,String headPortrait) {
-        return super.update(eq(UserDto::getId,id),eq(UserDto::getHeadPortrait,headPortrait));
+    public Boolean changeHead(Long id, String headPortrait) {
+        return super.update(eq(UserDto::getId, id), eq(UserDto::getHeadPortrait, headPortrait));
     }
 
     @Override
     @Transactional
-    public Boolean changePwd(String email,String pwd) {
+    public Boolean changePwd(String email, String pwd) {
         UserDto userDTO = findByEmail(email);
 
         //邮箱重复
-        if(userDTO == null)
+        if (userDTO == null)
             throw new ServiceException(CommonResultCodeEnum.EAIL_NULL, "邮箱不存在");
         //更新密码
-        return super.update(eq(User::getId,userDTO.getId()),eq(User::getPassword,passwordEncoder.encode(pwd)));
+        return super.update(eq(User::getId, userDTO.getId()), eq(User::getPassword, passwordEncoder.encode(pwd)));
     }
 
     @Override
     @Transactional
     public Boolean addUseCount(Long userId, Integer num) {
         User user = super.findOne(userId);
-        Integer  useCount = user.getUseCount() + num;
+        Integer useCount = user.getUseCount() + num;
         Integer mayUseCount = user.getMayUseCount() + num;
 
         //消减次数
         LocalUser localUser = UserThreadLocal.getUserInfo();
         //一级代理商
-        if(localUser.getLevel() == 1 || localUser.getLevel() == 2){
-            AgentDTO agent2 = agentService.findOne(eq(AgentDTO::getId,localUser.getUserId()));
-            if(num>agent2.getMayUseCount()){
+        if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
+            AgentDTO agent2 = agentService.findOne(eq(AgentDTO::getId, localUser.getUserId()));
+            if (num > agent2.getMayUseCount()) {
                 throw new ServiceException(CommonResultCodeEnum.NUM_ERROR, "使用次数不足");
             }
-            agentService.reduceUseCount(agent2.getId(),num);
+            agentService.reduceUseCount(agent2.getId(), num);
         }
 
         //添加记录
-        addUseRecordService.add(userId,num);
-        return super.update(eq(UserDto::getId,user.getId()),
-                eq(UserDto::getUseCount,useCount),
-                eq(UserDto::getMayUseCount,mayUseCount));
+        addUseRecordService.add(userId, num);
+        return super.update(eq(UserDto::getId, user.getId()),
+                            eq(UserDto::getUseCount, useCount),
+                            eq(UserDto::getMayUseCount, mayUseCount));
     }
 
     @Override
     public Boolean addUseCount(String code) {
         Long userId = UserThreadLocal.getUserId();
         User user = findOne(userId);
-        RedeemCode redeemCode = redeemCodeService.findOneOrNull(eq(RedeemCode::getCode,code));
-        if(redeemCode==null||redeemCode.getState()== RedeemStateEnum.Y)
+        RedeemCode redeemCode = redeemCodeService.findOneOrNull(eq(RedeemCode::getCode, code));
+        if (redeemCode == null || redeemCode.getState() == RedeemStateEnum.Y)
             throw new ServiceException(CommonResultCodeEnum.NOT_AUTHORITY, "兑换码已使用或不存在");
         Redeem redeem = redeemService.findOneOrNull(redeemCode.getRedeemId());
-        if(redeem.getAgentId() !=0 && !user.getAgentId().equals(redeem.getAgentId())){
+        if (redeem.getAgentId() != 0 && !user.getAgentId().equals(redeem.getAgentId())) {
             throw new ServiceException(CommonResultCodeEnum.NOT_AUTHORITY, "您无权限使用此兑换码");
         }
         redeemCode.setUserId(userId);
@@ -272,18 +278,18 @@ public class UserServiceImpl extends AbstractService
         redeemCode.setState(RedeemStateEnum.Y);
         redeemCode.setUseTime(new Date());
         redeemCodeService.update(redeemCode);
-        return addUseCount(userId,redeemCode.getUseNum());
+        return addUseCount(userId, redeemCode.getUseNum());
     }
 
     @Override
     @Transactional
-    public Boolean reduceUseCount(Long productId,Long userId) {
+    public Boolean reduceUseCount(Long productId, Long userId) {
         User user = super.findOne(userId);
-        if(user.getMayUseCount() <= 0)
+        if (user.getMayUseCount() <= 0)
             throw new ServiceException(CommonResultCodeEnum.NUM_ERROR, "使用次数不足，请充值！");
         //添加记录
-        useRecordService.add(userId,productId,user.getAgentId(),user.getSecondAgentId());
-        return super.update(eq(User::getId,user.getId()),eq(User::getMayUseCount,user.getMayUseCount() - 1));
+        useRecordService.add(userId, productId, user.getAgentId(), user.getSecondAgentId());
+        return super.update(eq(User::getId, user.getId()), eq(User::getMayUseCount, user.getMayUseCount() - 1));
     }
 
     @Override
@@ -293,25 +299,24 @@ public class UserServiceImpl extends AbstractService
         int reNum = num;
 
         int mayUseCount;
-        if(num > user.getMayUseCount()) {
+        if (num > user.getMayUseCount()) {
             reNum = user.getMayUseCount();
             mayUseCount = 0;
-        }
-        else{
+        } else {
 
             mayUseCount = user.getMayUseCount() - num;
         }
 
         //返还次数
         LocalUser localUser = UserThreadLocal.getUserInfo();
-        if(localUser.getLevel() == 1 || localUser.getLevel() == 2){
+        if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
             Agent agent2 = agentService.findOne(localUser.getUserId());
             reNum += agent2.getMayUseCount();
-            agentService.update(eq(AgentDTO::getId,agent2.getId()),
-                    eq(AgentDTO::getMayUseCount,reNum));
+            agentService.update(eq(AgentDTO::getId, agent2.getId()),
+                                eq(AgentDTO::getMayUseCount, reNum));
         }
 
-        return super.update(eq(User::getId,user.getId()),eq(User::getMayUseCount,mayUseCount));
+        return super.update(eq(User::getId, user.getId()), eq(User::getMayUseCount, mayUseCount));
     }
 
 
@@ -321,7 +326,7 @@ public class UserServiceImpl extends AbstractService
      * @return
      */
     private UserDto findByEmailAndPwd(String email) {
-       return super.findOneOrNull(eq(UserDto::getEmail,email));
+        return super.findOneOrNull(eq(UserDto::getEmail, email));
     }
 
     /**
@@ -329,7 +334,26 @@ public class UserServiceImpl extends AbstractService
      * @param email 邮箱获取用户
      * @return UserDTO
      */
-    private UserDto findByEmail(String email){
-        return super.findOneOrNull(eq(UserDto::getEmail,email));
+    private UserDto findByEmail(String email) {
+        return super.findOneOrNull(eq(UserDto::getEmail, email));
+    }
+
+    @Override
+    public List<UserDto> export(UserOutParam param) {
+        if (param == null) param = new UserOutParam();
+
+        List<UserDto> list = new ArrayList<>();
+        for (Map<String, Object> map : repository.export(param)) {
+            UserDto user = new UserDto();
+            user.setSerialNum(map.get("serial_num") + "");
+            user.setEmail(map.get("email") + "");
+            user.setAgentClassName(map.get("class_name") + "");
+            user.setUseCount((int) map.get("use_count"));
+            user.setMayUseCount((int) map.get("may_use_count"));
+            user.setRegisterTime(((Timestamp)map.get("gmt_created")).toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            list.add(user);
+        }
+
+        return list;
     }
 }

@@ -13,6 +13,7 @@ import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.modules.AbstractService;
+import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.utils.EncryptUtil;
 import com.icebartech.core.vo.QueryParam;
 import lombok.extern.slf4j.Slf4j;
@@ -93,27 +94,24 @@ public class ManagerServiceImpl1 extends AbstractService<Manager, SysManager, Ma
         // 管理员登录或一级代理商登录
         if (super.exists(eq(Manager::getLoginName, loginName))) {
             // 1. 查询
-            Map<String, Object> manager = repository.findManager(loginName);
+            Manager manager = BeanMapper.map(repository.findManager(loginName), Manager.class);
 
-            System.out.println(manager.get("password"));
-            if (!passwordEncoder.matches(password, manager.get("password") + "")) {
+            System.out.println(manager);
+            if (!passwordEncoder.matches(password, manager.getPassword())) {
                 throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
             }
 
-            Long agentId = null;
-            if (!StringUtils.isBlank(manager.get("agent_id") + "")) {
-                agentId = Long.parseLong(manager.get("agent_id") + "");
-            }
+            // 判断是不是代理商。管理员绑定了代理商就属于代理商身份。
+            UserEnum userEnum = manager.getAgentId() == 0L ? UserEnum.admin : UserEnum.agent;
+            manager.setId(userEnum == UserEnum.admin ? manager.getId() : manager.getAgentId());
+            int level = userEnum == UserEnum.admin ? 0  :1;
 
-            long id = agentId == null ? Long.parseLong(manager.get("id") + "") : agentId;
-            int level = agentId == null ? 0 : 1;
-            UserEnum userEnum = agentId == null ? UserEnum.admin : UserEnum.agent;
 
             LocalUser localUser = new LocalUser();
-            localUser.setSessionId(loginComponent.composeSessionId(userEnum, id));
+            localUser.setSessionId(loginComponent.composeSessionId(userEnum, manager.getId()));
             localUser.setParentId(0L);
             localUser.setLevel(level);
-            localUser.setUserId(id);
+            localUser.setUserId(manager.getId());
             localUser.setUserEnum(userEnum);
             loginComponent.login(localUser.getSessionId(), localUser, 7 * 24 * 60 * 60);
 

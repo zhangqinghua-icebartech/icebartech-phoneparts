@@ -121,23 +121,23 @@ public class ManagerServiceImpl1 extends AbstractService<Manager, SysManager, Ma
         }
 
         // 二级代理商登录
-        Map<String,Object> agentMap = repository.findAgent(loginName);
-        String pwd = agentMap.containsKey("pwd")?(String) agentMap.get("pwd"):null;
-        Long id = agentMap.containsKey("id")?Long.valueOf(String.valueOf(agentMap.get("id"))):null;
+        Map<String, Object> agentMap = repository.findAgent(loginName);
+        String pwd = agentMap.containsKey("pwd") ? (String) agentMap.get("pwd") : null;
+        Long id = agentMap.containsKey("id") ? Long.valueOf(String.valueOf(agentMap.get("id"))) : null;
 
 
-        Long parentId = agentMap.containsKey("parentId")?Long.valueOf(String.valueOf(agentMap.get("parentId"))):null;
-        int level = parentId==null|| 0L == parentId ? 1 : 2;
-        String enable = agentMap.containsKey("enable")? agentMap.get("enable").toString() :null;
+        Long parentId = agentMap.containsKey("parentId") ? Long.valueOf(String.valueOf(agentMap.get("parentId"))) : null;
+        int level = parentId == null || 0L == parentId ? 1 : 2;
+        String enable = agentMap.containsKey("enable") ? agentMap.get("enable").toString() : null;
 
 
         if (id == null)
             throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
 
-        if(enable==null||enable.equals("y"))
+        if (enable == null || enable.equals("y"))
             throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "运营商已被禁用");
 
-        if(pwd == null || !password.equals(encryptUtil.Base64Decode(pwd)))
+        if (pwd == null || !password.equals(encryptUtil.Base64Decode(pwd)))
             throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
 
         LocalUser localUser = new LocalUser();

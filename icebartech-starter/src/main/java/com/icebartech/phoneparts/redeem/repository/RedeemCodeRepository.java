@@ -2,9 +2,6 @@ package com.icebartech.phoneparts.redeem.repository;
 
 import com.icebartech.core.repository.BaseRepository;
 import com.icebartech.phoneparts.redeem.po.RedeemCode;
-import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
 
 /**
  * @author pc
@@ -13,7 +10,4 @@ import java.util.List;
  */
 
 public interface RedeemCodeRepository extends BaseRepository<RedeemCode> {
-
-    @Query(nativeQuery = true, value = "SELECT s.redeem_id FROM redeem_code s WHERE s.email = ?1")
-    List<Long> findRedeemIdList(String email);
 }

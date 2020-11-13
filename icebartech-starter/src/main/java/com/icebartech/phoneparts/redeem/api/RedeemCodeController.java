@@ -46,8 +46,7 @@ public class RedeemCodeController extends BaseController {
     }
 
     @ApiOperation("数据导出")
-    @PostMapping("/excelOut")
-    @RequireLogin({UserEnum.admin})
+    @GetMapping("/excelOut")
     public void excelOut(HttpServletResponse response,
                          RedeemCodeOutParam param) throws Exception {
         ExcelUtils.getInstance().

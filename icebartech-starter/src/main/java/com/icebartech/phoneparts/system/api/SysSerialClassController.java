@@ -48,15 +48,16 @@ public class SysSerialClassController extends BaseController {
         LocalUser localUser = UserThreadLocal.getUserInfo();
         if(localUser.getLevel() == 0){
             param.setParentId(0L);
-        }else if(localUser.getLevel() == 1){
+        }
+
+        if(localUser.getLevel() == 1){
             if(param.getAgentId()==null){
                 param.setParentId(localUser.getUserId());
-            }else {
-                param.setParentId(0L);
             }
         }
+
         if(localUser.getLevel() == 2){
-            param.setParentId(localUser.getParentId());
+            param.setAgentId(localUser.getParentId());
         }
         return getPageRtnDate(service.findPage(param));
     }
@@ -66,7 +67,7 @@ public class SysSerialClassController extends BaseController {
     @PostMapping("/find_list")
     public RespDate<List<SysSerialClassDTO>> findList() {
         LocalUser localUser = UserThreadLocal.getUserInfo();
-        Long parentId = UserThreadLocal.getUserId();
+        Long parentId = localUser.getUserId();
         if(localUser.getLevel() == 0){
             parentId = 0L;
         }

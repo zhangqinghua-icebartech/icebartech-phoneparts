@@ -26,7 +26,7 @@ import java.util.Map;
 import static com.icebartech.core.vo.QueryParam.attr;
 import static com.icebartech.core.vo.QueryParam.eq;
 
-@Service
+// @Service
 @Slf4j
 public class ManagerServiceImpl extends AbstractService<Manager, SysManager, ManagerRepository> implements ManagerService {
 
@@ -79,109 +79,6 @@ public class ManagerServiceImpl extends AbstractService<Manager, SysManager, Man
         if (super.exists(eq(Manager::getRoleId, referenceId))) {
             throw new ServiceException(CommonResultCodeEnum.INVALID_OPERATION, "此角色被管理员引用，无法删除");
         }
-    }
-
-    @Override
-    public String adminLogin(String loginName, String password) {
-
-        UserEnum userEnum = UserEnum.agent;//角色
-        String pwd;//密码
-        Long id;//登录人id
-        Long parentId = null;//代理商上级id
-        int level;//代理商等级
-
-        //管理员登录
-        Manager manager = super.findOneOrNull(eq(Manager::getLoginName, loginName));
-        if(manager != null){
-            pwd = manager.getPassword();
-            id = manager.getId();
-            if(manager.getAgentId()==0L) {
-                userEnum = UserEnum.admin;
-                level = 0;
-            }
-            else{
-                id = manager.getAgentId();
-                level = 1;
-            }
-
-        }
-        //运营商登录
-        else {
-            throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
-        }
-        if(id == null || pwd == null)
-            throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
-
-        if(userEnum == UserEnum.admin && !passwordEncoder.matches(password, pwd))
-            throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
-
-        if(userEnum == UserEnum.agent && !password.equals(encryptUtil.Base64Decode(pwd)))
-            throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
-
-        log.info("登录 login = {},id = {},UserEnum = {}",loginName,id,userEnum.name());
-
-        String sessionId = loginComponent.composeSessionId(userEnum, id);
-        LocalUser localUser = new LocalUser();
-        localUser.setSessionId(sessionId);
-        localUser.setParentId(parentId);
-        localUser.setLevel(level);
-        localUser.setUserId(id);
-        localUser.setUserEnum(userEnum);
-        loginComponent.login(sessionId, localUser,7*24*60*60);
-        return sessionId;
-
-    }
-
-    @Override
-    public String agentLogin(String loginName, String password) {
-
-        UserEnum userEnum = UserEnum.agent;//角色
-        String pwd;//密码
-        Long id;//登录人id
-        Long parentId = null;//代理商上级id
-        int level;//代理商等级
-
-        //管理员登录
-        Manager manager = super.findOneOrNull(eq(Manager::getLoginName, loginName));
-        if(manager != null){
-            throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
-        }
-        //运营商登录
-        else {
-            Map<String,Object> agentMap = repository.findAgent(loginName);
-            pwd = agentMap.containsKey("pwd")?(String) agentMap.get("pwd"):null;
-            id = agentMap.containsKey("id")?Long.valueOf(String.valueOf(agentMap.get("id"))):null;
-            parentId = agentMap.containsKey("parentId")?Long.valueOf(String.valueOf(agentMap.get("parentId"))):null;
-            String enable = agentMap.containsKey("enable")? agentMap.get("enable").toString() :null;
-            if(enable==null||enable.equals("y"))
-                throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "运营商已被禁用");
-
-            if(parentId==null|| 0L == parentId){
-                level = 1;
-            }else {
-                level = 2;
-            }
-        }
-        if(id == null || pwd == null)
-            throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
-
-        if(userEnum == UserEnum.admin && !passwordEncoder.matches(password, pwd))
-            throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
-
-        if(userEnum == UserEnum.agent && !password.equals(encryptUtil.Base64Decode(pwd)))
-            throw new ServiceException(CommonResultCodeEnum.DATA_NOT_FOUND, "账号或密码错误");
-
-        log.info("登录 login = {},id = {},UserEnum = {}",loginName,id,userEnum.name());
-
-        String sessionId = loginComponent.composeSessionId(userEnum, id);
-        LocalUser localUser = new LocalUser();
-        localUser.setSessionId(sessionId);
-        localUser.setParentId(parentId);
-        localUser.setLevel(level);
-        localUser.setUserId(id);
-        localUser.setUserEnum(userEnum);
-        loginComponent.login(sessionId, localUser,7*24*60*60);
-        return sessionId;
     }
 
     @Override
@@ -260,5 +157,4 @@ public class ManagerServiceImpl extends AbstractService<Manager, SysManager, Man
     public Boolean resetPwd(Long userId, String newPassword) {
         return super.update(QueryParam.id(userId), attr(Manager::getPassword, newPassword));
     }
-
 }

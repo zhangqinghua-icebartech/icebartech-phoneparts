@@ -38,13 +38,9 @@ public class JPAUtil {
             } else if ("pageSize".equals(field.getName())) {
                 pageSizeStr = String.valueOf(field.getValue());
             } else if (field.getQueryType() == QueryType.ASC) {
-                if(field.getValue() == null || field.getValue().equals(true)){
-                    orders.add(new Sort.Order(Sort.Direction.ASC, field.getName()));
-                }
-            } else if (field.getQueryType() == QueryType.DESC && field.getValue().equals(true)) {
-                if(field.getValue() == null || field.getValue().equals(true)){
-                    orders.add(new Sort.Order(Sort.Direction.DESC, field.getName()));
-                }
+                orders.add(new Sort.Order(Sort.Direction.ASC, field.getName()));
+            } else if (field.getQueryType() == QueryType.DESC) {
+                orders.add(new Sort.Order(Sort.Direction.DESC, field.getName()));
             }
         }
 

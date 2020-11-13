@@ -18,6 +18,4 @@ public interface SysClassTwoService extends BaseService
     SysClassTwo findByClassOneId(Long id);
 
     Boolean verifyPwd(Long id, String password);
-
-    String findName(Long classTwoId);
 }

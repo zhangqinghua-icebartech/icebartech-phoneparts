@@ -102,7 +102,7 @@ public class CompanyInfoServiceImpl extends AbstractService
     public CompanyInfoDto findInCompany() {
         User user= userService.findOne(UserThreadLocal.getUserId());
         if(user.getSecondAgentId() == 0L){
-           return super.findOneOrNull(eq(CompanyInfoDto::getAgentId,user.getAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y));
+            return super.findOneOrNull(eq(CompanyInfoDto::getAgentId,user.getAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y));
         }
         return super.findOneOrNull(eq(CompanyInfoDto::getSecondAgentId,user.getSecondAgentId()),eq(CompanyInfoDto::getEnable,ChooseType.y));
     }

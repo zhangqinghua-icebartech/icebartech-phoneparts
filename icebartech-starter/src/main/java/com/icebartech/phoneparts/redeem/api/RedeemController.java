@@ -8,8 +8,6 @@ import com.icebartech.core.vo.RespPage;
 import com.icebartech.phoneparts.redeem.dto.RedeemDTO;
 import com.icebartech.phoneparts.redeem.param.RedeemInsertParam;
 import com.icebartech.phoneparts.redeem.param.RedeemPageParam;
-import com.icebartech.phoneparts.redeem.po.RedeemCode;
-import com.icebartech.phoneparts.redeem.service.RedeemCodeService;
 import com.icebartech.phoneparts.redeem.service.RedeemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,10 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.icebartech.core.vo.QueryParam.eq;
 
 /**
  * @author Created by liuao on 2019/8/28.
@@ -34,8 +28,6 @@ public class RedeemController extends BaseController {
 
     @Autowired
     RedeemService service;
-    @Autowired
-    RedeemCodeService redeemCodeService;
 
 
     @ApiOperation("新增")
@@ -49,22 +41,6 @@ public class RedeemController extends BaseController {
     @RequireLogin({UserEnum.admin})
     @PostMapping("/find_page")
     public RespPage<RedeemDTO> findPage(@Valid @RequestBody RedeemPageParam param) {
-        boolean is = false;
-        List<Long> list = new ArrayList<>();
-        if(param.getEmail()!=null&&!param.getEmail().equals("")){
-            is = true;
-            list = redeemCodeService.findRedeemIdList(param.getEmail());
-        }
-        if(param.getCode()!=null&&!param.getCode().equals("")){
-            is = true;
-            RedeemCode redeemCode = redeemCodeService.findOneOrNull(eq(RedeemCode::getCode,param.getCode()));
-            if(redeemCode!=null){
-                list.add(redeemCode.getRedeemId());
-            }
-        }
-        if(is){
-            param.setIdIn(list);
-        }
         return getPageRtnDate(service.findPage(param));
     }
 

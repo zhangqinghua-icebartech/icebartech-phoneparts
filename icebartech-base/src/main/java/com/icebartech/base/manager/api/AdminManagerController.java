@@ -5,9 +5,6 @@ import com.icebartech.base.manager.param.ManagerAdminFindPageParam;
 import com.icebartech.base.manager.param.ManagerAdminInsertParam;
 import com.icebartech.base.manager.param.ManagerAdminUpdateParam;
 import com.icebartech.base.manager.service.ManagerService;
-import com.icebartech.base.message.enums.CodeTypeEnum;
-import com.icebartech.base.message.service.MailService;
-import com.icebartech.base.message.service.PictureVerifyService;
 import com.icebartech.core.annotations.RequireLogin;
 import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
@@ -21,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 
 @Api(tags = "后台 账号接口")
@@ -30,10 +28,7 @@ public class AdminManagerController extends BaseController {
 
     @Autowired
     private ManagerService service;
-    @Autowired
-    private MailService mailService;
-    @Autowired
-    private PictureVerifyService pictureVerifyService;
+
     @ApiOperation("获取分页")
     @PostMapping("/find_page")
     public RespPage<Manager> findPage(@Valid @RequestBody ManagerAdminFindPageParam param) {
@@ -74,28 +69,6 @@ public class AdminManagerController extends BaseController {
     @PostMapping("/login")
     public RespDate<String> login(@RequestParam String loginName, @RequestParam String password) {
         return getRtnDate(service.login(loginName, password));
-    }
-
-    @ApiOperation("管理员登录")
-    @PostMapping("/admin_login")
-    public RespDate<String> adminLogin(@RequestParam String loginName,
-                                       @RequestParam String password,
-                                       @RequestParam String code) {
-        //验证码校验
-        if(!mailService.verify(loginName, CodeTypeEnum.REGISTER.name(),code))
-            throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "手机验证码错误");
-        return getRtnDate(service.adminLogin(loginName, password));
-    }
-
-    @ApiOperation("代理商登录")
-    @PostMapping("/agent_login")
-    public RespDate<String> agentLogin(@RequestParam String loginName,
-                                       @RequestParam String password,
-                                       @RequestParam String code) {
-        //验证码校验
-        if(!pictureVerifyService.verify(code,getRemoteIP()))
-            throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "图形验证码错误");
-        return getRtnDate(service.agentLogin(loginName, password));
     }
 
     @ApiOperation("重置密码")

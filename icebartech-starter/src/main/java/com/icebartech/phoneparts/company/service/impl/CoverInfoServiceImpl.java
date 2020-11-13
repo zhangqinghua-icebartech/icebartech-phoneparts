@@ -25,7 +25,7 @@ import static com.icebartech.core.vo.QueryParam.eq;
 
 @Service
 public class CoverInfoServiceImpl extends AbstractService
-<CoverInfoDTO, CoverInfo, CoverInfoRepository> implements CoverInfoService {
+        <CoverInfoDTO, CoverInfo, CoverInfoRepository> implements CoverInfoService {
 
     @Autowired
     private AliyunOSSComponent aliyunOSSComponent;

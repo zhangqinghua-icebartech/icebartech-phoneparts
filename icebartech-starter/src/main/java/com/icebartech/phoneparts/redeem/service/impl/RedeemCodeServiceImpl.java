@@ -10,7 +10,6 @@ import com.icebartech.phoneparts.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 
 /**
@@ -26,9 +25,6 @@ public class RedeemCodeServiceImpl extends AbstractService
     @Autowired
     UserService userService;
 
-    @Autowired
-    RedeemCodeRepository repository;
-
     @Override
     protected void warpDTO(Long id, RedeemCodeDTO redeemCode) {
 //        if (redeemCode.getUserId()!=null){
@@ -42,8 +38,6 @@ public class RedeemCodeServiceImpl extends AbstractService
     }
 
 
-    @Override
-    public List<Long> findRedeemIdList(String email) {
-        return repository.findRedeemIdList(email);
-    }
+
+
 }

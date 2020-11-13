@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 
+
 /**
  * @author Created by liuao on 2019/6/18.
  * @desc
@@ -28,7 +29,10 @@ public class UserPageParam extends PageParam {
     @ApiModelProperty(value = "次级代理商id",example = "次级代理商id")
     private Long secondAgentId;
 
-    @ApiModelProperty(value = "二级分类id",example = "二级分类id")
+    @ApiModelProperty(value = "一级代理商的二级分类id",example = "一级代理商的二级分类id")
     private Long serialClassId;
+
+    @ApiModelProperty(value = "二级代理商的二级分类id",example = "二级代理商的二级分类id")
+    private Long secondSerialClassId;
 
 }

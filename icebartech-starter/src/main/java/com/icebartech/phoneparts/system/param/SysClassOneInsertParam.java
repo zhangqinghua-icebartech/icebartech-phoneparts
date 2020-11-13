@@ -18,15 +18,8 @@ public class SysClassOneInsertParam {
     @ApiModelProperty(value = "分类英文名称",example = "分类英文名称")
     private String englishName;
 
-    @ApiModelProperty(value = "一级分类id代理商id",example = "一级分类id代理商id")
-    private Long agentId;
-
     @ApiModelProperty(value = "图标",example = "图标")
     @NotBlank
     private String icon;
-
-    @NotBlank
-    @ApiModelProperty(value = "英文图标",example = "英文图标")
-    private String englishIcon;
 
 }

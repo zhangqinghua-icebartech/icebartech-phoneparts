@@ -5,8 +5,6 @@ import com.icebartech.core.params.PageParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @author Created by liuao on 2019/6/18.
  * @desc

@@ -10,6 +10,7 @@ import org.dozer.loader.api.TypeMappingOption;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -148,7 +149,13 @@ public class BeanMapper {
                     continue;
                 }
                 field.setAccessible(true);
-                field.set(obj, map.get(field.getName()));
+
+                if (map.get(field.getName()) instanceof BigInteger) {
+                    field.set(obj, ((BigInteger)map.get(field.getName())).longValue());
+                }else {
+                    field.set(obj, map.get(field.getName()));
+                }
+
                 setCoutn++;
             }
         } catch (InstantiationException | IllegalAccessException e) {

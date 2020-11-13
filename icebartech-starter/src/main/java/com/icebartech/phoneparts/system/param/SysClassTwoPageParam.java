@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 
 /**
  * @author Created by liuao on 2019/6/18.
@@ -33,7 +31,4 @@ public class SysClassTwoPageParam extends PageParam {
 
     @ApiModelProperty(value = "递增排序", hidden = true)
     private Boolean idASC = true;
-
-    @ApiModelProperty(value = "代理商ids", hidden = true)
-    private List<Long> agentIdIn;
 }

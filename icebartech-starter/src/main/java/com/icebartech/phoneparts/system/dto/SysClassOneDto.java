@@ -1,9 +1,7 @@
 package com.icebartech.phoneparts.system.dto;
 
-import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.system.po.SysClassOne;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -22,6 +20,4 @@ public class SysClassOneDto extends SysClassOne{
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "代理商")
-    private AgentDTO agent;
 }

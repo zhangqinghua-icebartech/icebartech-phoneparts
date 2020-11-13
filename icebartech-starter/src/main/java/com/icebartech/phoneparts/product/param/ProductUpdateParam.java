@@ -21,9 +21,6 @@ public class ProductUpdateParam {
     @ApiModelProperty(value = "二级分类id",example = "二级分类id")
     private Long classTwoId;
 
-    @ApiModelProperty(value = "三级分类id",example = "三级分类id")
-    private Long classThreeId;
-
     @ApiModelProperty(value = "分类中文名称",example = "分类中文名称")
     private String chinaName;
 

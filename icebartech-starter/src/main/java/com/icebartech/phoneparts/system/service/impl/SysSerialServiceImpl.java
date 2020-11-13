@@ -176,16 +176,23 @@ public class SysSerialServiceImpl extends AbstractService
     @Override
     @Transactional
     public Boolean allocation(Long secondAgentId, List<Long> serialIds,Long serialClassId) {
-        serialIds.forEach(serialId->{
-            SysSerial sysSerial = serialService.findOne(serialId);
-            if(sysSerial.getStatus()!=0){
-                throw new ServiceException(CommonResultCodeEnum.INVALID_NULL, "已使用的序列号无法分配！");
-            }
+        serialIds.forEach(serialId-> {
+            //重新分配序列号
             super.update(eq(SysSerialDto::getId,serialId),
                     eq(SysSerialDto::getSecondSerialClassId,serialClassId),
                     eq(SysSerialDto::getSecondAgentId,secondAgentId));
-        });
+            //重新分配用户
+            userService.allocation(serialId,secondAgentId,serialClassId);
+            });
         return true;
     }
 
+    @Override
+    public Date findEndTime(Long id) {
+        java.sql.Timestamp date = repository.findEndTime(id);
+        if (date != null) {
+            return new Date(date.getTime());
+        }
+        return null;
+    }
 }

@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
@@ -30,6 +31,7 @@ public class SysManager extends BasePo {
     private String userName;
 
     @ApiModelProperty(value = "账号名")
+    @Index(name = "loginName")
     @Column(columnDefinition = "varchar(32) NOT NULL COMMENT '用户账号'")
     private String loginName;
 

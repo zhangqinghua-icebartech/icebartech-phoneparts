@@ -33,10 +33,6 @@ public class Product extends BasePo {
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '二级分类id'")
     private Long classTwoId;
 
-    @ApiModelProperty(value = "三级分类id",example = "三级分类id")
-    @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT 0 COMMENT '三级分类id'")
-    private Long classThreeId;
-
     @ApiModelProperty(value = "分类中文名称",example = "分类中文名称")
     @Column(columnDefinition = "varchar(225) NOT NULL DEFAULT '' COMMENT '分类中文名称'")
     private String chinaName;

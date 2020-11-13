@@ -9,13 +9,13 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.Date;
 
 /**
  * @author Created by liuao on 2019/8/28.
@@ -36,6 +36,7 @@ public class RedeemCode extends BasePo {
     @ExcelField(title = "兑换码标题", order = 1)
     private String title;
 
+    @Index(name = "index_code")
     @Column(columnDefinition = "varchar(64) NOT NULL DEFAULT '' COMMENT '兑换码'")
     @ApiModelProperty(value = "兑换码",example = "兑换码")
     @ExcelField(title = "兑换码", order = 2)
@@ -62,9 +63,5 @@ public class RedeemCode extends BasePo {
     @ApiModelProperty(value = "邮箱",example = "邮箱")
     @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '邮箱'")
     private String email;
-
-    @ApiModelProperty(value = "绑定时间",example = "绑定时间")
-    @Column(columnDefinition = "datetime DEFAULT NULL COMMENT '绑定时间'")
-    private Date useTime;
 
 }

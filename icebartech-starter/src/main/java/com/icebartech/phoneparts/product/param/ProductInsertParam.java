@@ -21,10 +21,6 @@ public class ProductInsertParam {
     @NotNull
     private Long classTwoId;
 
-    @NotNull
-    @ApiModelProperty(value = "三级分类id",example = "三级分类id")
-    private Long classThreeId;
-
     @ApiModelProperty(value = "分类中文名称",example = "分类中文名称")
     @NotBlank
     private String chinaName;

@@ -111,6 +111,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             LocalUser localUser= new LocalUser();
             localUser.setLevel(0);
             localUser.setUserId(0L);
+            localUser.setUserEnum(UserEnum.no_login);
             UserThreadLocal.setUserInfo(localUser);
             return true;
         }

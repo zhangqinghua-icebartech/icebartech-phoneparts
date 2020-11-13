@@ -39,7 +39,7 @@ public class MailController extends BaseController {
     @PostMapping("/sendCode")
     public RespDate<Boolean> findList(@RequestParam("mail") String mail) {
         String type = CodeTypeEnum.REGISTER.name();
-        return getRtnDate(mailService.sendCode(mail,type,true));
+        return getRtnDate(mailService.sendCode(mail,type));
     }
 
 }

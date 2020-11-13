@@ -3,7 +3,6 @@ package com.icebartech.core.po;
 import com.icebartech.core.enums.ChooseType;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
-import com.wuwenze.poi.annotation.ExcelField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

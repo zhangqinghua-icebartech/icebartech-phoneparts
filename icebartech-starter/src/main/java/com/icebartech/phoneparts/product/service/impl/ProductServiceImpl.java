@@ -8,7 +8,6 @@ import com.icebartech.phoneparts.product.repository.ProductRepository;
 import com.icebartech.phoneparts.product.service.ProductService;
 import com.icebartech.phoneparts.product.po.Product;
 import com.icebartech.phoneparts.system.service.SysClassOneService;
-import com.icebartech.phoneparts.system.service.SysClassThreeService;
 import com.icebartech.phoneparts.system.service.SysClassTwoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,25 +23,24 @@ import static com.icebartech.core.vo.QueryParam.eq;
 public class ProductServiceImpl extends AbstractService
         <ProductDto, Product, ProductRepository> implements ProductService {
 
-    @Autowired
-    private SysClassOneService sysClassOneService;
+    private final SysClassOneService sysClassOneService;
+    private final SysClassTwoService sysClassTwoService;
+    private final AliyunOSSComponent aliyunOSSComponent;
 
     @Autowired
-    private SysClassTwoService sysClassTwoService;
-
-    @Autowired
-    private AliyunOSSComponent aliyunOSSComponent;
-
-    @Autowired
-    private SysClassThreeService sysClassThreeService;
-
+    public ProductServiceImpl(SysClassOneService sysClassOneService,
+                              SysClassTwoService sysClassTwoService,
+                              AliyunOSSComponent aliyunOSSComponent) {
+        this.sysClassOneService = sysClassOneService;
+        this.sysClassTwoService = sysClassTwoService;
+        this.aliyunOSSComponent = aliyunOSSComponent;
+    }
 
     @Override
     protected void warpDTO(Long id, ProductDto product) {
         product.setOneClassName(sysClassOneService.findDetail(product.getClassOneId()).getChinaName());
-        product.setTwoClassName(sysClassTwoService.findName(product.getClassTwoId()));
-        product.setThreeClassName(sysClassThreeService.findName(product.getClassThreeId()));
-        product.setCoverIcon(aliyunOSSComponent.generateDownloadUrl(product.getDetailIcon()));
+        product.setTwoClassName(sysClassTwoService.findDetail(product.getClassTwoId()).getChinaName());
+        product.setCoverIcon(aliyunOSSComponent.generateDownloadUrl(product.getCoverIcon()));
         product.setFile(aliyunOSSComponent.generateDownloadUrl(product.getFile()));
         product.setDetailIcon(aliyunOSSComponent.generateDownloadUrl(product.getDetailIcon()));
     }
@@ -55,11 +53,6 @@ public class ProductServiceImpl extends AbstractService
     @Override
     public ProductDto findByClassTwoId(Long id) {
         return super.findOneOrNull(eq(ProductDto::getClassTwoId,id));
-    }
-
-    @Override
-    public ProductDto findByClassThreeId(Long id) {
-        return super.findOneOrNull(eq(ProductDto::getClassThreeId,id));
     }
 
 }

@@ -11,8 +11,4 @@ public interface ManagerService extends BaseService<Manager, SysManager> {
     Boolean resetPassowrd(Long id, String oldPassword, String newPassword);
 
     Boolean resetPwd(Long userId, String newPassword);
-
-    String adminLogin(String loginName, String password);
-
-    String agentLogin(String loginName, String password);
 }

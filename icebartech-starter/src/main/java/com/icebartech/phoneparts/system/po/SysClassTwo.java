@@ -41,10 +41,6 @@ public class SysClassTwo extends BasePo {
     @Column(columnDefinition = "varchar(225) NOT NULL COMMENT '图标'")
     private String icon;
 
-    @ApiModelProperty(value = "一级分类id代理商id",example = "一级分类id代理商id")
-    @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '代理商id'")
-    private Long agentId;
-
     @ApiModelProperty(value = "排序",example = "排序")
     @Column(columnDefinition = "int(64) NOT NULL DEFAULT '0' COMMENT '排序'")
     private Integer sort;
@@ -60,6 +56,5 @@ public class SysClassTwo extends BasePo {
     @ApiModelProperty("密码")
     @Column(columnDefinition = "VARCHAR(64) DEFAULT NULL COMMENT '密码'")
     private String password;
-
 
 }

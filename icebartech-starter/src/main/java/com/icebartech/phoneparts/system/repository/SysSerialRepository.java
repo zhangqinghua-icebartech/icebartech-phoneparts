@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 /**
  * @author pc
  * @Date 2019-06-18T11:09:42.138
@@ -22,4 +25,7 @@ public interface SysSerialRepository extends BaseRepository<SysSerial> {
 
     @Query(nativeQuery = true, value ="select count(*) from sys_serial s where s.agent_id = ?1 and s.second_agent_id = 0 and s.status = 0 and s.is_deleted = 'n'")
     Integer unUseNum(Long userId);
+
+    @Query(nativeQuery = true, value = "select end_time from sys_serial where id = ?1")
+    Timestamp findEndTime(Long id);
 }

@@ -3,11 +3,8 @@ package com.icebartech.phoneparts.user.service;
 import com.icebartech.core.modules.BaseService;
 import com.icebartech.phoneparts.user.dto.UserDto;
 import com.icebartech.phoneparts.user.param.UserInsertParam;
-import com.icebartech.phoneparts.user.param.UserOutParam;
 import com.icebartech.phoneparts.user.po.LoginDto;
 import com.icebartech.phoneparts.user.po.User;
-
-import java.util.List;
 
 /**
  * @author pc
@@ -85,9 +82,6 @@ public interface UserService extends BaseService
      */
     UserDto codeLogin(String serialNum);
 
-    /**
-     * 导出数据
-     * 序列号、邮箱、一级分类、总切割数、剩余切割术、注册时间
-     */
-    List<UserDto> export(UserOutParam param);
+
+    void allocation(Long serialId,Long secondAgentId,Long secondSerialClassId);
 }

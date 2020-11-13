@@ -46,7 +46,7 @@ public class UserController extends BaseController {
     private UserService service;
     private MailService mailService;
 
-    private LoginComponent loginComponent;
+    private  LoginComponent loginComponent;
     private final AliyunOSSComponent aliyunOSSComponent;
 
     @Autowired
@@ -61,24 +61,32 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation("数据导出")
+    @RequireLogin(UserEnum.no_login)
     @GetMapping("/excelOut")
-    public void excelOut(HttpServletResponse response, UserOutParam param) throws Exception {
+    public void excelOut(HttpServletResponse response,
+                         UserOutParam param) throws Exception {
         ExcelUtils.getInstance().
-                exportObjects2Excel(service.export(param), UserDto.class, true, null, true, response, "用户列表");
+                exportObjects2Excel(service.findList(param), UserDto.class, true, null, true,response,"用户列表");
     }
 
     @ApiOperation("获取分页")
-    @RequireLogin({UserEnum.admin, UserEnum.agent})
+    @RequireLogin({UserEnum.admin,UserEnum.agent})
     @PostMapping("/find_page")
     public RespPage<UserDto> findPage(@Valid @RequestBody UserPageParam param) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
 
         //一级代理商
-        if (localUser.getLevel() == 1) {
+        if(localUser.getLevel() == 1){
+            param.setSecondAgentId(param.getAgentId());
             param.setAgentId(localUser.getUserId());
+            param.setSecondSerialClassId(param.getSerialClassId());
+            param.setSerialClassId(null);
             //二级代理商
-        } else if (localUser.getLevel() == 2) {
+        }else if(localUser.getLevel() == 2){
+            param.setAgentId(null);
             param.setSecondAgentId(localUser.getUserId());
+            param.setSecondSerialClassId(param.getSerialClassId());
+            param.setSerialClassId(null);
         }
 
         return getPageRtnDate(service.findPage(param));
@@ -92,11 +100,11 @@ public class UserController extends BaseController {
 //    }
 
     @ApiOperation("获取详情")
-    @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})
+    @RequireLogin({UserEnum.admin,UserEnum.app,UserEnum.agent})
     @PostMapping("/find_detail")
-    public RespDate<UserDto> findDetail(@RequestParam(value = "id", required = false) Long id) {
+    public RespDate<UserDto> findDetail(@RequestParam(value = "id",required = false) Long id) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
-        if (localUser.getUserEnum() == UserEnum.app) {
+        if(localUser.getUserEnum() == UserEnum.app){
             id = localUser.getUserId();
         }
         return getRtnDate(service.findDetail(id));
@@ -119,19 +127,20 @@ public class UserController extends BaseController {
     }
 
 
+
     @ApiOperation("序列号登录")
     @PostMapping("/code_login")
     @RequireLogin(UserEnum.no_login)
     public RespDate<LoginDto> codeLogin(@RequestParam String serialNum,
                                         @RequestParam String code) {
-        if (!code.equals("dev123")) {
+        if(!code.equals("dev123")){
             throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "验证码错误");
         }
 
         UserDto userDTO = service.codeLogin(serialNum);
-        LoginDto loginDto = BeanMapper.map(userDTO, LoginDto.class);
+        LoginDto loginDto= BeanMapper.map(userDTO, LoginDto.class);
         loginDto.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(loginDto.getHeadPortrait()));
-        loginDto.setSessionId(loginComponent.getLocalUser(userDTO.getId(), -1));
+        loginDto.setSessionId(loginComponent.getLocalUser(userDTO.getId(),-1));
         return getRtnDate(loginDto);
     }
 
@@ -140,10 +149,10 @@ public class UserController extends BaseController {
     @RequireLogin(UserEnum.no_login)
     public RespDate<LoginDto> login(@RequestParam("email") String email,
                                     @RequestParam("pwd") String pwd) {
-        UserDto userDTO = service.login(email, pwd);
-        LoginDto loginDto = BeanMapper.map(userDTO, LoginDto.class);
+        UserDto userDTO = service.login(email,pwd);
+        LoginDto loginDto= BeanMapper.map(userDTO, LoginDto.class);
         loginDto.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(loginDto.getHeadPortrait()));
-        loginDto.setSessionId(loginComponent.getLocalUser(userDTO.getId(), 7 * 24 * 60 * 60));
+        loginDto.setSessionId(loginComponent.getLocalUser(userDTO.getId(),7*24*60*60));
         return getRtnDate(loginDto);
     }
 
@@ -154,17 +163,18 @@ public class UserController extends BaseController {
                                        @RequestParam("code") String code,
                                        @RequestParam("pwd") String pwd) {
         //验证码校验
-        if (!mailService.verify(email, CodeTypeEnum.REGISTER.name(), code))
+        if(!mailService.verify(email, CodeTypeEnum.REGISTER.name(),code))
             throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "验证码校验失败");
-        return getRtnDate(service.changePwd(email, pwd));
+        return getRtnDate(service.changePwd(email,pwd));
     }
+
 
 
     @ApiOperation("修改头像")
     @RequireLogin(UserEnum.app)
     @PostMapping("/changeHead")
     public RespDate<Boolean> changeHead(@RequestParam("headPortrait") String headPortrait) {
-        return getRtnDate(service.changeHead(UserThreadLocal.getUserId(), headPortrait));
+        return getRtnDate(service.changeHead(UserThreadLocal.getUserId(),headPortrait));
     }
 
 
@@ -179,7 +189,7 @@ public class UserController extends BaseController {
 
 
     @ApiOperation("修改")
-    @RequireLogin({UserEnum.admin, UserEnum.app})
+    @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/update")
     public RespDate<Boolean> update(@Valid @RequestBody UserUpdateParam param) {
         return getRtnDate(service.update(param));
@@ -194,11 +204,11 @@ public class UserController extends BaseController {
 
 
     @ApiOperation("添加次数")
-    @RequireLogin({UserEnum.admin, UserEnum.agent})
+    @RequireLogin({UserEnum.admin,UserEnum.agent})
     @PostMapping("/addUseCount")
     public RespDate<Boolean> addUseCount(@ApiParam("用户id") @RequestParam("userId") Long userId,
                                          @ApiParam("添加次数") @RequestParam("num") Integer num) {
-        return getRtnDate(service.addUseCount(userId, num));
+        return getRtnDate(service.addUseCount(userId,num));
     }
 
 
@@ -213,15 +223,15 @@ public class UserController extends BaseController {
     @RequireLogin(UserEnum.app)
     @PostMapping("/reduceUseCount")
     public RespDate<Boolean> reduceUseCount(@RequestParam Long productId) {
-        return getRtnDate(service.reduceUseCount(productId, UserThreadLocal.getUserId()));
+        return getRtnDate(service.reduceUseCount(productId,UserThreadLocal.getUserId()));
     }
 
     @ApiOperation("后台减少次数")
-    @RequireLogin({UserEnum.admin, UserEnum.agent})
+    @RequireLogin({UserEnum.admin,UserEnum.agent})
     @PostMapping("/backReduceUseCount")
     public RespDate<Boolean> reduceUseCount(@ApiParam("用户id") @RequestParam("userId") Long userId,
                                             @ApiParam("减少次数") @RequestParam("num") Integer num) {
-        return getRtnDate(service.reduceUseCount(userId, num));
+        return getRtnDate(service.reduceUseCount(userId,num));
     }
 
 

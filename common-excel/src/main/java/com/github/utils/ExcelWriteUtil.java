@@ -26,10 +26,8 @@ public class ExcelWriteUtil {
         /**这段代码可以实现Excel以文件流的形式到浏览器中,浏览器左下角出现Excel的下载提示，
          *new String(fileName.getBytes(),"iso-8859-1")可是实现文件名为中文，不是乱码  */
         response.reset();
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("content-Type", "application/vnd.ms-excel");
-        response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(name , "UTF-8") + ".xls");
+        response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(name , "UTF-8") + ".xlsx");
+        response.setContentType("application/x-download");
         workbook.write(outstream);
         outstream.close();
 

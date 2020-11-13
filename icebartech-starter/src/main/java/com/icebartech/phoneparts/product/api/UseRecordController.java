@@ -4,7 +4,6 @@ import com.icebartech.core.annotations.RequireLogin;
 import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.local.UserThreadLocal;
-import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
 import com.icebartech.phoneparts.product.param.UseRecordPageParam;
@@ -41,13 +40,6 @@ public class UseRecordController extends BaseController {
     @PostMapping("/find_user_record")
     public RespPage<Map> findUserRecord(@Valid @RequestBody UseRecordUserPageParam param) {
         return getPageRtnDate(service.findUserRecord(param));
-    }
-
-    @ApiOperation("获取用户切割总数")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
-    @PostMapping("/find_user_record_count")
-    public RespDate<Map<String,Object>> findUserRecordCount(@Valid @RequestBody UseRecordUserPageParam param) {
-        return getRtnDate(service.findUserRecordCount(param));
     }
 
     @ApiOperation("获取产品切割统计")

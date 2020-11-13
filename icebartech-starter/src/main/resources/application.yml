@@ -12,5 +12,4 @@ spring:
   redis:
     timeout: 30m
 
-# 默认使用开发环境
-spring.profiles.active: dev
+  profiles.active: prod

@@ -4,7 +4,6 @@ import com.icebartech.base.message.enums.CodeTypeEnum;
 import com.icebartech.base.message.service.MailService;
 import com.icebartech.core.components.MailComponent;
 import com.icebartech.core.components.RedisComponent;
-import com.icebartech.core.components.SmsComponent;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +20,19 @@ import java.util.Random;
 @Slf4j
 public class MailServiceImpl implements MailService {
 
-    @Autowired
     private RedisComponent redisComponent;
-    @Autowired
     private MailComponent mailComponent;
-    @Autowired
-    private SmsComponent smsComponent;
 
+    @Autowired
+    public MailServiceImpl(RedisComponent redisComponent,
+                           MailComponent mailComponent) {
+        this.redisComponent = redisComponent;
+        this.mailComponent = mailComponent;
+    }
 
 
     @Override
-    public Boolean sendCode(String mail, String type,boolean t) {
+    public Boolean sendCode(String mail, String type) {
         //生成验证码
         Random ne=new Random();
         String code=ne.nextInt(9999-1000+1)+1000+"";
@@ -39,11 +40,7 @@ public class MailServiceImpl implements MailService {
         //验证发送次数
         varCount(mail,type);
         redisComponent.set(type,mail,code,CodeTypeEnum.TIME.getKey());
-        if(t){
-            mailComponent.send(mail,code);
-        }else {
-            smsComponent.send(mail,code);
-        }
+        mailComponent.send(mail,code);
         return true;
     }
 

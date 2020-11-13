@@ -6,6 +6,7 @@ import com.icebartech.phoneparts.system.param.SysSerialCreateParam;
 import com.icebartech.phoneparts.system.param.SysSerialInsertParam;
 import com.icebartech.phoneparts.system.po.SysSerial;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,4 +65,9 @@ public interface SysSerialService extends BaseService
     Integer unUseNum(Long userId);
 
     Boolean allocation(Long secondAgentId, List<Long> serialIds,Long serialClassId);
+
+    /**
+     * 获取此用户的过期时间
+     */
+    Date findEndTime(Long id);
 }

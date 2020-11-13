@@ -14,7 +14,7 @@ public interface MailService {
      * @param type 类型
      * @return
      */
-    Boolean sendCode(String mail, String type,boolean t);
+    Boolean sendCode(String mail, String type);
 
 
     /**

@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
@@ -110,42 +111,48 @@ public abstract class AbstractService<D extends P, P extends BasePo, R extends B
 
     @Override
     public D findOne(Long id) {
-        return mapDTO(findPo(id, false));
+        return mapDTO(Collections.singletonList(findPo(id, false))).get(0);
     }
 
     @Override
     public D findOne(Object... fieldBeans) {
-        return mapDTO(findPo(arrays2FieldBeans(fieldBeans), false));
+        return mapDTO(Collections.singletonList(findPo(arrays2FieldBeans(fieldBeans), false))).get(0);
     }
 
     @Override
     public D findOne(FieldBean... fieldBeans) {
-        return mapDTO(findPo(new ArrayList<>(Arrays.asList(fieldBeans)), false));
+        return mapDTO(Collections.singletonList(findPo(new ArrayList<>(Arrays.asList(fieldBeans)), false))).get(0);
     }
 
     @Override
     public D findOne(List<FieldBean> fieldBeans) {
-        return mapDTO(findPo(fieldBeans, false));
+        return mapDTO(Collections.singletonList(findPo(fieldBeans, false))).get(0);
     }
 
     @Override
     public D findOneOrNull(Long id) {
-        return mapDTO(findPo(id, true));
+        return mapDTO(Collections.singletonList(findPo(id, true))).get(0);
     }
 
     @Override
     public D findOneOrNull(Object... fieldBeans) {
-        return mapDTO(findPo(arrays2FieldBeans(fieldBeans), true));
+        P p = findPo(arrays2FieldBeans(fieldBeans), true);
+        if (p == null) return null;
+        return mapDTO(Collections.singletonList(p)).get(0);
     }
 
     @Override
     public D findOneOrNull(FieldBean... fieldBeans) {
-        return mapDTO(findPo(new ArrayList<>(Arrays.asList(fieldBeans)), true));
+        P p = findPo(new ArrayList<>(Arrays.asList(fieldBeans)), true);
+        if (p == null) return null;
+        return mapDTO(Collections.singletonList(p)).get(0);
     }
 
     @Override
     public D findOneOrNull(List<FieldBean> fieldBeans) {
-        return mapDTO(findPo(fieldBeans, true));
+        P p = findPo(fieldBeans, true);
+        if (p == null) return null;
+        return mapDTO(Collections.singletonList(p)).get(0);
     }
 
     @Override
@@ -392,17 +399,29 @@ public abstract class AbstractService<D extends P, P extends BasePo, R extends B
         return true;
     }
 
-    private D mapDTO(P p) {
-        if (p == null) return null;
-        D d = BeanMapper.map(p, dclass);
-        warpDTO(d);
-        warpDTO(d.getId(), d);
-        Assert.notNull(d, String.format("%s warp to dto error, %s is null", beanname, beanname));
-        return d;
-    }
+//    private D mapDTO1(P p) {
+//        if (p == null) return null;
+//        D d = BeanMapper.map(p, dclass);
+//        warpDTO(d);
+//        warpDTO(d.getId(), d);
+//
+//        warpDTO(d.getId(), d);
+//
+//        Assert.notNull(d, String.format("%s warp to dto error, %s is null", beanname, beanname));
+//        return d;
+//    }
 
     private List<D> mapDTO(List<P> list) {
-        return list.stream().map(this::mapDTO).collect(Collectors.toList());
+        List<D> ds = BeanMapper.mapList(list, dclass);
+        List<Long> ids = ds.stream().map(BasePo::getId).collect(Collectors.toList());
+        // 自定义业务处理
+        if (ds.size() > 0) {
+            ds.forEach(d -> {
+                warpDTO(d.getId(), d);
+            });
+            warpDTO(ids, ds);
+        }
+        return ds;
     }
 
     private void mapDetail(D d) {
@@ -418,10 +437,14 @@ public abstract class AbstractService<D extends P, P extends BasePo, R extends B
     protected void warpDTO(Long id, D d) {
     }
 
+    protected void warpDTO(List<Long> ids, List<D> ds) {
+
+    }
+
     protected void warpPage(D d) {
     }
 
-    protected void warpPage(Long id,D d) {
+    protected void warpPage(Long id, D d) {
     }
 
     protected void warpDetail(D d) {

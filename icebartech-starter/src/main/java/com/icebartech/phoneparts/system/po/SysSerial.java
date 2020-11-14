@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
@@ -56,18 +57,22 @@ public class SysSerial extends BasePo {
     @Column(columnDefinition = "varchar(225) NOT NULL DEFAULT '' COMMENT '随机字符串'")
     private String randomStr;
 
+    @Index(name = "agentId")
     @ApiModelProperty(value = "一级分类id代理商id",example = "一级分类id代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '代理商id'")
     private Long agentId;
 
+    @Index(name = "secondAgentId")
     @ApiModelProperty(value = "二级分类id次级代理商id",example = "二级分类id次级代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '次级代理商id'")
     private Long secondAgentId;
 
+    @Index(name = "serialClassId")
     @ApiModelProperty(value = "总后台的二级分类id",example = "总后台的二级分类id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '二级分类id'")
     private Long serialClassId;
 
+    @Index(name = "secondSerialClassId")
     @ApiModelProperty(value = "一级代理商的二级分类id",example = "一级代理商的二级分类id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '二级分类id'")
     private Long secondSerialClassId;

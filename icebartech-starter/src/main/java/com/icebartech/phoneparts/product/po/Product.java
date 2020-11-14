@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
@@ -25,10 +26,12 @@ import javax.persistence.Entity;
 @Table(appliesTo = "product", comment = "单品表")
 public class Product extends BasePo {
 
+    @Index(name = "classOneId")
     @ApiModelProperty(value = "一级分类id",example = "一级分类id")
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '一级分类id'")
     private Long classOneId;
 
+    @Index(name = "classTwoId")
     @ApiModelProperty(value = "二级分类id",example = "二级分类id")
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '二级分类id'")
     private Long classTwoId;

@@ -12,7 +12,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.*;
-
 /**
  * 简单封装Dozer, 实现深度转换Bean<->Bean的Mapper.实现:
  * <p>
@@ -72,7 +71,7 @@ public class BeanMapper {
             return destinationList;
         }
         for (Object source : sourceList) {
-            T destinationObject = getDozer().map(source, destinationClass);
+            T destinationObject = map(source, destinationClass);
             destinationList.add(destinationObject);
         }
         return destinationList;
@@ -144,18 +143,24 @@ public class BeanMapper {
             obj = beanClass.newInstance();
             Field[] fields = getClassFields(obj.getClass());
             for (Field field : fields) {
+                if (map.get(field.getName()) == null) {
+                    continue;
+                }
+                Object value = map.get(field.getName());
+                // 针对Biginterget处理
+                if (value.getClass() != field.getClass()) {
+                    if (value.getClass() == BigInteger.class) {
+                        value = ((BigInteger) value).longValue();
+                    }
+                }
+
                 int mod = field.getModifiers();
                 if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
                     continue;
                 }
                 field.setAccessible(true);
 
-                if (map.get(field.getName()) instanceof BigInteger) {
-                    field.set(obj, ((BigInteger)map.get(field.getName())).longValue());
-                }else {
-                    field.set(obj, map.get(field.getName()));
-                }
-
+                field.set(obj, value);
                 setCoutn++;
             }
         } catch (InstantiationException | IllegalAccessException e) {
@@ -200,5 +205,8 @@ public class BeanMapper {
             objFields = ArrayUtils.addAll(objFields, getClassFields(curClass.getSuperclass()));
         }
         return objFields;
+    }
+
+    public static void main(String[] args) {
     }
 }

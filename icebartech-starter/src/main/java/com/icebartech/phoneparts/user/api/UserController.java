@@ -150,9 +150,15 @@ public class UserController extends BaseController {
     public RespDate<LoginDto> login(@RequestParam("email") String email,
                                     @RequestParam("pwd") String pwd) {
         UserDto userDTO = service.login(email,pwd);
+
+        long time = System.currentTimeMillis();
+
         LoginDto loginDto= BeanMapper.map(userDTO, LoginDto.class);
         loginDto.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(loginDto.getHeadPortrait()));
         loginDto.setSessionId(loginComponent.getLocalUser(userDTO.getId(),7*24*60*60));
+
+        System.err.println(System.currentTimeMillis() - time);
+
         return getRtnDate(loginDto);
     }
 

@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
@@ -28,6 +29,7 @@ import javax.persistence.Enumerated;
 @Table(appliesTo = "sys_use_config", comment = "常用设置")
 public class SysUseConfig extends BasePo {
 
+    @Index(name = "userId")
     @ApiModelProperty(value = "用户id",example = "用户id")
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '用户id'")
     private Long userId;

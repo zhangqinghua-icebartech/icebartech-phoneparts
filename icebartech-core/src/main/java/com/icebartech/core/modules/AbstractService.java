@@ -131,11 +131,13 @@ public abstract class AbstractService<D extends P, P extends BasePo, R extends B
 
     @Override
     public D findOneOrNull(Long id) {
-        return mapDTO(Collections.singletonList(findPo(id, true))).get(0);
+        P p = findPo(id, true);
+        if (p == null) return null;
+        return mapDTO(Collections.singletonList(p)).get(0);
     }
 
     @Override
-    public D findOneOrNull(Object... fieldBeans) {
+    public D   findOneOrNull(Object... fieldBeans) {
         P p = findPo(arrays2FieldBeans(fieldBeans), true);
         if (p == null) return null;
         return mapDTO(Collections.singletonList(p)).get(0);

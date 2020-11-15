@@ -96,7 +96,7 @@ public class UserServiceImpl extends AbstractService
         user.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(user.getHeadPortrait()));
         user.setPastTime(DateTimeUtility.delayTime(user.getGmtCreated(), 1));
 
-        LocalUser localUser = UserThreadLocal.getUserInfo();
+        LocalUser localUser = UserThreadLocal.getUserInfo(true);
 
         if (user.getAgentId() != 0) {
             Agent agent = agentService.findOne(user.getAgentId());

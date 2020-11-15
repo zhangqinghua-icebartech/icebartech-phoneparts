@@ -33,32 +33,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-/**
- * @author Created by liuao on 2019/6/18.
- * @desc
- */
-
 @Api(tags = "用户模块接口")
 @RestController
 @RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class UserController extends BaseController {
 
-    private UserService service;
-    private MailService mailService;
-
-    private LoginComponent loginComponent;
-    private final AliyunOSSComponent aliyunOSSComponent;
-
     @Autowired
-    public UserController(UserService service,
-                          LoginComponent loginComponent,
-                          AliyunOSSComponent aliyunOSSComponent,
-                          MailService mailService) {
-        this.service = service;
-        this.loginComponent = loginComponent;
-        this.aliyunOSSComponent = aliyunOSSComponent;
-        this.mailService = mailService;
-    }
+    private UserService service;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private LoginComponent loginComponent;
+    @Autowired
+    private AliyunOSSComponent aliyunOSSComponent;
 
     @ApiOperation("数据导出")
     @GetMapping("/excelOut")
@@ -217,12 +204,10 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation("后台减少次数")
-    @RequireLogin({UserEnum.admin, UserEnum.agent})
+    // @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/backReduceUseCount")
     public RespDate<Boolean> reduceUseCount(@ApiParam("用户id") @RequestParam("userId") Long userId,
                                             @ApiParam("减少次数") @RequestParam("num") Integer num) {
         return getRtnDate(service.reduceUseCount(userId, num));
     }
-
-
 }

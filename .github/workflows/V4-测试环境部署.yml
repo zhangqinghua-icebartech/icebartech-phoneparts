@@ -5,27 +5,28 @@ on:
 
 jobs:
   job_1:
+    runs-on: centos-latest
     name: 拉取代码
     steps:
       -name: checkout @v4
        # 使用集成的脚本拉取 v4 代码。
        uses: actions/checkout@v4
 
-  job_2:
-    name:
-    needs: job_1
-    steps:
-      -name: test  run
-      run: job_1 'job_2 success!!!'
-  job_3:
-    name: 构建项目
-    needs: job_2
-    steps:
-      -name: test  run
-      run: echo 'job_2 success!!!'
-  job_4:
-    name: 部署项目
-    needs: job_3
-    steps:
-      -name: test  run
-      run: echo 'job_2 success!!!'
+#  job_2:
+#    name:
+#    needs: job_1
+#    steps:
+#      -name: test  run
+#      run: job_1 'job_2 success!!!'
+#  job_3:
+#    name: 构建项目
+#    needs: job_2
+#    steps:
+#      -name: test  run
+#      run: echo 'job_2 success!!!'
+#  job_4:
+#    name: 部署项目
+#    needs: job_3
+#    steps:
+#      -name: test  run
+#      run: echo 'job_2 success!!!'

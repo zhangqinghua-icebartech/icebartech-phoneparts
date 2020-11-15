@@ -51,5 +51,5 @@ jobs:
         scp: |
           icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
         last_ssh: |
-          pwd
-          ls
+          cd /data/deploy/Java/icebartech-phoneparts
+          nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test &

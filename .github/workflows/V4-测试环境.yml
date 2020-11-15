@@ -41,4 +41,4 @@ jobs:
         first_ssh: |
           ls
         scp: |
-          icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
+          icebartech-starter/target/icebartech-phoneparts.jar => /data

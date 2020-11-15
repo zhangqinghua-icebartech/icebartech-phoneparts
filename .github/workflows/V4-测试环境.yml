@@ -61,3 +61,4 @@ jobs:
         last_ssh: |
           cd /data/deploy/Java/icebartech-phoneparts
           nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test &
+          exit;

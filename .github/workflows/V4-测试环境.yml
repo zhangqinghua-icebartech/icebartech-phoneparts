@@ -21,7 +21,7 @@ jobs:
         java-version: 1.8
     # Maven 打包
     - name: Build with Maven
-      run: mvn package && ls
+      run: mvn package && ls icebartech-start/target
 
 #  job_3:
 #    name: 构建项目

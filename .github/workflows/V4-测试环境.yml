@@ -22,12 +22,12 @@ jobs:
     # Maven 打包
     - name: Build with Maven
       run: mvn package && ls icebartech-starter/target
-  job_2:
-    name: 部署项目
-    runs-on: ubuntu-latest
-    needs: job_1
-    steps:
-    - name: ssh scp ssh pipelines
+#  job_2:
+#    name: 部署项目
+#    runs-on: ubuntu-latest
+#    needs: job_1
+#    steps:
+    - name: Public Project
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       env:
         WELCOME: "ssh scp ssh pipelines"
@@ -41,7 +41,7 @@ jobs:
         first_ssh: |
           ls
         scp: |
-          ./* => /data/test
+          icebartech-starter/target/* => /data/test
         last_ssh: |
           ls /data
           ls /data/test

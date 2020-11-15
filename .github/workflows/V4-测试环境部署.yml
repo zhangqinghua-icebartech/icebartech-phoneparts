@@ -5,8 +5,8 @@ on:
 
 jobs:
   job_1:
-    runs-on: centos-latest
     name: 拉取代码
+    runs-on: ubuntu-latest
     steps:
     - name: checkout @v4
       # 使用集成的脚本拉取 v4 代码。

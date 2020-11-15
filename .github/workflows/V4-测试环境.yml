@@ -12,7 +12,10 @@ jobs:
     steps:
     - name: checkout @v4
       # 使用集成的脚本拉取 v4 代码。
-      uses: actions/checkout@v4
+      uses: actions/checkout@v1
+      # 当有子模块时切换分支
+      with:
+        submodules: true
 
 #  job_2:
 #    name:

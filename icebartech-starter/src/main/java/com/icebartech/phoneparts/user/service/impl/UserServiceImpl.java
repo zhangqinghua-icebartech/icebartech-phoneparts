@@ -98,7 +98,7 @@ public class UserServiceImpl extends AbstractService
 
         LocalUser localUser = UserThreadLocal.getUserInfo(true);
 
-        if (user.getAgentId() != 0) {
+        if (localUser != null && user.getAgentId() != 0) {
             Agent agent = agentService.findOne(user.getAgentId());
             user.setOrigin(agent.getCompanyName());
             //总后台
@@ -308,7 +308,7 @@ public class UserServiceImpl extends AbstractService
         }
 
         //返还次数
-        LocalUser localUser = UserThreadLocal.getUserInfo();
+        LocalUser localUser = UserThreadLocal.getUserInfo(true);
         if (localUser != null && (localUser.getLevel() == 1 || localUser.getLevel() == 2)) {
             Agent agent2 = agentService.findOne(localUser.getUserId());
             reNum += agent2.getMayUseCount();

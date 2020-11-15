@@ -46,9 +46,10 @@ jobs:
         port: 5822
         connect_timeout: 10s
         first_ssh: |
-          ls
+          mkdir -p /data/deploy/Java/icebartech-phoneparts
+          cd /data/deploy/Java/icebartech-phoneparts
         scp: |
-          icebartech-starter/target/icebartech-phoneparts.jar => /data/test
+          icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
         last_ssh: |
-          ls /data
-          ls /data/test
+          pwd
+          ls

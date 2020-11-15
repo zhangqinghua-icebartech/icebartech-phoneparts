@@ -19,11 +19,11 @@ jobs:
         submodules: true
 
   job_2:
-    name:
+    name: 环境配置
     needs: job_1
     steps:
     - name: test  run
-      run: job_1 'job_2 success!!!'
+      run: echo 'job_2 success!!!'
 #  job_3:
 #    name: 构建项目
 #    needs: job_2

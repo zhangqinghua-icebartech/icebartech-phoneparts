@@ -203,7 +203,7 @@ public class UserController extends BaseController {
         return getRtnDate(service.reduceUseCount(productId, UserThreadLocal.getUserId()));
     }
 
-    @ApiOperation("后台减少次数")
+    @ApiOperation("后台减少次数1")
     // @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/backReduceUseCount")
     public RespDate<Boolean> reduceUseCount(@ApiParam("用户id") @RequestParam("userId") Long userId,

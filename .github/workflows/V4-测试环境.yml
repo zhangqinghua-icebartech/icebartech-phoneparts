@@ -20,6 +20,7 @@ jobs:
 
   job_2:
     name: 环境配置
+    runs-on: ubuntu-latest
     needs: job_1
     steps:
     - name: test  run

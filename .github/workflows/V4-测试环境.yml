@@ -12,13 +12,20 @@ jobs:
     name: 部署项目
 #    needs: job_1
     steps:
-    - name: Deploy to Server
-      uses: easingthemes/ssh-deploy@v2.1.5
+    - name: ssh scp ssh pipelines
+      uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       env:
-        SSH_PRIVATE_KEY: 123
-        REMOTE_HOST: 120.78.135.29
-        REMOTE_USER: root
-        REMOTE_PORT: 5822
+        WELCOME: "ssh scp ssh pipelines"
+        LASTSSH: "Doing something after copying"
+      with:
+        host: 120.78.135.29
+        user: root
+        pass: Bg3605608A
+        port: 5822
+        connect_timeout: 10s
+        first_ssh: |
+          ll
+
 #  job_1:
 #    name: 构建项目
 #    runs-on: ubuntu-latest

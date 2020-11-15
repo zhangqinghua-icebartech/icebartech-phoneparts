@@ -8,9 +8,9 @@ jobs:
     runs-on: centos-latest
     name: 拉取代码
     steps:
-      -name: checkout @v4
-       # 使用集成的脚本拉取 v4 代码。
-       uses: actions/checkout@v4
+    - name: checkout @v4
+      # 使用集成的脚本拉取 v4 代码。
+      uses: actions/checkout@v4
 
 #  job_2:
 #    name:

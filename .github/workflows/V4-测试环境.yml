@@ -1,10 +1,11 @@
 name: V4-测试环境
 
-# v4 分支提交就触发活动。
+# 触发条件：v4 分支提交就触发活动。
 on:
   push:
     branches: v4
 
+# 步骤流程：
 jobs:
   job_1:
     name: 拉取代码
@@ -17,12 +18,12 @@ jobs:
       with:
         submodules: true
 
-#  job_2:
-#    name:
-#    needs: job_1
-#    steps:
-#      -name: test  run
-#      run: job_1 'job_2 success!!!'
+  job_2:
+    name:
+    needs: job_1
+    steps:
+    - name: test  run
+      run: job_1 'job_2 success!!!'
 #  job_3:
 #    name: 构建项目
 #    needs: job_2

@@ -309,7 +309,7 @@ public class UserServiceImpl extends AbstractService
 
         //返还次数
         LocalUser localUser = UserThreadLocal.getUserInfo();
-        if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
+        if (localUser != null && (localUser.getLevel() == 1 || localUser.getLevel() == 2)) {
             Agent agent2 = agentService.findOne(localUser.getUserId());
             reNum += agent2.getMayUseCount();
             agentService.update(eq(AgentDTO::getId, agent2.getId()),

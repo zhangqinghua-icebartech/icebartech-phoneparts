@@ -8,6 +8,7 @@ on:
 # 步骤流程：
 jobs:
   job_2:
+    runs-on: ubuntu-latest
     name: 部署项目
 #    needs: job_1
     steps:

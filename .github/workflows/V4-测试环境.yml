@@ -41,7 +41,7 @@ jobs:
         first_ssh: |
           ls
         scp: |
-          icebartech-starter/target/* => /data/test
+          ./* => /data/test
         last_ssh: |
           ls /data
           ls /data/test

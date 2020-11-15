@@ -1,0 +1,20 @@
+# v4 分支提交就触发活动。
+on.push.branches: v4
+
+jobs:
+  job_1:
+    name: 拉取代码
+    # 使用集成的脚本拉取 v4 代码。
+    uses: actions/checkout@v4
+  job_2:
+    name:
+    needs: job_1
+    run: echo 'job_2 success!!!'
+  job_3:
+    name: 构建项目
+    needs: job_2
+    run: echo 'job_3 success!!!'
+  job_4:
+    name: 部署项目
+    needs: job_3
+    run: echo 'job_4 success!!!'

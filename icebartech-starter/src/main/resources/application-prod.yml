@@ -1,4 +1,4 @@
-# 手机膜-测试环境
+# 手机膜-生产环境
 site:
   app-name: icebartech-enweis-test
   explanation: 手机膜开发环境
@@ -9,13 +9,13 @@ spring:
   # 测试环境Redis
   redis:
     database: 0
-    host: 120.78.135.29
-    port: 6379
-    password:
+    host: localhost
+    port: 6579
+    password: bH360891
 
   # 测试环境MySQL
   datasource:
-    url: jdbc:mysql://120.78.135.29:3306/phoneparts_test?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://localhost:3306/phoneparts_master?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
     username: phoneparts
     password: phoneparts
   jpa:
@@ -47,5 +47,5 @@ aliyun:
   access-id: LTAIt3vIGEQOyxs7
   access-key: vmlIoysSPo9D14NXheYLpSHdqBAf96
   oss-endpoint: http://oss-cn-hongkong.aliyuncs.com/
-  oss-url: https://cut0820.oss-accelerate.aliyuncs.com
+  oss-url: https://cut0820.oss-cn-hongkong.aliyuncs.com
   bucket-name: cut0820

@@ -1,5 +1,7 @@
 # v4 分支提交就触发活动。
-on.push.branches: v4
+on:
+  push:
+    branches: v4
 
 jobs:
   job_1:

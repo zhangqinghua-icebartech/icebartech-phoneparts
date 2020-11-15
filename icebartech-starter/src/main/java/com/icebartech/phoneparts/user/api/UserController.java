@@ -239,6 +239,4 @@ public class UserController extends BaseController {
                                             @ApiParam("减少次数") @RequestParam("num") Integer num) {
         return getRtnDate(service.reduceUseCount(userId,num));
     }
-
-
 }

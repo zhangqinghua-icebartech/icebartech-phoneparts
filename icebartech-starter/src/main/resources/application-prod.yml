@@ -15,6 +15,7 @@ spring:
     url: jdbc:mysql://47.244.193.248:3306/phoneparts_dev?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
     username: root
     password: Bg360123456
+
   jpa:
     #open-in-view: true # 多对多关系相互引用中，需要让session在相应过程中保持开启状态，懒加载用到
     show-sql: true # 不显示sql

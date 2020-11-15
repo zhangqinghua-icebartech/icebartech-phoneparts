@@ -7,7 +7,8 @@ on:
 
 # 步骤流程：
 jobs:
-  job_2:
+  job_0:
+  job_1:
     name: 构建项目
     runs-on: ubuntu-latest
     steps:
@@ -21,17 +22,11 @@ jobs:
         java-version: 1.8
     # Maven 打包
     - name: Build with Maven
-      run: mvn package && ls icebartech-start/target
+      run: mvn package && ls icebartech-starter/target
 
-#  job_3:
-#    name: 构建项目
-#    needs: job_2
-#    steps:
-#      -name: test  run
-#      run: echo 'job_2 success!!!'
-#  job_4:
-#    name: 部署项目
-#    needs: job_3
-#    steps:
-#      -name: test  run
-#      run: echo 'job_2 success!!!'
+  job_2:
+    name: 部署项目
+    needs: job_1
+    steps:
+    - name: 下载
+      run: echo 'job_2 success!!!'

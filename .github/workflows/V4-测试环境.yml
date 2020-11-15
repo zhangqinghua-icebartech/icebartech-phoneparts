@@ -7,6 +7,17 @@ on:
 
 # 步骤流程：
 jobs:
+  job_2:
+    name: 部署项目
+#    needs: job_1
+    steps:
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@v2.1.5
+      env:
+        SSH_PRIVATE_KEY: 123
+        REMOTE_HOST: 120.78.135.29
+        REMOTE_USER: root
+        REMOTE_PORT: 5822
 #  job_1:
 #    name: 构建项目
 #    runs-on: ubuntu-latest
@@ -22,16 +33,3 @@ jobs:
 #    # Maven 打包
 #    - name: Build with Maven
 #      run: mvn package && ls icebartech-starter/target
-
-  job_2:
-    name: 部署项目
-#    needs: job_1
-    steps:
-    - name: Deploy to Server
-      uses: easingthemes/ssh-deploy@v2.1.5
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-        SOURCE: "/"
-        REMOTE_HOST: 120.78.135.29
-        REMOTE_USER: root
-        REMOTE_PORT: 5822

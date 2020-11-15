@@ -30,7 +30,7 @@ jobs:
         java-version: 1.8
     # Maven 打包
     - name: Build with Maven
-      run: java -version
+      run: java -version && ls && ls ../
 
 #  job_3:
 #    name: 构建项目

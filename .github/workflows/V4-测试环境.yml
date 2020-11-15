@@ -57,8 +57,7 @@ jobs:
         scp: |
           icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
 
-        # 指定目录 + 运行服务
+        # 指定目录 + 运行服务 + 退出（没法自动退出）
         last_ssh: |
           cd /data/deploy/Java/icebartech-phoneparts
-          nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test &
-          exit;
+          nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &

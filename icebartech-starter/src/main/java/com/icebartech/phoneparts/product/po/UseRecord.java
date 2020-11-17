@@ -26,6 +26,7 @@ import javax.persistence.Entity;
 @Table(appliesTo = "use_record", comment = "使用记录表")
 public class UseRecord extends BasePo {
 
+    @Index(name = "userId")
     @ApiModelProperty(value = "用户id",example = "用户id")
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '用户id'")
     private Long userId;

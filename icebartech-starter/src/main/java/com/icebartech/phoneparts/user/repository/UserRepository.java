@@ -27,6 +27,6 @@ public interface UserRepository extends BaseRepository<User> {
     @Query(nativeQuery = true, value = "select u.id, u.head_portrait as headPortrait, u.password as password, u.enable as enable, s.end_time as endTime from user u left join sys_serial s on s.id = u.serial_id where u.is_deleted = 'n' and u.email = ?1")
     Map<String, Object> loginByEmail(String email);
 
-    @Query(nativeQuery = true, value = "select u.id, u.head_portrait as headPortrait, u.password as password, u.enable as enable, s.end_time as endTime from user u left join sys_serial s on s.id = u.serial_id where u.is_deleted = 'n' and u.serialNum = ?1")
+    @Query(nativeQuery = true, value = "select u.id, u.head_portrait as headPortrait, u.password as password, u.enable as enable, s.end_time as endTime from user u left join sys_serial s on s.id = u.serial_id where u.is_deleted = 'n' and u.serial_num = ?1")
     Map<String, Object> loginBySerialNum(String serialNum);
 }

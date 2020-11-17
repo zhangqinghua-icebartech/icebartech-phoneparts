@@ -34,7 +34,6 @@ public class UseRecordController extends BaseController {
     @Autowired
     UseRecordService service;
 
-
     @ApiOperation("获取用户切割统计")
     @RequireLogin({UserEnum.admin,UserEnum.agent})
     @PostMapping("/find_user_record")

@@ -1,6 +1,7 @@
 package com.icebartech.phoneparts.user.service.impl;
 
 import com.icebartech.core.components.AliyunOSSComponent;
+import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
@@ -10,6 +11,7 @@ import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.utils.DateTimeUtility;
 import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.po.Agent;
+import com.icebartech.phoneparts.agent.repository.AgentRepository;
 import com.icebartech.phoneparts.agent.service.AddUseRecordService;
 import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.enums.RedeemStateEnum;
@@ -28,10 +30,10 @@ import com.icebartech.phoneparts.user.param.UserInsertParam;
 import com.icebartech.phoneparts.user.po.User;
 import com.icebartech.phoneparts.user.repository.UserRepository;
 import com.icebartech.phoneparts.user.service.UserService;
+import com.icebartech.phoneparts.util.CacheComponent;
 import com.icebartech.phoneparts.util.ProduceCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,73 +43,81 @@ import java.util.Map;
 
 import static com.icebartech.core.vo.QueryParam.eq;
 
-/**
- * @author pc
- * @Date 2019-06-18T11:03:37.885
- * @Description 用户表
- */
-
-@Service
 @Slf4j
-public class UserServiceImpl extends AbstractService
-                                             <UserDto, User, UserRepository> implements UserService {
+@Service
+public class UserServiceImpl extends AbstractService<UserDto, User, UserRepository> implements UserService {
 
-    private SysSerialService sysSerialService;
-    private AliyunOSSComponent aliyunOSSComponent;
-    private PasswordEncoder passwordEncoder;
-    private RedeemCodeService redeemCodeService;
-    private AddUseRecordService addUseRecordService;
-    private AgentService agentService;
-    private SysUseConfigService sysUseConfigService;
-    private UseRecordService useRecordService;
-    private RedeemService redeemService;
-    private UserRepository repository;
 
     @Autowired
-    @Lazy
-    public UserServiceImpl(SysSerialService sysSerialService,
-                           PasswordEncoder passwordEncoder,
-                           AliyunOSSComponent aliyunOSSComponent,
-                           RedeemCodeService redeemCodeService,
-                           AddUseRecordService addUseRecordService,
-                           AgentService agentService, SysUseConfigService sysUseConfigService,
-                           UseRecordService useRecordService,
-                           RedeemService redeemService, UserRepository repository) {
-        this.sysSerialService = sysSerialService;
-        this.passwordEncoder = passwordEncoder;
-        this.aliyunOSSComponent = aliyunOSSComponent;
-        this.redeemCodeService = redeemCodeService;
-        this.addUseRecordService = addUseRecordService;
-        this.agentService = agentService;
-        this.sysUseConfigService = sysUseConfigService;
-        this.useRecordService = useRecordService;
-        this.redeemService = redeemService;
-        this.repository = repository;
+    private AgentService agentService;
+    @Autowired
+    private RedeemService redeemService;
+    @Autowired
+    private CacheComponent cacheComponent;
+    @Autowired
+    private AgentRepository agentRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UseRecordService useRecordService;
+    @Autowired
+    private SysSerialService sysSerialService;
+    @Autowired
+    private RedeemCodeService redeemCodeService;
+    @Autowired
+    private AliyunOSSComponent aliyunOSSComponent;
+
+    @Autowired
+    private SysUseConfigService sysUseConfigService;
+    @Autowired
+    private AddUseRecordService addUseRecordService;
+
+    @Override
+    protected void postUpdate(Long id) {
+        // 更新缓存
+        if (UserThreadLocal.getUserInfo() != null &&
+            UserThreadLocal.getUserInfo().getUserEnum() == UserEnum.app) {
+            cacheComponent.setUserDetail(id, super.findDetail(id));
+        }
+    }
+
+    @Override
+    protected void postDelete(Long id) {
+        // 删除缓存
+        cacheComponent.delUserDetail(id);
+    }
+
+    @Override
+    public UserDto findDetail(Long id) {
+        return super.findDetail(id);
     }
 
     @Override
     protected void warpDTO(Long id, UserDto user) {
+        // 1. 查询头像
         user.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(user.getHeadPortrait()));
+
+        // 2. 计算过期时间
         user.setPastTime(DateTimeUtility.delayTime(user.getGmtCreated(), 1));
 
-        LocalUser localUser = UserThreadLocal.getUserInfo();
 
+        // 3. 设置来源
         if (user.getAgentId() != 0) {
-            Agent agent = agentService.findOne(user.getAgentId());
-            user.setOrigin(agent.getCompanyName());
-            //总后台
-            if (localUser.getLevel() == 0) {
-                user.setAgentClassName(agent.getClassName());
-                //一级代理商
-            } else if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
-                Agent agent2 = agentService.findOneOrNull(user.getSecondAgentId());
-                if (agent2 != null) {
-                    user.setAgentClassName(agent2.getClassName());
-                }
-            }
+            user.setOrigin(agentRepository.companyName(user.getAgentId()));
+        }
+
+        // 4. 设置一级分类名称
+        if (user.getAgentId() != 0 &&
+            UserThreadLocal.getUserInfo() != null &&
+            UserThreadLocal.getUserInfo().getLevel() == 0) {
+            user.setAgentClassName(agentRepository.className(user.getAgentId()));
+        }
+        if (user.getAgentId() != 0 &&
+            UserThreadLocal.getUserInfo() != null &&
+            (UserThreadLocal.getUserInfo().getLevel() == 1 || UserThreadLocal.getUserInfo().getLevel() == 2)) {
+            user.setAgentClassName(agentRepository.className(user.getSecondAgentId()));
         }
     }
-
 
     @Override
     @Transactional
@@ -156,21 +166,6 @@ public class UserServiceImpl extends AbstractService
         return id;
     }
 
-
-    @Override
-    @Transactional
-    public UserDto codeLogin(String serialNum) {
-        UserDto user = super.findOneOrNull(eq(User::getSerialNum, serialNum));
-        if (user != null) return checkLogin(user);
-        String email = ProduceCodeUtil.findRedeemCode() + "@sys.com";
-        String pwd = "dev123456";
-        UserInsertParam userInsertParam = new UserInsertParam(serialNum, email, pwd);
-        Long id = this.register(userInsertParam);
-        UserDto user2 = super.findOne(id);
-        user2.setEnable(0);
-        return checkLogin(user2);
-    }
-
     @Override
     public void allocation(Long serialId, Long secondAgentId, Long secondSerialClassId) {
         repository.allocation(serialId, secondAgentId, secondSerialClassId);
@@ -204,34 +199,43 @@ public class UserServiceImpl extends AbstractService
     @Override
     public UserDto login(String email, String pwd) {
         log.info("登录，邮箱{}密码{}", email, pwd);
-        long time = System.currentTimeMillis();
-        UserDto userDTO = findByEmailAndPwd(email);
-        System.err.println(System.currentTimeMillis() - time);
 
-        time = System.currentTimeMillis();
-        if (userDTO == null || !passwordEncoder.matches(pwd, userDTO.getPassword())) {
+        // 1. 查询用户数据
+        UserDto user = findByEmailAndPwd(email);
+
+        // 2. 密码校验
+        if (user == null || !passwordEncoder.matches(pwd, user.getPassword())) {
             throw new ServiceException(CommonResultCodeEnum.LOGIN_ERROR, "账号或密码错误");
         }
-        System.err.println(System.currentTimeMillis() - time);
 
-        time = System.currentTimeMillis();
-        UserDto dto =  checkLogin(userDTO);
-        System.err.println(System.currentTimeMillis() - time);
-
-        return dto;
-    }
-
-    public UserDto checkLogin(UserDto user) {
-
+        // 3. 状态校验
         if (user.getEnable() == UserEnableEnum.NO_ENABLE.getKey())
             throw new ServiceException(CommonResultCodeEnum.USER_ERROR, "用户已失效");
 
-        // SysSerialDto sysSerial = sysSerialService.findOne(user.getSerialId());
-
-        // user.setPastTime(sysSerialService.findEndTime(user.getSerialId()));
         return user;
     }
 
+    @Override
+    @Transactional
+    public UserDto codeLogin(String serialNum) {
+        // 1. 用户已存在，校验
+        if (super.exists(eq(User::getSerialNum, serialNum))) {
+            UserDto user = BeanMapper.map(repository.loginBySerialNum(serialNum), UserDto.class);
+
+            if (user.getEnable() == UserEnableEnum.NO_ENABLE.getKey())
+                throw new ServiceException(CommonResultCodeEnum.USER_ERROR, "用户已失效");
+
+            return user;
+        }
+
+        // 2. 用户不存在，新增
+        String email = ProduceCodeUtil.findRedeemCode() + "@sys.com";
+        String pwd = "dev123456";
+        UserInsertParam userInsertParam = new UserInsertParam(serialNum, email, pwd);
+        Long id = this.register(userInsertParam);
+
+        return BeanMapper.map(repository.loginById(id), UserDto.class);
+    }
 
     @Override
     public Boolean changeHead(Long id, String headPortrait) {
@@ -296,12 +300,17 @@ public class UserServiceImpl extends AbstractService
     @Override
     @Transactional
     public Boolean reduceUseCount(Long productId, Long userId) {
-        User user = super.findOne(userId);
+        // 1. 数据校验
+        UserDto user = BeanMapper.map(super.repository.mayUseCount(userId), UserDto.class);
         if (user.getMayUseCount() <= 0)
             throw new ServiceException(CommonResultCodeEnum.NUM_ERROR, "使用次数不足，请充值！");
-        //添加记录
+
+        // 2. 添加记录
         useRecordService.add(userId, productId, user.getAgentId(), user.getSecondAgentId());
-        return super.update(eq(User::getId, user.getId()), eq(User::getMayUseCount, user.getMayUseCount() - 1));
+
+        // 3. 修改数据
+        return super.update(eq(User::getId, user.getId()),
+                            eq(User::getMayUseCount, user.getMayUseCount() - 1));
     }
 
     @Override
@@ -336,7 +345,6 @@ public class UserServiceImpl extends AbstractService
      * 获取用户
      *
      * @param email 邮箱
-     * @return
      */
     public UserDto findByEmailAndPwd(String email) {
         Map<String, Object> param = super.repository.loginByEmail(email);

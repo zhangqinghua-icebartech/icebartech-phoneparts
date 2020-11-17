@@ -6,10 +6,6 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-/**
- * @author Created by liuao on 2019/5/17.
- * @desc
- */
 @Data
 @ToString(callSuper = true)
 public class LoginDto {
@@ -25,5 +21,4 @@ public class LoginDto {
 
     @ApiModelProperty(value = "过期时间",example = "过期时间")
     private LocalDateTime pastTime;
-
 }

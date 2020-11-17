@@ -60,7 +60,7 @@ public class CompanyInfoController extends BaseController {
     @RequireLogin({UserEnum.app})
     @PostMapping("/find_in_company")
     public RespDate<CompanyInfoDto> findInCompany() {
-        return getRtnDate(service.findInCompany());
+        return getRtnDate(service.findInCompany(UserThreadLocal.getUserId()));
     }
 
 //    @ApiOperation("获取列表")

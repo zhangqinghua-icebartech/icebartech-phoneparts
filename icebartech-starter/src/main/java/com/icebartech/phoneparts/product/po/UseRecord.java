@@ -26,22 +26,18 @@ import javax.persistence.Entity;
 @Table(appliesTo = "use_record", comment = "使用记录表")
 public class UseRecord extends BasePo {
 
-    @Index(name = "userId")
     @ApiModelProperty(value = "用户id",example = "用户id")
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '用户id'")
     private Long userId;
 
-    @Index(name = "productId")
     @ApiModelProperty(value = "产品id",example = "产品id")
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '产品id'")
     private Long productId;
 
-    @Index(name = "agentId")
     @ApiModelProperty(value = "代理商id",example = "代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '代理商id'")
     private Long agentId;
 
-    @Index(name = "secondAgentId")
     @ApiModelProperty(value = "次级代理商id",example = "次级代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '次级代理商id'")
     private Long secondAgentId;

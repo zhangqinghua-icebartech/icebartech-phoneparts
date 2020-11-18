@@ -15,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.icebartech.core.vo.QueryParam.eq;
 
 /**
@@ -25,7 +29,7 @@ import static com.icebartech.core.vo.QueryParam.eq;
 
 @Service
 public class AgentServiceImpl extends AbstractService
-<AgentDTO, Agent, AgentRepository> implements AgentService {
+                                              <AgentDTO, Agent, AgentRepository> implements AgentService {
 
     @Autowired
     EncryptUtil encryptUtil;
@@ -33,9 +37,9 @@ public class AgentServiceImpl extends AbstractService
     @Override
     protected void preInsert(AgentDTO d) {
         // 加密密码
-        if(d.getPassword() != null) d.setPassword(encryptUtil.Base64Encode(d.getPassword()));
-        Agent agent = super.findOneOrNull(eq(AgentDTO::getLoginName,d.getLoginName()));
-        if(agent !=null){
+        if (d.getPassword() != null) d.setPassword(encryptUtil.Base64Encode(d.getPassword()));
+        Agent agent = super.findOneOrNull(eq(AgentDTO::getLoginName, d.getLoginName()));
+        if (agent != null) {
             throw new ServiceException(CommonResultCodeEnum.NUM_ERROR, "此账号已使用，请换一个");
         }
 
@@ -44,43 +48,43 @@ public class AgentServiceImpl extends AbstractService
     @Override
     protected void preUpdate(AgentDTO d) {
         // 加密密码
-        if(d.getPassword() != null) d.setPassword(encryptUtil.Base64Encode(d.getPassword()));
+        if (d.getPassword() != null) d.setPassword(encryptUtil.Base64Encode(d.getPassword()));
     }
 
     @Override
     protected void warpDTO(AgentDTO d) {
         // 解密密码
-        if(d.getPassword()!=null) d.setPassword(encryptUtil.Base64Decode(d.getPassword()));
+        if (d.getPassword() != null) d.setPassword(encryptUtil.Base64Decode(d.getPassword()));
     }
 
 
     @Override
     public Boolean changeEnable(Long id, ChooseType enable) {
-        return super.update(eq(AgentDTO::getId,id),eq(AgentDTO::getEnable,enable));
+        return super.update(eq(AgentDTO::getId, id), eq(AgentDTO::getEnable, enable));
     }
 
     @Override
     public Boolean changeSort(Long id, Integer sort) {
         AgentDTO agent = super.findOne(id);
-        return super.update(eq(AgentDTO::getId,agent.getId()),eq(AgentDTO::getSort,sort));
+        return super.update(eq(AgentDTO::getId, agent.getId()), eq(AgentDTO::getSort, sort));
     }
 
     @Override
     @Transactional
     public Boolean addUseCount(Long agentId, Integer num) {
         AgentDTO agent = super.findOne(agentId);
-        Integer  useCount = agent.getUseCount() + num;
+        Integer useCount = agent.getUseCount() + num;
         Integer mayUseCount = agent.getMayUseCount() + num;
-        if(agent.getParentId() != 0){
-            AgentDTO agent2 = super.findOne(eq(AgentDTO::getId,agent.getParentId()));
-            if(num>agent2.getMayUseCount()){
+        if (agent.getParentId() != 0) {
+            AgentDTO agent2 = super.findOne(eq(AgentDTO::getId, agent.getParentId()));
+            if (num > agent2.getMayUseCount()) {
                 throw new ServiceException(CommonResultCodeEnum.NUM_ERROR, "使用次数不足");
             }
-            reduceUseCount(agent2.getId(),num);
+            reduceUseCount(agent2.getId(), num);
         }
-        return super.update(eq(AgentDTO::getId,agent.getId()),
-                eq(AgentDTO::getUseCount,useCount),
-                eq(AgentDTO::getMayUseCount,mayUseCount));
+        return super.update(eq(AgentDTO::getId, agent.getId()),
+                            eq(AgentDTO::getUseCount, useCount),
+                            eq(AgentDTO::getMayUseCount, mayUseCount));
     }
 
 
@@ -89,25 +93,28 @@ public class AgentServiceImpl extends AbstractService
         Agent agent = super.findOne(agentId);
         int mayUseCount;
         int reNum = num;
-        if(num > agent.getMayUseCount()){
+        if (num > agent.getMayUseCount()) {
             reNum = agent.getMayUseCount();
             mayUseCount = 0;
-        }
-        else{
+        } else {
             mayUseCount = agent.getMayUseCount() - num;
         }
 
         //返还次数
         LocalUser localUser = UserThreadLocal.getUserInfo();
-        if(localUser.getLevel() == 1 || localUser.getLevel() == 2){
+        if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
             Agent agent2 = super.findOne(localUser.getUserId());
             reNum += agent2.getMayUseCount();
-            super.update(eq(AgentDTO::getId,agent2.getId()),
-                    eq(AgentDTO::getMayUseCount,reNum));
+            super.update(eq(AgentDTO::getId, agent2.getId()),
+                         eq(AgentDTO::getMayUseCount, reNum));
         }
 
-        return super.update(eq(AgentDTO::getId,agent.getId()),eq(AgentDTO::getMayUseCount,mayUseCount));
+        return super.update(eq(AgentDTO::getId, agent.getId()), eq(AgentDTO::getMayUseCount, mayUseCount));
     }
 
-
+    @Override
+    public List<Long> findAgentIdsByParentId(Long parentId) {
+        List<BigInteger> agentIds = repository.findAgentIdsByParentId(parentId);
+        return agentIds.stream().map(BigInteger::longValue).collect(Collectors.toList());
+    }
 }

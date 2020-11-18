@@ -5,6 +5,8 @@ import com.icebartech.core.modules.BaseService;
 import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.po.Agent;
 
+import java.util.List;
+
 /**
  * @author pc
  * @Date 2019-09-05T16:06:46.810
@@ -12,7 +14,7 @@ import com.icebartech.phoneparts.agent.po.Agent;
  */
 
 public interface AgentService extends BaseService
-<AgentDTO, Agent> {
+                                              <AgentDTO, Agent> {
 
     Boolean changeEnable(Long id, ChooseType enable);
 
@@ -20,18 +22,21 @@ public interface AgentService extends BaseService
 
     /**
      * 添加次数
+     *
      * @param agentId 代理商id
-     * @param num 数量
-     * @return
+     * @param num     数量
      */
     Boolean addUseCount(Long agentId, Integer num);
 
     /**
-     *
      * @param agentId 代理商id
-     * @param num 减少次数
-     * @return
+     * @param num     减少次数
      */
-    Boolean reduceUseCount(Long agentId,Integer num);
+    Boolean reduceUseCount(Long agentId, Integer num);
+
+    /**
+     * 获取此parentId下面的代理商Id
+     */
+    List<Long> findAgentIdsByParentId(Long parentId);
 
 }

@@ -28,5 +28,4 @@ public class CompanyUpdateParam {
 
     @ApiModelProperty(value = "代理商名称",hidden = true)
     private String agentName;
-
 }

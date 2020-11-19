@@ -52,7 +52,6 @@ public class CompanyInfoServiceImpl extends AbstractService<CompanyInfoDto, Comp
     @Override
     protected void preInsert(CompanyInfoDto companyInfo) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
-
         // 一级代理商
         if (localUser.getLevel() == 1) {
             companyInfo.setSecondAgentId(companyInfo.getAgentId());
@@ -64,7 +63,7 @@ public class CompanyInfoServiceImpl extends AbstractService<CompanyInfoDto, Comp
 
         }
         // 二级代理商
-        else {
+        if (localUser.getLevel() == 2) {
             companyInfo.setSecondAgentId(companyInfo.getAgentId());
             AgentDTO agent = agentService.findOne(companyInfo.getAgentId());
             companyInfo.setAgentId(agent.getParentId());
@@ -89,7 +88,7 @@ public class CompanyInfoServiceImpl extends AbstractService<CompanyInfoDto, Comp
 
         }
         // 二级代理商
-        else {
+        if (localUser.getLevel() == 2) {
             companyInfo.setSecondAgentId(companyInfo.getAgentId());
             AgentDTO agent = agentService.findOne(companyInfo.getAgentId());
             companyInfo.setAgentId(agent.getParentId());
@@ -99,7 +98,6 @@ public class CompanyInfoServiceImpl extends AbstractService<CompanyInfoDto, Comp
             }
         }
     }
-
 
     @Override
     public Boolean changeEnable(Long id, ChooseType enable) {

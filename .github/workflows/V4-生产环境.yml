@@ -1,9 +1,7 @@
 name: V4-生产环境
 
 # 触发条件：v4 分支提交就触发活动。
-on:
-  push:
-    branches: v4
+on: workflow_dispatch
 
 # 步骤流程：
 jobs:
@@ -59,7 +57,5 @@ jobs:
 
         # 指定目录 + 运行服务 + 退出（没法自动退出）
         last_ssh: |
-          nohup java -jar
-          /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar
-          --spring.profile.active=prod > logs/start.log 2>&1 &
+          nohup java -jar /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar --spring.profile.active=prod > logs/start.log 2>&1 &
 

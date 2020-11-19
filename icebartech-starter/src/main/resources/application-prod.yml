@@ -47,5 +47,5 @@ aliyun:
   access-id: LTAIt3vIGEQOyxs7
   access-key: vmlIoysSPo9D14NXheYLpSHdqBAf96
   oss-endpoint: http://oss-cn-hongkong.aliyuncs.com/
-  oss-url: https://cut0820.oss-cn-hongkong.aliyuncs.com
+  oss-url: https://cut0820.oss-accelerate.aliyuncs.com
   bucket-name: cut0820

@@ -1,7 +1,17 @@
 name: V4-生产环境
 
 # 触发条件：v4 分支提交就触发活动。
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'Mona the Octocat'
+      home:
+        description: 'location'
+        required: false
+        default: 'The Octoverse'
 
 # 步骤流程：
 jobs:

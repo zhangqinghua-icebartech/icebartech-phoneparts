@@ -1,5 +1,6 @@
 package com.icebartech.phoneparts.system.dto;
 
+import com.github.annotation.ExcelField;
 import com.icebartech.phoneparts.system.po.SysSerial;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,20 +17,19 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "序列号表")
-public class SysSerialDto extends SysSerial{
+public class SysSerialDto extends SysSerial {
 
     private static final long serialVersionUID = 1L;
 
-
-    @ApiModelProperty(value = "一级分类名称",example = "一级分类名称")
+    @ExcelField(title = "一级分类名称", order = 2)
+    @ApiModelProperty(value = "一级分类名称", example = "一级分类名称")
     private String agentClassName;
 
-    @ApiModelProperty(value = "二级分类名称",example = "二级分类名称")
+    @ExcelField(title = "二级分类名称", order = 2)
+    @ApiModelProperty(value = "二级分类名称", example = "二级分类名称")
     private String serialClassName;
 
-    @ApiModelProperty(value = "批次",example = "批次")
+    @ExcelField(title = "批次", order = 2)
+    @ApiModelProperty(value = "批次", example = "批次")
     private String batchName;
-
-
 }

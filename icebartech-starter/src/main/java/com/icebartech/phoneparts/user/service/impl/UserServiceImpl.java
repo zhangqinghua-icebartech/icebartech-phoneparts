@@ -1,7 +1,6 @@
 package com.icebartech.phoneparts.user.service.impl;
 
 import com.icebartech.core.components.AliyunOSSComponent;
-import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
@@ -75,10 +74,7 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
     @Override
     protected void postUpdate(Long id) {
         // 更新缓存
-        if (UserThreadLocal.getUserInfo() != null &&
-            UserThreadLocal.getUserInfo().getUserEnum() == UserEnum.app) {
-            cacheComponent.setUserDetail(id, super.findDetail(id));
-        }
+        cacheComponent.setUserDetail(id, super.findDetail(id));
     }
 
     @Override

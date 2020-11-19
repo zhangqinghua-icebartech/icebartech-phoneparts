@@ -73,12 +73,8 @@ public class AgentController extends BaseController {
         if (localUser.getLevel() == 1) {
             return getRtnDate(service.findList(eq(AgentDTO::getParentId, localUser.getUserId())));
         }
-        // 3. 二级代理商，查询三级代理商
+        // 3. 二级代理商，查询自己
         if (localUser.getLevel() == 2) {
-            return getRtnDate(service.findList(eq(AgentDTO::getParentId, localUser.getUserId())));
-        }
-        // 4. 三级代理商，查询自己
-        if (localUser.getLevel() == 3) {
             return getRtnDate(service.findList(eq(AgentDTO::getId, localUser.getUserId())));
         }
 

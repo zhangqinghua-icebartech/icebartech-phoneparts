@@ -5,6 +5,7 @@ import com.icebartech.core.enums.ChooseType;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.modules.AbstractService;
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.company.dto.CompanyInfoDto;
 import com.icebartech.phoneparts.company.po.CompanyInfo;
@@ -52,7 +53,7 @@ public class CompanyInfoServiceImpl extends AbstractService<CompanyInfoDto, Comp
     protected void preInsert(CompanyInfoDto companyInfo) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
 
-        //一级代理商
+        // 一级代理商
         if (localUser.getLevel() == 1) {
             companyInfo.setSecondAgentId(companyInfo.getAgentId());
             companyInfo.setAgentId(localUser.getUserId());
@@ -61,21 +62,23 @@ public class CompanyInfoServiceImpl extends AbstractService<CompanyInfoDto, Comp
                      .forEach(companyInfoDto -> super.update(eq(CompanyInfo::getId, companyInfoDto.getId()), eq(CompanyInfoDto::getEnable, ChooseType.n)));
             }
 
-        } else {
-
+        }
+        // 二级代理商
+        else {
+            companyInfo.setSecondAgentId(companyInfo.getAgentId());
+            AgentDTO agent = agentService.findOne(companyInfo.getAgentId());
+            companyInfo.setAgentId(agent.getParentId());
             if (companyInfo.getEnable() == ChooseType.y) {
                 super.findList(eq(CompanyInfoDto::getAgentId, companyInfo.getAgentId()), eq(CompanyInfoDto::getEnable, ChooseType.y))
                      .forEach(companyInfoDto -> super.update(eq(CompanyInfo::getId, companyInfoDto.getId()), eq(CompanyInfoDto::getEnable, ChooseType.n)));
             }
-
         }
     }
 
     @Override
     protected void preUpdate(CompanyInfoDto companyInfo) {
-        // companyInfo.setAgentName(agentService.findOne(companyInfo.getAgentId()).getCompanyName());
         LocalUser localUser = UserThreadLocal.getUserInfo();
-        //一级代理商
+        // 一级代理商
         if (localUser.getLevel() == 1) {
             companyInfo.setSecondAgentId(companyInfo.getAgentId());
             companyInfo.setAgentId(localUser.getUserId());
@@ -84,13 +87,16 @@ public class CompanyInfoServiceImpl extends AbstractService<CompanyInfoDto, Comp
                      .forEach(companyInfoDto -> super.update(eq(CompanyInfo::getId, companyInfoDto.getId()), eq(CompanyInfoDto::getEnable, ChooseType.n)));
             }
 
-        } else {
-
+        }
+        // 二级代理商
+        else {
+            companyInfo.setSecondAgentId(companyInfo.getAgentId());
+            AgentDTO agent = agentService.findOne(companyInfo.getAgentId());
+            companyInfo.setAgentId(agent.getParentId());
             if (companyInfo.getEnable() == ChooseType.y) {
                 super.findList(eq(CompanyInfoDto::getAgentId, companyInfo.getAgentId()), eq(CompanyInfoDto::getEnable, ChooseType.y))
                      .forEach(companyInfoDto -> super.update(eq(CompanyInfo::getId, companyInfoDto.getId()), eq(CompanyInfoDto::getEnable, ChooseType.n)));
             }
-
         }
     }
 

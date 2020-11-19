@@ -63,12 +63,12 @@ public class CompanyInfoController extends BaseController {
             param.setAgentId(localUser.getUserId());
             param.setSecondAgentIdNotEq(0L);
         }
-        // 3. 二级代理商，查询三级代理商
+        // 3. 二级代理商，查询自己
         if (localUser.getLevel() == 2) {
             param.setSecondAgentId(localUser.getUserId());
         }
 
-        // 3. 设置次级代理商数据
+        // 4. 设置次级代理商数据
         Page<CompanyInfoDto> page = companyInfoService.findPage(param);
         List<Long> agentIds = page.getContent().stream().filter(a->a.getSecondAgentId() != 0L).map(CompanyInfoDto::getSecondAgentId).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(agentIds)) {
@@ -76,7 +76,7 @@ public class CompanyInfoController extends BaseController {
             page.getContent().forEach(d -> d.setAgent(agents.stream().filter(a -> a.getId().equals(d.getSecondAgentId())).findAny().orElse(null)));
         }
 
-        // 4. 设置一级代理商数据
+        // 5. 设置一级代理商数据
         agentIds = page.getContent().stream().filter(d -> d.getAgent() == null).map(CompanyInfoDto::getAgentId).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(agentIds)) {
             List<AgentDTO> agents = agentService.findList(in(Agent::getId, agentIds));

@@ -61,3 +61,4 @@ jobs:
         last_ssh: |
           nohup java -jar /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar --spring.profiles.active=prod > logs/start.log 2>&1 &
 
+

@@ -46,6 +46,7 @@ jobs:
         port: 5822
         connect_timeout: 10s
 
+
         # 创建目录 + 停止之前的应用
         first_ssh: |
           mkdir -p /data/deploy/Java/icebartech-phoneparts

@@ -1,9 +1,21 @@
 name: V4-生产环境
 
 # 触发条件：v4 分支提交就触发活动。
+#on:
+#  push:
+#    branch: v4
+
 on:
-  push:
-    branch: v4
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Person to greet'
+        # Default value if no value is explicitly provided
+        default: 'World'
+        # Input has to be provided for the workflow to run
+        required: true
 
 # 步骤流程：
 jobs:
@@ -54,7 +66,7 @@ jobs:
 
           pkill -f icebartech-phoneparts
 
-        # # 推送文件到服务器
+        # 推送文件到服务器
         scp: |
           icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
 

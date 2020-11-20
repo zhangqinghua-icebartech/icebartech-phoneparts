@@ -69,5 +69,5 @@ jobs:
 #
 #        # 指定目录 + 运行服务 + 退出（没法自动退出）
 #        last_ssh: |
-#          nohup java -jar /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &
+#          nohup java -jar /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar --spring.profiles.active=test > logs/start.log 2>&1 &
 #

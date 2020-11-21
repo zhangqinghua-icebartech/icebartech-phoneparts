@@ -1,6 +1,5 @@
 package com.icebartech.phoneparts.user.service.impl;
 
-import com.github.utils.DateUtils;
 import com.icebartech.core.components.AliyunOSSComponent;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
@@ -11,6 +10,7 @@ import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.utils.DateTimeUtility;
 import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.po.Agent;
+import com.icebartech.phoneparts.agent.repository.AgentRepository;
 import com.icebartech.phoneparts.agent.service.AddUseRecordService;
 import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.enums.RedeemStateEnum;
@@ -30,17 +30,15 @@ import com.icebartech.phoneparts.user.param.UserOutParam;
 import com.icebartech.phoneparts.user.po.User;
 import com.icebartech.phoneparts.user.repository.UserRepository;
 import com.icebartech.phoneparts.user.service.UserService;
+import com.icebartech.phoneparts.util.CacheComponent;
 import com.icebartech.phoneparts.util.ProduceCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,36 +58,30 @@ import static com.icebartech.core.vo.QueryParam.eq;
 public class UserServiceImpl extends AbstractService
                                              <UserDto, User, UserRepository> implements UserService {
 
-    private SysSerialService sysSerialService;
-    private AliyunOSSComponent aliyunOSSComponent;
-    private PasswordEncoder passwordEncoder;
-    private RedeemCodeService redeemCodeService;
-    private AddUseRecordService addUseRecordService;
+    @Autowired
     private AgentService agentService;
-    private SysUseConfigService sysUseConfigService;
+    @Autowired
+    private RedeemService redeemService;
+    @Autowired
+    private CacheComponent cacheComponent;
+    @Autowired
+    private AgentRepository agentRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
     private UseRecordService useRecordService;
-    private final RedeemService redeemService;
+    @Autowired
+    private SysSerialService sysSerialService;
+    @Autowired
+    private RedeemCodeService redeemCodeService;
+    @Autowired
+    private AliyunOSSComponent aliyunOSSComponent;
 
     @Autowired
-    @Lazy
-    public UserServiceImpl(SysSerialService sysSerialService,
-                           PasswordEncoder passwordEncoder,
-                           AliyunOSSComponent aliyunOSSComponent,
-                           RedeemCodeService redeemCodeService,
-                           AddUseRecordService addUseRecordService,
-                           AgentService agentService, SysUseConfigService sysUseConfigService,
-                           UseRecordService useRecordService,
-                           RedeemService redeemService) {
-        this.sysSerialService = sysSerialService;
-        this.passwordEncoder = passwordEncoder;
-        this.aliyunOSSComponent = aliyunOSSComponent;
-        this.redeemCodeService = redeemCodeService;
-        this.addUseRecordService = addUseRecordService;
-        this.agentService = agentService;
-        this.sysUseConfigService = sysUseConfigService;
-        this.useRecordService = useRecordService;
-        this.redeemService = redeemService;
-    }
+    private SysUseConfigService sysUseConfigService;
+    @Autowired
+    private AddUseRecordService addUseRecordService;
+
 
     @Override
     protected void warpDTO(Long id, UserDto user) {
@@ -165,19 +157,29 @@ public class UserServiceImpl extends AbstractService
     @Override
     @Transactional
     public UserDto codeLogin(String serialNum) {
-        UserDto user = super.findOneOrNull(eq(User::getSerialNum, serialNum));
-        if (user != null) return checkLogin(user);
+        // 1. 用户已存在，校验
+        if (super.exists(eq(User::getSerialNum, serialNum))) {
+            UserDto user = BeanMapper.map(repository.loginBySerialNum(serialNum), UserDto.class);
+
+            if (user.getEnable() == UserEnableEnum.NO_ENABLE.getKey())
+                throw new ServiceException(CommonResultCodeEnum.USER_ERROR, "用户已失效");
+
+            return user;
+        }
+
+        // 2. 用户不存在，新增
         String email = ProduceCodeUtil.findRedeemCode() + "@sys.com";
         String pwd = "dev123456";
         UserInsertParam userInsertParam = new UserInsertParam(serialNum, email, pwd);
         Long id = this.register(userInsertParam);
-        UserDto user2 = super.findOne(id);
-        return checkLogin(user2);
+
+        return BeanMapper.map(repository.loginById(id), UserDto.class);
     }
 
 
     /**
      * 失效使用该序列值用户
+     *
      * @param serialNum 序列值
      * @return Boolean
      */
@@ -191,6 +193,7 @@ public class UserServiceImpl extends AbstractService
 
     /**
      * 获取有效序列值用户
+     *
      * @param serialNum 序列值
      * @return 用户
      */
@@ -200,22 +203,20 @@ public class UserServiceImpl extends AbstractService
 
     @Override
     public UserDto login(String email, String pwd) {
-        log.info("登录，邮箱{}", email);
-        UserDto userDTO = findByEmailAndPwd(email);
-        if (userDTO == null || !passwordEncoder.matches(pwd, userDTO.getPassword())) {
+        log.info("登录，邮箱{}密码{}", email, pwd);
+
+        // 1. 查询用户数据
+        UserDto user = findByEmailAndPwd(email);
+
+        // 2. 密码校验
+        if (user == null || !passwordEncoder.matches(pwd, user.getPassword())) {
             throw new ServiceException(CommonResultCodeEnum.LOGIN_ERROR, "账号或密码错误");
         }
-        return checkLogin(userDTO);
-    }
 
-    private UserDto checkLogin(UserDto user) {
-
+        // 3. 状态校验
         if (user.getEnable() == UserEnableEnum.NO_ENABLE.getKey())
             throw new ServiceException(CommonResultCodeEnum.USER_ERROR, "用户已失效");
 
-        SysSerialDto sysSerial = sysSerialService.findOne(user.getSerialId());
-
-        user.setPastTime(sysSerial.getEndTime());
         return user;
     }
 
@@ -284,12 +285,17 @@ public class UserServiceImpl extends AbstractService
     @Override
     @Transactional
     public Boolean reduceUseCount(Long productId, Long userId) {
-        User user = super.findOne(userId);
+        // 1. 数据校验
+        UserDto user = BeanMapper.map(repository.mayUseCount(userId), UserDto.class);
         if (user.getMayUseCount() <= 0)
             throw new ServiceException(CommonResultCodeEnum.NUM_ERROR, "使用次数不足，请充值！");
-        //添加记录
+
+        // 2. 添加记录
         useRecordService.add(userId, productId, user.getAgentId(), user.getSecondAgentId());
-        return super.update(eq(User::getId, user.getId()), eq(User::getMayUseCount, user.getMayUseCount() - 1));
+
+        // 3. 修改数据
+        return super.update(eq(User::getId, user.getId()),
+                            eq(User::getMayUseCount, user.getMayUseCount() - 1));
     }
 
     @Override
@@ -322,15 +328,20 @@ public class UserServiceImpl extends AbstractService
 
     /**
      * 获取用户
+     *
      * @param email 邮箱
      * @return
      */
     private UserDto findByEmailAndPwd(String email) {
-        return super.findOneOrNull(eq(UserDto::getEmail, email));
+        Map<String, Object> param = super.repository.loginByEmail(email);
+        return BeanMapper.map(param, UserDto.class);
+
+        // return super.findOneOrNull(eq(UserDto::getEmail,email));
     }
 
     /**
      * 邮箱获取用户
+     *
      * @param email 邮箱获取用户
      * @return UserDTO
      */
@@ -350,7 +361,7 @@ public class UserServiceImpl extends AbstractService
             user.setAgentClassName(map.get("class_name") + "");
             user.setUseCount((int) map.get("use_count"));
             user.setMayUseCount((int) map.get("may_use_count"));
-            user.setRegisterTime(((Timestamp)map.get("gmt_created")).toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            user.setRegisterTime(((Timestamp) map.get("gmt_created")).toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             list.add(user);
         }
 

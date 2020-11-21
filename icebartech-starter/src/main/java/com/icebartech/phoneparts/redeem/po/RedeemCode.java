@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
@@ -36,6 +37,7 @@ public class RedeemCode extends BasePo {
     @ExcelField(title = "兑换码标题", order = 1)
     private String title;
 
+    @Index(name = "index_code")
     @Column(columnDefinition = "varchar(64) NOT NULL DEFAULT '' COMMENT '兑换码'")
     @ApiModelProperty(value = "兑换码",example = "兑换码")
     @ExcelField(title = "兑换码", order = 2)

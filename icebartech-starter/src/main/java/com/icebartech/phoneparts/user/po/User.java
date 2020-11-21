@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
@@ -27,6 +28,7 @@ import javax.persistence.Entity;
 @Table(appliesTo = "user", comment = "用户表")
 public class User extends BasePo {
 
+    @Index(name = "serialId")
     @ApiModelProperty(value = "序列id",example = "序列id")
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '序列id'")
     private Long serialId;
@@ -63,14 +65,17 @@ public class User extends BasePo {
     @Column(columnDefinition = "int(11) NOT NULL DEFAULT '0' COMMENT '剩余切割次数'")
     private Integer mayUseCount;
 
+    @Index(name = "agentId")
     @ApiModelProperty(value = "代理商id",example = "代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '代理商id'")
     private Long agentId;
 
+    @Index(name = "secondAgentId")
     @ApiModelProperty(value = "次级代理商id",example = "次级代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '次级代理商id'")
     private Long secondAgentId;
 
+    @Index(name = "serialClassId")
     @ApiModelProperty(value = "二级分类id",example = "二级分类id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '二级分类id'")
     private Long serialClassId;

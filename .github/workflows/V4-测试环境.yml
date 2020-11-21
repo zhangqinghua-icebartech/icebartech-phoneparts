@@ -4,16 +4,19 @@ name: V4-测试环境
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
 on:
-  workflow_dispatch:
-    # Inputs the workflow accepts.
-    inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
-        # Default value if no value is explicitly provided
-        default: 'World'
-        # Input has to be provided for the workflow to run
-        required: true
+  push:
+    branch: v4
+#on:
+#  workflow_dispatch:
+#    # Inputs the workflow accepts.
+#    inputs:
+#      name:
+#        # Friendly description to be shown in the UI instead of 'name'
+#        description: 'Person to greet'
+#        # Default value if no value is explicitly provided
+#        default: 'World'
+#        # Input has to be provided for the workflow to run
+#        required: true
 
 # 步骤流程：
 jobs:
@@ -25,49 +28,49 @@ jobs:
     - name: 拉取代码
       uses: actions/checkout@v2
 
-#    # 安装JDK1.8
-#    - name: 配置 Java 环境
-#      uses: actions/setup-java@v1
-#      with:
-#        java-version: 1.8
-#
-#    # 配置 Maven 缓存环境
-#    - name: 配置 Maven 缓存环境
-#      uses: actions/cache@v2
-#      with:
-#        path: ~/.m2
-#        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#        restore-keys: ${{ runner.os }}-m2
-#
-#    # Maven 打包
-#    - name: Maven 打包
-#      run: mvn package && ls icebartech-starter/target
-#
-#    # 发布项目
-#    - name: 发布项目
-#      uses: cross-the-world/ssh-scp-ssh-pipelines@latest
-#      env:
-#        WELCOME: "ssh scp ssh pipelines"
-#        LASTSSH: "Doing something after copying"
-#      with:
-#        host: 120.78.135.29
-#        user: root
-#        pass: Bg3605608A
-#        port: 5822
-#        connect_timeout: 10s
-#
-#        # 创建目录 + 停止之前的应用
-#        first_ssh: |
-#          mkdir -p /data/deploy/Java/icebartech-phoneparts
-#          cd /data/deploy/Java/icebartech-phoneparts
-#
-#          pkill -f icebartech-phoneparts
-#
-#        # # 推送文件到服务器
-#        scp: |
-#          icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
-#
-#        # 指定目录 + 运行服务 + 退出（没法自动退出）
-#        last_ssh: |
-#          cd /data/deploy/Java/icebartech-phoneparts
-#          nohup java -jar icebartech-phoneparts.jar --spring.profiles.active=test > logs/start.log 2>&1 &
+    # 安装JDK1.8
+    - name: 配置 Java 环境
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    # 配置 Maven 缓存环境
+    - name: 配置 Maven 缓存环境
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    # Maven 打包
+    - name: Maven 打包
+      run: mvn package && ls icebartech-starter/target
+
+    # 发布项目
+    - name: 发布项目
+      uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+      env:
+        WELCOME: "ssh scp ssh pipelines"
+        LASTSSH: "Doing something after copying"
+      with:
+        host: 120.78.135.29
+        user: root
+        pass: Bg3605608A
+        port: 5822
+        connect_timeout: 10s
+
+        # 创建目录 + 停止之前的应用
+        first_ssh: |
+          mkdir -p /data/deploy/Java/icebartech-phoneparts
+          cd /data/deploy/Java/icebartech-phoneparts
+
+          pkill -f icebartech-phoneparts
+
+        # # 推送文件到服务器
+        scp: |
+          icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
+
+        # 指定目录 + 运行服务 + 退出（没法自动退出）
+        last_ssh: |
+          cd /data/deploy/Java/icebartech-phoneparts
+          nohup java -jar icebartech-phoneparts.jar --spring.profiles.active=test > logs/start.log 2>&1 &

@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
@@ -25,6 +26,7 @@ import javax.persistence.Entity;
 @Table(appliesTo = "sys_class_two", comment = "二级分类表")
 public class SysClassTwo extends BasePo {
 
+    @Index(name = "classOneId")
     @ApiModelProperty(value = "所属一级分类",example = "所属一级分类")
     @Column(columnDefinition = "bigint(20) NOT NULL COMMENT '所属一级分类'")
     private Long classOneId;

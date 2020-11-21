@@ -44,15 +44,15 @@ public class ProductServiceImpl extends AbstractService
     private SysClassThreeService sysClassThreeService;
 
 
-    @Override
-    protected void warpDTO(Long id, ProductDto product) {
-        product.setOneClassName(sysClassOneService.findDetail(product.getClassOneId()).getChinaName());
-        product.setTwoClassName(sysClassTwoService.findName(product.getClassTwoId()));
-        product.setThreeClassName(sysClassThreeService.findName(product.getClassThreeId()));
-        product.setCoverIcon(aliyunOSSComponent.generateDownloadUrl(product.getDetailIcon()));
-        product.setFile(aliyunOSSComponent.generateDownloadUrl(product.getFile()));
-        product.setDetailIcon(aliyunOSSComponent.generateDownloadUrl(product.getDetailIcon()));
-    }
+//    @Override
+//    protected void warpDTO(Long id, ProductDto product) {
+//        product.setOneClassName(sysClassOneService.findDetail(product.getClassOneId()).getChinaName());
+//        product.setTwoClassName(sysClassTwoService.findName(product.getClassTwoId()));
+//        product.setThreeClassName(sysClassThreeService.findName(product.getClassThreeId()));
+//        product.setCoverIcon(aliyunOSSComponent.generateDownloadUrl(product.getDetailIcon()));
+//        product.setFile(aliyunOSSComponent.generateDownloadUrl(product.getFile()));
+//        product.setDetailIcon(aliyunOSSComponent.generateDownloadUrl(product.getDetailIcon()));
+//    }
 
     @Override
     protected void warpDTO(List<Long> ids, List<ProductDto> ds) {

@@ -15,7 +15,7 @@ spring:
 
   # 测试环境MySQL
   datasource:
-    url: jdbc:mysql://120.78.135.29:3306/phoneparts_test?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://120.78.135.29:3306/phoneparts_v2_bak?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
     username: phoneparts
     password: phoneparts
   jpa:

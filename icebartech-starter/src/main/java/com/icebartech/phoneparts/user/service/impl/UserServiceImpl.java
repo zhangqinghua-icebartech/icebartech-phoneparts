@@ -82,6 +82,17 @@ public class UserServiceImpl extends AbstractService
     @Autowired
     private AddUseRecordService addUseRecordService;
 
+    @Override
+    protected void postUpdate(Long id) {
+        // 更新缓存
+        cacheComponent.setUserDetail(id, super.findDetail(id));
+    }
+
+    @Override
+    protected void postDelete(Long id) {
+        // 删除缓存
+        cacheComponent.delUserDetail(id);
+    }
 
     @Override
     protected void warpDTO(Long id, UserDto user) {

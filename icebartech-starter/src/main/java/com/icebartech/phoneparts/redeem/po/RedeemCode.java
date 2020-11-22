@@ -53,10 +53,12 @@ public class RedeemCode extends BasePo {
     @Enumerated(EnumType.STRING)
     private RedeemStateEnum state;
 
+    @Index(name = "redeemId")
     @ApiModelProperty(value = "兑换管理id",example = "兑换管理id")
     @Column(columnDefinition = "bigint(20) DEFAULT NULL COMMENT '兑换管理id'")
     private Long redeemId;
 
+    @Index(name = "userId")
     @ApiModelProperty(value = "用户id",example = "用户id")
     @Column(columnDefinition = "bigint(20) DEFAULT NULL COMMENT '用户id'")
     private Long userId;

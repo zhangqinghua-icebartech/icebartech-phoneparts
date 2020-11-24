@@ -2,6 +2,10 @@ package com.icebartech.phoneparts.system.repository;
 
 import com.icebartech.core.repository.BaseRepository;
 import com.icebartech.phoneparts.system.po.SysClassOne;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author pc
@@ -10,4 +14,7 @@ import com.icebartech.phoneparts.system.po.SysClassOne;
  */
 
 public interface SysClassOneRepository extends BaseRepository<SysClassOne> {
+
+    @Query(nativeQuery = true, value = "SELECT s.id, s.china_name as chinaName FROM sys_class_one s WHERE s.id in (?1)")
+    List<Map<String, Object>> findName(List<Long> ids);
 }

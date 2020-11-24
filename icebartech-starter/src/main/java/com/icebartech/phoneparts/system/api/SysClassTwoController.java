@@ -89,6 +89,12 @@ public class SysClassTwoController extends BaseController {
         return getRtnDate(sysClassTwoService.findList(new SysClassTwoListParam()));
     }
 
+    @ApiOperation("获取一级分类下的二级分类名称")
+    @PostMapping("/find_name_by_one")
+    public RespDate<List<SysClassTwoDto>> find_name_by_one(@RequestParam Long classOneId) {
+        return getRtnDate(sysClassTwoService.find_name_by_one(classOneId));
+    }
+
     @ApiOperation("获取详情")
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/find_detail")

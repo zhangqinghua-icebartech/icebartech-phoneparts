@@ -42,5 +42,4 @@ public class UseRecord extends BasePo {
     @ApiModelProperty(value = "次级代理商id",example = "次级代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '次级代理商id'")
     private Long secondAgentId;
-
 }

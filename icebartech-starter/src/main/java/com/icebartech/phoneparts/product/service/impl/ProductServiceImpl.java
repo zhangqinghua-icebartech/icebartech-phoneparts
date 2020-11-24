@@ -9,6 +9,7 @@ import com.icebartech.phoneparts.product.repository.ProductRepository;
 import com.icebartech.phoneparts.product.service.ProductService;
 import com.icebartech.phoneparts.product.po.Product;
 import com.icebartech.phoneparts.system.po.SysClassOne;
+import com.icebartech.phoneparts.system.po.SysClassThree;
 import com.icebartech.phoneparts.system.po.SysClassTwo;
 import com.icebartech.phoneparts.system.service.SysClassOneService;
 import com.icebartech.phoneparts.system.service.SysClassThreeService;
@@ -71,6 +72,11 @@ public class ProductServiceImpl extends AbstractService
                                                                                        .map(ProductDto::getClassTwoId)
                                                                                        .collect(Collectors.toList())),
                                                             SysClassTwo.class);
+        ds.forEach(d -> sysClassTwos.stream()
+                                    .filter(s -> s.getId().equals(d.getClassTwoId()))
+                                    .findAny()
+                                    .ifPresent(s -> d.setTwoClassName(s.getChinaName())));
+
         ds.forEach(d -> sysClassTwos.stream()
                                     .filter(s -> s.getId().equals(d.getClassTwoId()))
                                     .findAny()

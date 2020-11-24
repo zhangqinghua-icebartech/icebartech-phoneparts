@@ -48,11 +48,7 @@ public class ProductController extends BaseController {
     public RespPage<ProductDto> findPage(@Valid @RequestBody ProductPageParam param) {
         Page<ProductDto> page = productService.findPage(param);
         // todo 迎合前端临时这样子搞，202012月份后面要切换回来。
-        page.getContent().forEach(d -> {
-            String detailIcon = d.getDetailIcon();
-            d.setDetailIcon(d.getCoverIcon());
-            d.setCoverIcon(detailIcon);
-        });
+        page.getContent().forEach(d -> d.setCoverIcon(d.getDetailIcon()));
         return getPageRtnDate(page);
     }
 

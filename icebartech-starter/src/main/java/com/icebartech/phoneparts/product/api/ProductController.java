@@ -19,6 +19,7 @@ import com.icebartech.phoneparts.system.service.SysClassTwoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +52,14 @@ public class ProductController extends BaseController {
     @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/find_page")
     public RespPage<ProductDto> findPage(@Valid @RequestBody ProductPageParam param) {
-        return getPageRtnDate(service.findPage(param));
+        Page<ProductDto> page = service.findPage(param);
+        // todo 迎合前端临时这样子搞，202012月份后面要切换回来。
+        page.getContent().forEach(d -> {
+            String detailIcon = d.getDetailIcon();
+            d.setDetailIcon(d.getCoverIcon());
+            d.setCoverIcon(detailIcon);
+        });
+        return getPageRtnDate(page);
     }
 
     @ApiOperation("获取列表")

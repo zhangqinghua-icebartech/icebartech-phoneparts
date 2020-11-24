@@ -1,9 +1,9 @@
 name: V4-生产环境
 
 # 触发条件：v4 分支提交就触发活动。
-on:
-  push:
-    branch: v4
+#on:
+#  push:
+#    branch: v4
 
 #on:
 #  workflow_dispatch:

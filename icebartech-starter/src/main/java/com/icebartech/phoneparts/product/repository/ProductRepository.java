@@ -20,4 +20,7 @@ public interface ProductRepository extends BaseRepository<Product> {
 
     @Query(nativeQuery = true, value = "select id, china_name as chinaName from sys_class_two where is_deleted = 'n' and id in (?1)")
     List<Map<String, Object>> twoClassNames(List<Long> sysClassTwoIds);
+
+    @Query(nativeQuery = true, value = "select id, china_name as chinaName from sys_class_three where is_deleted = 'n' and id in (?1)")
+    List<Map<String, Object>> threeClassNames(List<Long> sysClassThreeIds);
 }

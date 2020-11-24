@@ -5,9 +5,9 @@ import com.icebartech.core.components.AliyunOSSComponent;
 import com.icebartech.core.modules.AbstractService;
 import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.phoneparts.product.dto.ProductDto;
+import com.icebartech.phoneparts.product.po.Product;
 import com.icebartech.phoneparts.product.repository.ProductRepository;
 import com.icebartech.phoneparts.product.service.ProductService;
-import com.icebartech.phoneparts.product.po.Product;
 import com.icebartech.phoneparts.system.po.SysClassOne;
 import com.icebartech.phoneparts.system.po.SysClassThree;
 import com.icebartech.phoneparts.system.po.SysClassTwo;
@@ -30,7 +30,7 @@ import static com.icebartech.core.vo.QueryParam.eq;
 
 @Service
 public class ProductServiceImpl extends AbstractService
-        <ProductDto, Product, ProductRepository> implements ProductService {
+                                                <ProductDto, Product, ProductRepository> implements ProductService {
 
     @Autowired
     private SysClassOneService sysClassOneService;
@@ -77,10 +77,15 @@ public class ProductServiceImpl extends AbstractService
                                     .findAny()
                                     .ifPresent(s -> d.setTwoClassName(s.getChinaName())));
 
-        ds.forEach(d -> sysClassTwos.stream()
-                                    .filter(s -> s.getId().equals(d.getClassTwoId()))
-                                    .findAny()
-                                    .ifPresent(s -> d.setTwoClassName(s.getChinaName())));
+        // 3. 三级分类
+        List<SysClassThree> sysClassThrees = BeanMapper.mapList(repository.threeClassNames(ds.stream()
+                                                                                             .map(ProductDto::getClassThreeId)
+                                                                                             .collect(Collectors.toList())),
+                                                                SysClassThree.class);
+        ds.forEach(d -> sysClassThrees.stream()
+                                      .filter(s -> s.getId().equals(d.getClassTwoId()))
+                                      .findAny()
+                                      .ifPresent(s -> d.setThreeClassName(s.getChinaName())));
 
         // 3. 封面图、文件、明细图
         for (ProductDto d : ds) {
@@ -92,17 +97,17 @@ public class ProductServiceImpl extends AbstractService
 
     @Override
     public Boolean changeSort(Long id, Integer sort) {
-        return super.update(eq(ProductDto::getId,id),eq(ProductDto::getSort,sort));
+        return super.update(eq(ProductDto::getId, id), eq(ProductDto::getSort, sort));
     }
 
     @Override
     public ProductDto findByClassTwoId(Long id) {
-        return super.findOneOrNull(eq(ProductDto::getClassTwoId,id));
+        return super.findOneOrNull(eq(ProductDto::getClassTwoId, id));
     }
 
     @Override
     public ProductDto findByClassThreeId(Long id) {
-        return super.findOneOrNull(eq(ProductDto::getClassThreeId,id));
+        return super.findOneOrNull(eq(ProductDto::getClassThreeId, id));
     }
 
 }

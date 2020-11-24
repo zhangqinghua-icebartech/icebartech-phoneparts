@@ -83,7 +83,7 @@ public class ProductServiceImpl extends AbstractService
                                                                                              .collect(Collectors.toList())),
                                                                 SysClassThree.class);
         ds.forEach(d -> sysClassThrees.stream()
-                                      .filter(s -> s.getId().equals(d.getClassTwoId()))
+                                      .filter(s -> s.getId().equals(d.getClassThreeId()))
                                       .findAny()
                                       .ifPresent(s -> d.setThreeClassName(s.getChinaName())));
 

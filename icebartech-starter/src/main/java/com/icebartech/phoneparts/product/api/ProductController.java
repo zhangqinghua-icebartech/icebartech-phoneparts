@@ -35,24 +35,18 @@ import java.util.List;
 @RequestMapping(value = "/product", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ProductController extends BaseController {
 
-    private ProductService service;
-    private SysClassOneService sysClassOneService;
-    private SysClassTwoService sysClassTwoService;
-
     @Autowired
-    public ProductController(SysClassOneService sysClassOneService,
-                             SysClassTwoService sysClassTwoService,
-                             ProductService service) {
-        this.sysClassOneService = sysClassOneService;
-        this.sysClassTwoService = sysClassTwoService;
-        this.service = service;
-    }
+    private ProductService productService;
+    @Autowired
+    private SysClassOneService sysClassOneService;
+    @Autowired
+    private SysClassTwoService sysClassTwoService;
 
     @ApiOperation("获取分页")
     @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/find_page")
     public RespPage<ProductDto> findPage(@Valid @RequestBody ProductPageParam param) {
-        Page<ProductDto> page = service.findPage(param);
+        Page<ProductDto> page = productService.findPage(param);
         // todo 迎合前端临时这样子搞，202012月份后面要切换回来。
         page.getContent().forEach(d -> {
             String detailIcon = d.getDetailIcon();
@@ -66,14 +60,14 @@ public class ProductController extends BaseController {
     @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/find_list")
     public RespDate<List<ProductDto>> findList() {
-        return getRtnDate(service.findList(new ProductPageParam()));
+        return getRtnDate(productService.findList(new ProductPageParam()));
     }
 
     @ApiOperation("获取详情")
     @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/find_detail")
     public RespDate<ProductDto> findDetail(@RequestParam Long id) {
-        return getRtnDate(service.findDetail(id));
+        return getRtnDate(productService.findDetail(id));
     }
 
     @ApiOperation("新增")
@@ -91,14 +85,14 @@ public class ProductController extends BaseController {
         if (!sysClassTwo.getClassOneId().equals(sysClassOne.getId()))
             throw new ServiceException(CommonResultCodeEnum.DATA_NOT_AVAILABLE, "二级分类不在一级分类下");
 
-        return getRtnDate(service.insert(param));
+        return getRtnDate(productService.insert(param));
     }
 
     @ApiOperation("修改")
     @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/update")
     public RespDate<Boolean> update(@Valid @RequestBody ProductUpdateParam param) {
-        return getRtnDate(service.update(param));
+        return getRtnDate(productService.update(param));
     }
 
     @ApiOperation("修改排序")
@@ -106,13 +100,13 @@ public class ProductController extends BaseController {
     @PostMapping("/changeSort")
     public RespDate<Boolean> changeSort(@RequestParam("id") Long id,
                                         @RequestParam("sort") Integer sort) {
-        return getRtnDate(service.changeSort(id, sort));
+        return getRtnDate(productService.changeSort(id, sort));
     }
 
     @ApiOperation("删除")
     @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/delete")
     public RespDate<Boolean> delete(@RequestParam Long id) {
-        return getRtnDate(service.delete(id));
+        return getRtnDate(productService.delete(id));
     }
 }

@@ -21,6 +21,6 @@ public interface SysClassTwoRepository extends BaseRepository<SysClassTwo> {
     @Query(nativeQuery = true, value = "SELECT s.id, s.china_name as chinaName FROM sys_class_two s WHERE s.id in (?1)")
     List<Map<String, Object>> findName(List<Long> ids);
 
-    @Query(nativeQuery = true, value = "select id, china_name as chinaName from sys_class_two where is_deleted = 'n' and class_one_id = ?1")
+    @Query(nativeQuery = true, value = "select id, china_name as chinaName from sys_class_two where is_deleted = 'n' and class_one_id = ?1 order by sort desc, id asc")
     List<Map<String, Object>> find_name_by_one(Long classOneId);
 }

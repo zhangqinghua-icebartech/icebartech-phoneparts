@@ -3,20 +3,20 @@ name: V4-测试环境
 # 触发条件：v4 分支提交就触发活动。
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
-on:
-  push:
-    branch: v4
 #on:
-#  workflow_dispatch:
-#    # Inputs the workflow accepts.
-#    inputs:
-#      name:
-#        # Friendly description to be shown in the UI instead of 'name'
-#        description: 'Person to greet'
-#        # Default value if no value is explicitly provided
-#        default: 'World'
-#        # Input has to be provided for the workflow to run
-#        required: true
+#  push:
+#    branch: v4
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Person to greet'
+        # Default value if no value is explicitly provided
+        default: 'World'
+        # Input has to be provided for the workflow to run
+        required: true
 
 # 步骤流程：
 jobs:

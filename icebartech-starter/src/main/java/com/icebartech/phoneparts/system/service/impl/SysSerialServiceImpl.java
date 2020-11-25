@@ -92,8 +92,6 @@ public class SysSerialServiceImpl extends AbstractService
     }
 
 
-
-
     @Override
     protected void preDelete(Long id) {
         userService.delete(eq(User::getSerialId,id));

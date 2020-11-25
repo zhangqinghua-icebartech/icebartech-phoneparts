@@ -3,6 +3,7 @@ package com.icebartech.phoneparts.product.api;
 import com.icebartech.core.annotations.RequireLogin;
 import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
+import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
@@ -37,32 +38,56 @@ public class UseRecordController extends BaseController {
 
 
     @ApiOperation("获取用户切割统计")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/find_user_record")
     public RespPage<Map> findUserRecord(@Valid @RequestBody UseRecordUserPageParam param) {
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+
+        // 一级代理商
+        if (localUser.getLevel() == 1) {
+            param.setAgentId(localUser.getUserId());
+
+        }
+        // 二级代理商
+        if (localUser.getLevel() == 2) {
+            param.setSecondAgentId(localUser.getUserId());
+        }
+
         return getPageRtnDate(service.findUserRecord(param));
     }
 
     @ApiOperation("获取用户切割总数")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/find_user_record_count")
-    public RespDate<Map<String,Object>> findUserRecordCount(@Valid @RequestBody UseRecordUserPageParam param) {
+    public RespDate<Map<String, Object>> findUserRecordCount(@Valid @RequestBody UseRecordUserPageParam param) {
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+
+        // 一级代理商
+        if (localUser.getLevel() == 1) {
+            param.setAgentId(localUser.getUserId());
+
+        }
+        // 二级代理商
+        if (localUser.getLevel() == 2) {
+            param.setSecondAgentId(localUser.getUserId());
+        }
+
         return getRtnDate(service.findUserRecordCount(param));
     }
 
     @ApiOperation("获取产品切割统计")
-    @RequireLogin({UserEnum.admin, UserEnum.app,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})
     @PostMapping("/find_product_record")
     public RespPage<Map> findProductRecord(@Valid @RequestBody UseRecordProductPageParam param) {
-        if(UserThreadLocal.getUserType() == UserEnum.app) param.setUserId(UserThreadLocal.getUserId());
+        if (UserThreadLocal.getUserType() == UserEnum.app) param.setUserId(UserThreadLocal.getUserId());
         return getPageRtnDate(service.findProductRecord(param));
     }
 
     @ApiOperation("获取分页")
-    @RequireLogin({UserEnum.admin, UserEnum.app,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})
     @PostMapping("/find_page")
     public RespPage<UseRecordDTO> findPage(@Valid @RequestBody UseRecordPageParam param) {
-        if(UserThreadLocal.getUserType() == UserEnum.app) param.setUserId(UserThreadLocal.getUserId());
+        if (UserThreadLocal.getUserType() == UserEnum.app) param.setUserId(UserThreadLocal.getUserId());
         return getPageRtnDate(service.findPage(param));
     }
 

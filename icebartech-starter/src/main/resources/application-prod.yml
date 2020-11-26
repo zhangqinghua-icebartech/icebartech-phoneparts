@@ -6,16 +6,16 @@ site:
   host: localhost:60901
 
 spring:
-  # 测试环境Redis（切换成为1号Redis）
+  # 生产环境Redis（切换成为1号Redis）
   redis:
     database: 1
-    host: 127.0.0.1
+    host: 172.31.123.122
     port: 6579
     password: bH360891
 
-  # 测试环境MySQL
+  # 生产环境MySQL
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/phoneparts_new?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://172.31.123.122:3306/phoneparts_new?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
     username: phoneparts
     password: phoneparts
   jpa:

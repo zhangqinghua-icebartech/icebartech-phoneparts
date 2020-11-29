@@ -4,6 +4,7 @@ import com.icebartech.core.IcebartechApplication;
 import com.icebartech.phoneparts.manager.AdminManagerTests;
 import com.icebartech.phoneparts.manager.AdminMenuTests;
 import com.icebartech.phoneparts.manager.AdminRoleTests;
+import com.icebartech.phoneparts.user.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @ActiveProfiles("dev")
 @SpringBootTest(classes = IcebartechApplication.class)
@@ -23,6 +26,9 @@ public class ApplicationTests {
     private MockMvc mockMvc;
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Before
     public void setup() {
@@ -37,6 +43,21 @@ public class ApplicationTests {
         AdminMenuTests.run(mockMvc);
         AdminRoleTests.run(mockMvc);
         AdminManagerTests.run(mockMvc, "ojg6RZPHP01UGW3O/bK76/OLxybiywnw+WMP0SVi+p2xLZtyqimQy+9Xa8Sif0gz7Z7kA2k4NV0=");
+    }
+
+    /**
+     * 删除重复的账号
+     * 1. 找出所有重复的邮箱
+     * 1. 针对已经重复的账号作删除处理（may_use_count比较小的那些）
+     * 2. 使用记录表也一并删掉
+     */
+    @Test
+    public void test1() {
+        List<String> emails = userRepository.repeatEmail();
+
+        System.out.println(emails.size());
+
+        System.out.println(emails);
     }
 }
 

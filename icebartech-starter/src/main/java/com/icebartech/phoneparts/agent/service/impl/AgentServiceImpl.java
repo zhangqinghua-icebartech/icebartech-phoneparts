@@ -28,11 +28,10 @@ import static com.icebartech.core.vo.QueryParam.eq;
  */
 
 @Service
-public class AgentServiceImpl extends AbstractService
-                                              <AgentDTO, Agent, AgentRepository> implements AgentService {
+public class AgentServiceImpl extends AbstractService<AgentDTO, Agent, AgentRepository> implements AgentService {
 
     @Autowired
-    EncryptUtil encryptUtil;
+    private EncryptUtil encryptUtil;
 
     @Override
     protected void preInsert(AgentDTO d) {

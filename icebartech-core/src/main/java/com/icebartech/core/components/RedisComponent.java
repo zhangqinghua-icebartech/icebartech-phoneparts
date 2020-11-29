@@ -842,4 +842,26 @@ public class RedisComponent {
         return redisTemplate.opsForZSet().add(composeKey(group, key), value, score);
     }
 
+    /**
+     * 创建一个Redis锁
+     *
+     * @param key 锁Key，如：UserService#insert(String, String)
+     * @return got the lock or not
+     */
+    @SuppressWarnings("ConstantConditions")
+    public boolean lock(String key, long lock_expire) {
+        String lockKey = composeKey("redislock", key);
+        long expireAt = System.currentTimeMillis() + lock_expire * 1000;
+
+        if(redisTemplate.opsForValue().setIfAbsent(lockKey, expireAt)){
+            redisTemplate.expire(lockKey, lock_expire, TimeUnit.SECONDS);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void unlock(String key) {
+        redisTemplate.delete(composeKey("redislock", key));
+    }
 }

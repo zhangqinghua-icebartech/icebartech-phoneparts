@@ -25,25 +25,24 @@ import static com.icebartech.core.vo.QueryParam.eq;
  */
 
 @Service
-public class AddUseRecordServiceImpl extends AbstractService
-<AddUseRecordDTO, AddUseRecord, AddUseRecordRepository> implements AddUseRecordService {
+public class AddUseRecordServiceImpl extends AbstractService<AddUseRecordDTO, AddUseRecord, AddUseRecordRepository> implements AddUseRecordService {
 
     @Autowired
-    AgentService agentService;
+    private UserService userService;
     @Autowired
-    UserService userService;
+    private AgentService agentService;
 
     @Override
     public void add(Long userId, Integer useNum) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
         //渠道商操作
-        if(localUser.getUserEnum() == UserEnum.agent){
+        if (localUser.getUserEnum() == UserEnum.agent) {
             //添加记录
-            super.insert(new AddUseRecordInsertParam(localUser.getUserId(),useNum,userService.findOne(userId)));
+            super.insert(new AddUseRecordInsertParam(localUser.getUserId(), useNum, userService.findOne(userId)));
             //记录总数
             Agent agent = agentService.findOne(localUser.getUserId());
             Integer newUseNum = agent.getUseNum() + useNum;
-            agentService.update(eq(AgentDTO::getId,agent.getId()),eq(AgentDTO::getUseNum,newUseNum));
+            agentService.update(eq(AgentDTO::getId, agent.getId()), eq(AgentDTO::getUseNum, newUseNum));
         }
     }
 }

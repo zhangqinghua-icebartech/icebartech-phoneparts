@@ -6,6 +6,7 @@ import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.phoneparts.redeem.dto.RedeemDTO;
+import com.icebartech.phoneparts.redeem.param.RedeemCustomInsertParam;
 import com.icebartech.phoneparts.redeem.param.RedeemInsertParam;
 import com.icebartech.phoneparts.redeem.param.RedeemPageParam;
 import com.icebartech.phoneparts.redeem.po.RedeemCode;
@@ -23,10 +24,6 @@ import java.util.List;
 
 import static com.icebartech.core.vo.QueryParam.eq;
 
-/**
- * @author Created by liuao on 2019/8/28.
- * @desc
- */
 @Api(tags = "兑换码管理")
 @RestController
 @RequestMapping(value = "/redeem", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -45,24 +42,31 @@ public class RedeemController extends BaseController {
         return getRtnDate(service.insertAll(param));
     }
 
+    @ApiOperation("自定义新增")
+    @RequireLogin({UserEnum.admin})
+    @PostMapping("/custom_insert")
+    public RespDate<Boolean> custom_insert(@Valid @RequestBody RedeemCustomInsertParam param) {
+        return getRtnDate(service.insertCustom(param));
+    }
+
     @ApiOperation("获取分页")
     @RequireLogin({UserEnum.admin})
     @PostMapping("/find_page")
     public RespPage<RedeemDTO> findPage(@Valid @RequestBody RedeemPageParam param) {
         boolean is = false;
         List<Long> list = new ArrayList<>();
-        if(param.getEmail()!=null&&!param.getEmail().equals("")){
+        if (param.getEmail() != null && !param.getEmail().equals("")) {
             is = true;
             list = redeemCodeService.findRedeemIdList(param.getEmail());
         }
-        if(param.getCode()!=null&&!param.getCode().equals("")){
+        if (param.getCode() != null && !param.getCode().equals("")) {
             is = true;
-            RedeemCode redeemCode = redeemCodeService.findOneOrNull(eq(RedeemCode::getCode,param.getCode()));
-            if(redeemCode!=null){
+            RedeemCode redeemCode = redeemCodeService.findOneOrNull(eq(RedeemCode::getCode, param.getCode()));
+            if (redeemCode != null) {
                 list.add(redeemCode.getRedeemId());
             }
         }
-        if(is){
+        if (is) {
             param.setIdIn(list);
         }
         return getPageRtnDate(service.findPage(param));

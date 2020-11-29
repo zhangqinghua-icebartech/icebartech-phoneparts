@@ -3,6 +3,7 @@ package com.icebartech.phoneparts.product.param;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -32,6 +33,9 @@ public class ProductInsertParam {
     @ApiModelProperty(value = "分类英文名称",example = "分类英文名称")
     @NotBlank
     private String englishName;
+
+    @ApiModelProperty(value = "排序",example = "2")
+    private Integer sort;
 
     @ApiModelProperty(value = "展示图",example = "展示图")
     @NotBlank

@@ -36,7 +36,7 @@ public class ProduceCodeUtil {
     }
 
     /**
-     * 随机数字和字母串
+     * 随机数字和字母串，不要字母O，因为跟0很相似
      * @param length 长度
      * @return 字符串
      */
@@ -52,7 +52,7 @@ public class ProduceCodeUtil {
                 str.append(random.nextInt(10));
             }
         }
-        return str.toString();
+        return str.toString().replace("O", "0");
     }
 
     public static void main(String[] args) {

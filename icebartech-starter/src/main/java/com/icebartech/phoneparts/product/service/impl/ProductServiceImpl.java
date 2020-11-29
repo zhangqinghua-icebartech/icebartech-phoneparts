@@ -22,15 +22,9 @@ import java.util.stream.Collectors;
 
 import static com.icebartech.core.vo.QueryParam.eq;
 
-/**
- * @author pc
- * @Date 2019-06-18T11:11:51.866
- * @Description 单品表
- */
 
 @Service
-public class ProductServiceImpl extends AbstractService
-                                                <ProductDto, Product, ProductRepository> implements ProductService {
+public class ProductServiceImpl extends AbstractService<ProductDto, Product, ProductRepository> implements ProductService {
 
     @Autowired
     private SysClassOneService sysClassOneService;
@@ -109,5 +103,4 @@ public class ProductServiceImpl extends AbstractService
     public ProductDto findByClassThreeId(Long id) {
         return super.findOneOrNull(eq(ProductDto::getClassThreeId, id));
     }
-
 }

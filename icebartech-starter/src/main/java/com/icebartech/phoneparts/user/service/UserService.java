@@ -23,7 +23,7 @@ public interface UserService extends BaseService
      * @param param
      * @return
      */
-    Long register(UserInsertParam param);
+    Long register(String email, UserInsertParam param);
 
     /**
      * 登录

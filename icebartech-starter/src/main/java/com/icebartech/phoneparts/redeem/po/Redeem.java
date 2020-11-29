@@ -40,6 +40,4 @@ public class Redeem extends BasePo {
     @ApiModelProperty(value = "代理商id",example = "代理商id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '代理商id'")
     private Long agentId;
-
-
 }

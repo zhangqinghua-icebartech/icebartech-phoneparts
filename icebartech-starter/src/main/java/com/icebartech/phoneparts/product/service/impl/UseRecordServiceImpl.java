@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @Service
 public class UseRecordServiceImpl extends AbstractService
-        <UseRecordDTO, UseRecord, UseRecordRepository> implements UseRecordService {
+                                                  <UseRecordDTO, UseRecord, UseRecordRepository> implements UseRecordService {
 
     @Autowired
     private ProductService productService;
@@ -39,35 +39,30 @@ public class UseRecordServiceImpl extends AbstractService
 
     @Override
     @Async
-    public void add(Long userId, Long productId,Long agentId,Long secondAgentId) {
-        super.insert(new UseRecordInsertParam(userId,productId,agentId,secondAgentId));
+    public void add(Long userId, Long productId, Long agentId, Long secondAgentId) {
+        super.insert(new UseRecordInsertParam(userId, productId, agentId, secondAgentId));
     }
 
     @Override
     public Page<Map> findUserRecord(UseRecordUserPageParam param) {
-
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize());
-        if(param.getUseCountDESC()){
-            return repository.findUserRecordDESC(param,pageable);
-        }
-        return repository.findUserRecordASC(param,pageable);
+        return repository.findUserRecordDesc(param, pageable);
     }
 
     @Override
     public Page<Map> findProductRecord(UseRecordProductPageParam param) {
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize());
-        if(param.getUseCountDESC()){
-            return repository.findProductRecordDESC(param,pageable);
+        if (param.getUseCountDESC()) {
+            return repository.findProductRecordDESC(param, pageable);
         }
-        return repository.findProductRecordASC(param,pageable);
+        return repository.findProductRecordASC(param, pageable);
     }
 
     @Override
     public Map<String, Object> findUserRecordCount(UseRecordUserPageParam param) {
         Integer countRecord = repository.findUserCountRecord(param);
-        Map<String,Object> map = new HashMap<>();
-        map.put("countRecord",countRecord);
+        Map<String, Object> map = new HashMap<>();
+        map.put("countRecord", countRecord);
         return map;
     }
-
 }

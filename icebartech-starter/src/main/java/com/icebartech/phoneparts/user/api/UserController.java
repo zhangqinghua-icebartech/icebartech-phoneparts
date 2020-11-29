@@ -21,6 +21,7 @@ import com.icebartech.phoneparts.user.param.UserOutParam;
 import com.icebartech.phoneparts.user.param.UserPageParam;
 import com.icebartech.phoneparts.user.param.UserUpdateParam;
 import com.icebartech.phoneparts.user.po.LoginDto;
+import com.icebartech.phoneparts.user.repository.UserRepository;
 import com.icebartech.phoneparts.user.service.UserService;
 import com.icebartech.phoneparts.util.CacheComponent;
 import io.swagger.annotations.Api;
@@ -28,11 +29,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(tags = "用户模块接口")
 @RestController
@@ -113,7 +119,7 @@ public class UserController extends BaseController {
         //验证码校验
 //        if(!mailService.verify(param.getEmail(), CodeTypeEnum.REGISTER.name(),param.getCode()))
 //            throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "验证码校验失败");
-        return getRtnDate(userService.register(param));
+        return getRtnDate(userService.register(param.getEmail(), param));
     }
 
 
@@ -220,5 +226,30 @@ public class UserController extends BaseController {
     public RespDate<Boolean> reduceUseCount(@ApiParam("用户id") @RequestParam("userId") Long userId,
                                             @ApiParam("减少次数") @RequestParam("num") Integer num) {
         return getRtnDate(userService.reduceUseCount(userId, num));
+    }
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @ApiOperation("去除重复账号")
+    @PostMapping("/test")
+    public RespDate<Boolean> test() {
+        // 重复的邮箱
+        List<String> emails = userRepository.repeatEmail();
+
+        // 要删除的用户（去掉剩余次数最高的邮箱）
+        List<Long> userIds = new ArrayList<>();
+        for (String email : emails) {
+            userIds.addAll(userRepository.deleteUserIds(email).stream().map(BigInteger::longValue).collect(Collectors.toList()));
+        }
+
+        if (!CollectionUtils.isEmpty(userIds)) {
+            // 删除邮箱
+            userRepository.deleteUser(userIds);
+
+            // 删除用户记录
+            userRepository.deleteUserRecord(userIds);
+        }
+        return getRtnDate(true);
     }
 }

@@ -2,6 +2,7 @@ package com.icebartech.phoneparts.redeem.service;
 
 import com.icebartech.core.modules.BaseService;
 import com.icebartech.phoneparts.redeem.dto.RedeemDTO;
+import com.icebartech.phoneparts.redeem.param.RedeemCustomInsertParam;
 import com.icebartech.phoneparts.redeem.param.RedeemInsertParam;
 import com.icebartech.phoneparts.redeem.po.Redeem;
 
@@ -11,10 +12,13 @@ import com.icebartech.phoneparts.redeem.po.Redeem;
  * @Description 兑换码管理
  */
 
-public interface RedeemService extends BaseService
-<RedeemDTO, Redeem> {
+public interface RedeemService extends BaseService<RedeemDTO, Redeem> {
 
     Boolean insertAll(RedeemInsertParam param);
 
+    Boolean insertCustom(RedeemCustomInsertParam param);
+
     Boolean deleteAll(Long id);
+
+
 }

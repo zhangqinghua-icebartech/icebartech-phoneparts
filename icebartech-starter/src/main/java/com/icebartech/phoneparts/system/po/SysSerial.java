@@ -80,6 +80,4 @@ public class SysSerial extends BasePo {
     @ApiModelProperty(value = "状态 0未使用 1使用中 2已过期",example = "状态 0未使用 1使用中 2已过期")
     @Column(columnDefinition = "int(2) NOT NULL DEFAULT '0' COMMENT '状态 0未使用 1使用中 2已过期'")
     private Integer status;
-
-
 }

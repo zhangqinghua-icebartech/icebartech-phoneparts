@@ -5,6 +5,7 @@ import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
+import com.icebartech.core.lock.RedisLock;
 import com.icebartech.core.modules.AbstractService;
 import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.utils.DateTimeUtility;
@@ -47,16 +48,9 @@ import java.util.Map;
 
 import static com.icebartech.core.vo.QueryParam.eq;
 
-/**
- * @author pc
- * @Date 2019-06-18T11:03:37.885
- * @Description 用户表
- */
-
-@Service
 @Slf4j
-public class UserServiceImpl extends AbstractService
-                                             <UserDto, User, UserRepository> implements UserService {
+@Service
+public class UserServiceImpl extends AbstractService<UserDto, User, UserRepository> implements UserService {
 
     @Autowired
     private AgentService agentService;
@@ -81,6 +75,7 @@ public class UserServiceImpl extends AbstractService
     private SysUseConfigService sysUseConfigService;
     @Autowired
     private AddUseRecordService addUseRecordService;
+
 
     @Override
     protected void postUpdate(Long id) {
@@ -118,8 +113,9 @@ public class UserServiceImpl extends AbstractService
     }
 
     @Override
+    @RedisLock(key = "#email")
     @Transactional
-    public Long register(UserInsertParam param) {
+    public Long register(String email, UserInsertParam param) {
         log.info("注册{}", param.toString());
         //邮箱重复
         if (findByEmail(param.getEmail()) != null)
@@ -182,7 +178,7 @@ public class UserServiceImpl extends AbstractService
         String email = ProduceCodeUtil.findRedeemCode() + "@sys.com";
         String pwd = "dev123456";
         UserInsertParam userInsertParam = new UserInsertParam(serialNum, email, pwd);
-        Long id = this.register(userInsertParam);
+        Long id = this.register(userInsertParam.getEmail(), userInsertParam);
 
         return BeanMapper.map(repository.loginById(id), UserDto.class);
     }
@@ -341,7 +337,6 @@ public class UserServiceImpl extends AbstractService
      * 获取用户
      *
      * @param email 邮箱
-     * @return
      */
     private UserDto findByEmailAndPwd(String email) {
         Map<String, Object> param = super.repository.loginByEmail(email);

@@ -16,6 +16,9 @@ import java.util.List;
 @Data
 public class SysClassOnePageParam extends PageParam {
 
+    @ApiModelProperty(value = "Id")
+    private Long id;
+
     @ApiModelProperty(value = "分类中文名称",example = "分类中文名称（选填）")
     private String chinaNameLike;
 

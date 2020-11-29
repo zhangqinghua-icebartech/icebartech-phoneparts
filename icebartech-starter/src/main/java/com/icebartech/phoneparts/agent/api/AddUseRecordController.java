@@ -29,11 +29,11 @@ public class AddUseRecordController extends BaseController {
 
 
     @Autowired
-    AddUseRecordService service;
+    private AddUseRecordService service;
 
 
     @ApiOperation("获取分页")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/find_page")
     public RespPage<AddUseRecordDTO> findPage(@Valid @RequestBody AddUseRecordPageParam param) {
         return getPageRtnDate(service.findPage(param));
@@ -41,7 +41,7 @@ public class AddUseRecordController extends BaseController {
 
 
     @ApiOperation("获取列表")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/find_list")
     public RespDate<List<AddUseRecordDTO>> findList() {
         return getRtnDate(service.findList());
@@ -49,7 +49,7 @@ public class AddUseRecordController extends BaseController {
 
 
     @ApiOperation("获取详情")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/find_detail")
     public RespDate<AddUseRecordDTO> findDetail(@RequestParam Long id) {
         return getRtnDate(service.findDetail(id));

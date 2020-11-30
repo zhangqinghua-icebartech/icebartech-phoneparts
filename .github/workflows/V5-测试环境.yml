@@ -63,3 +63,4 @@ jobs:
             mkdir -p /data/test4
             cd /data/test4
             ls -l
+            wget ${{ steps.Release.outputs }}

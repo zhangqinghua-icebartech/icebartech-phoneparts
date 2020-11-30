@@ -110,6 +110,7 @@
     <!-- 测试环境日志级别为DEBUG/并记录所有日志文件 -->
     <springProfile name="test">
         <root level="DEBUG">
+            <appender-ref ref="console"/>
             <appender-ref ref="fileInfoLog"/>
             <appender-ref ref="fileErrorLog"/>
         </root>

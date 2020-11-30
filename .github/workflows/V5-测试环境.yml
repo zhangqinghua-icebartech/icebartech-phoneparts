@@ -30,6 +30,7 @@ jobs:
 
       # 发布到仓库
       - name: Release
+        id: 100101
         uses: softprops/action-gh-release@v1
         with:
           name: icebartech-phoneparts package
@@ -63,4 +64,4 @@ jobs:
             mkdir -p /data/test4
             cd /data/test4
             ls -l
-            wget ${{ steps.Release.outputs }}
+            wget ${{ steps.100101.outputs }}

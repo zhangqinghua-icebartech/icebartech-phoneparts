@@ -28,26 +28,18 @@ jobs:
       - name: Maven 打包
         run: mvn package -Dmaven.test.skip=true
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      # 上传文件
+      - name: upload
+        uses: garygrossgarten/github-action-scp@release
         with:
-          files: |
-            pom.xml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          host: ${{ secrets.TEST_SERVER_HOST }}
+          port: ${{ secrets.TEST_SERVER_PORT }}
+          username: ${{ secrets.TEST_SERVER_USERNAME }}
+          password: ${{ secrets.TEST_SERVER_PASSWORD }}
+          local: icebartech-starter/target/icebartech-phoneparts.jar
+          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts1.jar
+          concurrency: 20
 
-#      # 上传文件
-#      - name: upload
-#        uses: garygrossgarten/github-action-scp@release
-#        with:
-#          host: ${{ secrets.TEST_SERVER_HOST }}
-#          port: ${{ secrets.TEST_SERVER_PORT }}
-#          username: ${{ secrets.TEST_SERVER_USERNAME }}
-#          password: ${{ secrets.TEST_SERVER_PASSWORD }}
-#          local: icebartech-starter/target/icebartech-phoneparts.jar
-#          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar
-#          concurrency: 20
-#
 #      # 启动服务
 #      - name: start application
 #        uses: appleboy/ssh-action@master

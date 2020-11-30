@@ -24,14 +24,16 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-#      # Maven 打包
-#      - name: Maven 打包
-#        run: mvn package -Dmaven.test.skip=true
+      # Maven 打包
+      - name: Maven 打包
+        run: mvn package -Dmaven.test.skip=true
 
+      # 发布到仓库
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: icebartech-phoneparts.jar
+          name: icebartech-phoneparts.jar
+          tag_name: v1.0.0
           files: |
             icebartech-starter/target/icebartech-phoneparts.jar
         env:

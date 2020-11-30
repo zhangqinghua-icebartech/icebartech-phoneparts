@@ -20,7 +20,7 @@ jobs:
           java-version: 1.8
 
       # 配置 Maven 缓存环境
-      - name: Maven Cache local
+      - name: Maven Cache
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       # Maven 打包
-      - name: Maven package
+      - name: Maven Package
         run: mvn package -Dmaven.test.skip=true
 
       # 发布项目
@@ -48,7 +48,6 @@ jobs:
           # 创建目录 + 停止之前的应用
           first_ssh: |
             mkdir -p /data/deploy/Java/icebartech-phoneparts
-            cd /data/deploy/Java/icebartech-phoneparts
             pkill -f icebartech-phoneparts
           # 推送文件到服务器
           scp: |
@@ -56,4 +55,4 @@ jobs:
           # 指定目录 + 运行服务 + 退出（没法自动退出）
           last_ssh: |
             cd /data/deploy/Java/icebartech-phoneparts
-            nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &
+            || ls -la

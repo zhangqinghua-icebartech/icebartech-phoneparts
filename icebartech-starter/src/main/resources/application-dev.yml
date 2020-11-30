@@ -48,8 +48,8 @@ spring:
 #  bucket-name: icebar
 
 aliyun:
-  access-id: LTAIt3vIGEQOyxs7
-  access-key: vmlIoysSPo9D14NXheYLpSHdqBAf96
+  access-id: ENC(O+c/lJmhbRC6WuEjS0vX8Df0DIh+K3NNsXH6AekcnSE=)
+  access-key: ENC(3rePYhvqlmMB7vSbGJwhNZA4IEI0sOMy7WxLS+aH2y5hOgM+IYDTSA==)
   oss-endpoint: http://oss-cn-hongkong.aliyuncs.com/
   oss-url: https://cut0820.oss-accelerate.aliyuncs.com
   bucket-name: cut0820

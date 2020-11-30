@@ -1,6 +1,9 @@
 server:
   port: ${port:60901}
 
+# jasypt 加密配置文件，省的阿里云报错：https://blog.csdn.net/dyccsxg/article/details/9672361
+jasypt.encryptor.password: tyui2000
+
 #项目名等配置
 site:
   app-name: icebartech-enweis

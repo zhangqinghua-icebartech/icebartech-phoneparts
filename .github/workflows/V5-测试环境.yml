@@ -28,26 +28,34 @@ jobs:
       - name: Maven 打包
         run: mvn package -Dmaven.test.skip=true
 
-      # 上传文件
-      - name: upload
-        uses: garygrossgarten/github-action-scp@release
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
-          host: ${{ secrets.TEST_SERVER_HOST }}
-          port: ${{ secrets.TEST_SERVER_PORT }}
-          username: ${{ secrets.TEST_SERVER_USERNAME }}
-          password: ${{ secrets.TEST_SERVER_PASSWORD }}
-          local: icebartech-starter/target/icebartech-phoneparts.jar
-          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar
-          concurrency: 20
+          files: |
+            pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 启动服务
-      - name: start application
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.TEST_SERVER_HOST }}
-          port: ${{ secrets.TEST_SERVER_PORT }}
-          username: ${{ secrets.TEST_SERVER_USERNAME }}
-          password: ${{ secrets.TEST_SERVER_PASSWORD }}
-          script: |
-            cd /data/deploy/Java/icebartech-phoneparts/
-            nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &
+#      # 上传文件
+#      - name: upload
+#        uses: garygrossgarten/github-action-scp@release
+#        with:
+#          host: ${{ secrets.TEST_SERVER_HOST }}
+#          port: ${{ secrets.TEST_SERVER_PORT }}
+#          username: ${{ secrets.TEST_SERVER_USERNAME }}
+#          password: ${{ secrets.TEST_SERVER_PASSWORD }}
+#          local: icebartech-starter/target/icebartech-phoneparts.jar
+#          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar
+#          concurrency: 20
+#
+#      # 启动服务
+#      - name: start application
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.TEST_SERVER_HOST }}
+#          port: ${{ secrets.TEST_SERVER_PORT }}
+#          username: ${{ secrets.TEST_SERVER_USERNAME }}
+#          password: ${{ secrets.TEST_SERVER_PASSWORD }}
+#          script: |
+#            cd /data/deploy/Java/icebartech-phoneparts/
+#            nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &

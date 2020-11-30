@@ -40,8 +40,6 @@ jobs:
           port: ${{ secrets.TEST_SERVER_PORT }}
           username: ${{ secrets.TEST_SERVER_USERNAME }}
           password: ${{ secrets.TEST_SERVER_PASSWORD }}
-          # local: icebartech-starter/target/icebartech-phoneparts.jar
-          # remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts5.jar
           local: pom.xml
           remote: /data/test5/pom.xml
           concurrency: 20
@@ -55,6 +53,5 @@ jobs:
           username: ${{ secrets.TEST_SERVER_USERNAME }}
           password: ${{ secrets.TEST_SERVER_PASSWORD }}
           script: |
-            mkdir -p /data/test6
-            cd /data/test6
-            ls -l
+            cd /data/deploy/Java/icebartech-phoneparts
+            nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &

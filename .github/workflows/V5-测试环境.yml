@@ -40,7 +40,7 @@ jobs:
           username: ${{ secrets.TEST_SERVER_USERNAME }}
           password: ${{ secrets.TEST_SERVER_PASSWORD }}
           local: icebartech-starter/target/icebartech-phoneparts.jar
-          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar
+          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts5.jar
           concurrency: 20
 
       # 启动服务

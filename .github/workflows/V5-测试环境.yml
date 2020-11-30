@@ -24,21 +24,33 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      # 第三步：发布 Release
+      - name: Create Release # 创建Release，可以在仓库看到一个个版本
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }} # 之前GitHub添加的Token
+        with:
+          tag_name: v1.0.0 # (tag)标签名称
+          release_name: Release v1.0.0
+          draft: false # 是否是草稿
+          prerelease: false # 是否是预发布
+
       # Maven 打包
 #      - name: Maven 打包
 #        run: mvn package -Dmaven.test.skip=true
 
       # 发布到仓库
-      - name: Release
-        id: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: icebartech-phoneparts package
-          tag_name: v1.0.0
-          files: |
-            README.V5.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Release
+#        id: Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          name: icebartech-phoneparts package
+#          tag_name: v1.0.0
+#          files: |
+#            README.V5.txt
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #      # 上传文件
 #      - name: upload
@@ -53,16 +65,16 @@ jobs:
 #          concurrency: 20
 #
       # 启动服务
-      - name: start application
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.TEST_SERVER_HOST }}
-          port: ${{ secrets.TEST_SERVER_PORT }}
-          username: ${{ secrets.TEST_SERVER_USERNAME }}
-          password: ${{ secrets.TEST_SERVER_PASSWORD }}
-          script: |
-            mkdir -p /data/test4
-            cd /data/test4
-            ls -l
-            echo ${{ steps.Release.outputs }}
-            echo ${{ steps.Release.outputs.url }}
+#      - name: start application
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.TEST_SERVER_HOST }}
+#          port: ${{ secrets.TEST_SERVER_PORT }}
+#          username: ${{ secrets.TEST_SERVER_USERNAME }}
+#          password: ${{ secrets.TEST_SERVER_PASSWORD }}
+#          script: |
+#            mkdir -p /data/test4
+#            cd /data/test4
+#            ls -l
+#            echo ${{ steps.Release.outputs }}
+#            echo ${{ steps.Release.outputs.url }}

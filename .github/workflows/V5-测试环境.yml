@@ -24,6 +24,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
       # 第三步：发布 Release
       - name: Create Release # 创建Release，可以在仓库看到一个个版本
         id: create_release
@@ -36,7 +37,16 @@ jobs:
           draft: false # 是否是草稿
           prerelease: false # 是否是预发布
 
-
+      # 第四步：上传构建结果到 Release（把打包的tgz上传到Release）
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # 上传地址，通过创建Release获取到的
+          asset_path: ./pom.xml # 要上传文件
+          asset_name: pom.xml # 上传后的文件名
 
       # Maven 打包
 #      - name: Maven 打包

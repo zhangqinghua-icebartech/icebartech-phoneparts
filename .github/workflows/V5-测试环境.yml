@@ -31,9 +31,9 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: 123
+          tag_name: icebartech-phoneparts.jar
           files: |
-            pom.xml
+            icebartech-starter/target/icebartech-phoneparts.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

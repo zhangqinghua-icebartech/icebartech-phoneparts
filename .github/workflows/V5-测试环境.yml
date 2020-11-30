@@ -51,7 +51,7 @@ jobs:
             pkill -f icebartech-phoneparts
           # 推送文件到服务器
           scp: |
-            icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
+            pom.xml => /data/test5
           # 指定目录 + 运行服务 + 退出（没法自动退出）
           last_ssh: |
             cd /data/deploy/Java/icebartech-phoneparts

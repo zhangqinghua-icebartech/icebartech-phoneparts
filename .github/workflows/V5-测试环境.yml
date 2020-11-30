@@ -29,7 +29,7 @@ jobs:
         id: create_release
         uses: actions/create-release@master
         env:
-          GITHUB_TOKEN: ${{ secrets.Actions.Token }} # 之前GitHub添加的Token
+          GITHUB_TOKEN: 90d7c0e3e55123d7bf68561bff2e71270e2dad7b # 之前GitHub添加的Token
         with:
           tag_name: v1.0.0 # (tag)标签名称
           release_name: Release v1.0.0

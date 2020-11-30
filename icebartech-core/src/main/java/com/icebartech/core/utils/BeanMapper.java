@@ -147,10 +147,15 @@ public class BeanMapper {
                     continue;
                 }
                 Object value = map.get(field.getName());
-                // 针对Biginterget处理
+
                 if (value.getClass() != field.getClass()) {
+                    // 针对Biginterget处理
                     if (value.getClass() == BigInteger.class) {
                         value = ((BigInteger) value).longValue();
+                    }
+                    // 针对数据库日期处理
+                    if (value.getClass() == java.sql.Timestamp.class) {
+                        value = ((java.sql.Timestamp) value).toLocalDateTime();
                     }
                 }
 

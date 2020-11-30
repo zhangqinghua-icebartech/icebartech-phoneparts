@@ -46,7 +46,16 @@ public class UseRecordServiceImpl extends AbstractService
     @Override
     public Page<Map> findUserRecord(UseRecordUserPageParam param) {
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize());
-        return repository.findUserRecordDesc(param, pageable);
+        if(param.getUseCountDESC()){
+            return repository.findUserRecordDESC(param,pageable);
+        }
+        return repository.findUserRecordASC(param,pageable);
+    }
+
+    @Override
+    public Page<Map> findUserRecord1(UseRecordUserPageParam param) {
+        Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize());
+        return repository.findUserRecordDesc1(param, pageable);
     }
 
     @Override

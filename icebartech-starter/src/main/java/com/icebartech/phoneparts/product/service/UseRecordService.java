@@ -25,6 +25,8 @@ public interface UseRecordService extends BaseService
 
     Page<Map> findUserRecord(UseRecordUserPageParam param);
 
+    Page<Map> findUserRecord1(UseRecordUserPageParam param);
+
     Page<Map> findProductRecord(UseRecordProductPageParam param);
 
     Map<String,Object> findUserRecordCount(UseRecordUserPageParam param);

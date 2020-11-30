@@ -7,12 +7,8 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
-/**
- * @author Created by liuao on 2019/10/21.
- * @desc
- */
-@EqualsAndHashCode(callSuper = true)
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class UseRecordUserPageParam extends PageParam {
 
     @ApiModelProperty(value = "代理商id",example = "代理商id")

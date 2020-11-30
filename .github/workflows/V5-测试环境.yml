@@ -20,40 +20,41 @@ jobs:
           java-version: 1.8
 
       # 配置 Maven 缓存环境
-      - name: Maven Cache
+      - name: Maven Cache local
         uses: actions/cache@v2
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       # Maven 打包
       - name: Maven package
         run: mvn package -Dmaven.test.skip=true
 
-      # 上传文件
-      - name: Upload Files
-        uses: garygrossgarten/github-action-scp@release
+      # 发布项目
+      - name: Publish Package
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+        env:
+          WELCOME: "ssh scp ssh pipelines"
+          LASTSSH: "Doing something after copying"
         with:
           host: ${{ secrets.TEST_SERVER_HOST }}
           port: ${{ secrets.TEST_SERVER_PORT }}
-          username: ${{ secrets.TEST_SERVER_USERNAME }}
-          password: ${{ secrets.TEST_SERVER_PASSWORD }}
-          local: icebartech-starter/target/icebartech-phoneparts.jar
-          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts5.jar
-          concurrency: 20
+          user: ${{ secrets.TEST_SERVER_USERNAME }}
+          pass: ${{ secrets.TEST_SERVER_PASSWORD }}
 
-      # 启动服务
-      - name: Start Application
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.TEST_SERVER_HOST }}
-          port: ${{ secrets.TEST_SERVER_PORT }}
-          username: ${{ secrets.TEST_SERVER_USERNAME }}
-          password: ${{ secrets.TEST_SERVER_PASSWORD }}
-          script: |
-            mkdir -p /data/test4
-            cd /data/test4
-            ls -l
-            echo ${{ steps.Release.outputs }}
-            echo ${{ steps.Release.outputs.url }}
+          connect_timeout: 100s
+          # 创建目录 + 停止之前的应用
+          first_ssh: |
+            mkdir -p /data/deploy/Java/icebartech-phoneparts
+            cd /data/deploy/Java/icebartech-phoneparts
+            pkill -f icebartech-phoneparts
+          # 推送文件到服务器
+          scp: |
+            icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts
+          # 指定目录 + 运行服务 + 退出（没法自动退出）
+          last_ssh: |
+            cd /data/deploy/Java/icebartech-phoneparts
+            nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &
+            exit

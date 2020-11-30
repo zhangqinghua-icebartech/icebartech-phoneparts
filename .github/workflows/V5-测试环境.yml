@@ -27,26 +27,27 @@ jobs:
       # Maven 打包
       - name: Maven 打包
         run: mvn package -Dmaven.test.skip=true
-      # 第三步：发布 Release
-      - name: Create Release # 创建Release，可以在仓库看到一个个版本
-        id: create_release
-        uses: actions/create-release@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }} # 之前GitHub添加的Token
-        with:
-          tag_name: 1.0.0                          # (tag)标签名称
-          release_name: icebartech-phoneparts
-          draft: false # 是否是草稿
-          prerelease: false # 是否是预发布
 
-#      # 上传文件
-#      - name: upload
-#        uses: garygrossgarten/github-action-scp@release
-#        with:
-#          host: ${{ secrets.TEST_SERVER_HOST }}
-#          port: ${{ secrets.TEST_SERVER_PORT }}
-#          username: ${{ secrets.TEST_SERVER_USERNAME }}
-#          password: ${{ secrets.TEST_SERVER_PASSWORD }}
-#          local: icebartech-starter/target/icebartech-phoneparts.jar
-#          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar
-#          concurrency: 20
+      # 上传文件
+      - name: upload
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          host: ${{ secrets.TEST_SERVER_HOST }}
+          port: ${{ secrets.TEST_SERVER_PORT }}
+          username: ${{ secrets.TEST_SERVER_USERNAME }}
+          password: ${{ secrets.TEST_SERVER_PASSWORD }}
+          local: icebartech-starter/target/icebartech-phoneparts.jar
+          remote: /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar
+          concurrency: 20
+
+      # 启动服务
+      - name: start application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TEST_SERVER_HOST }}
+          port: ${{ secrets.TEST_SERVER_PORT }}
+          username: ${{ secrets.TEST_SERVER_USERNAME }}
+          password: ${{ secrets.TEST_SERVER_PASSWORD }}
+          script: |
+            cd /data/deploy/Java/icebartech-phoneparts/
+            nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &

@@ -36,7 +36,7 @@ jobs:
           name: icebartech-phoneparts package
           tag_name: v1.0.0
           files: |
-            pom.xml
+            README.V5.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

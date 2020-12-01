@@ -5,7 +5,9 @@ import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
+import com.icebartech.excel.ExcelUtils;
 import com.icebartech.phoneparts.redeem.dto.RedeemDTO;
+import com.icebartech.phoneparts.redeem.excel.RedeemImports;
 import com.icebartech.phoneparts.redeem.param.RedeemCustomInsertParam;
 import com.icebartech.phoneparts.redeem.param.RedeemInsertParam;
 import com.icebartech.phoneparts.redeem.param.RedeemPageParam;
@@ -79,4 +81,9 @@ public class RedeemController extends BaseController {
         return getRtnDate(service.deleteAll(id));
     }
 
+    @ApiOperation("兑换码导入模版")
+    @GetMapping("/imposrts_template")
+    public void imposrtsTemplate() {
+        ExcelUtils.exports(RedeemImports.demo(), super.getResponse(), "兑换码导入模版");
+    }
 }

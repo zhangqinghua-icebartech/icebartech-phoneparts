@@ -52,7 +52,7 @@ public class ProductServiceImpl extends AbstractService<ProductDto, Product, Pro
     @Override
     protected void warpDTO(List<Long> ids, List<ProductDto> ds) {
         // 1. 一级分类名称
-        List<SysClassOne> sysClassOnes = BeanMapper.mapList(repository.oneClassNames(ds.stream()
+        List<SysClassOne> sysClassOnes = BeanMapper.map(repository.oneClassNames(ds.stream()
                                                                                        .map(ProductDto::getClassOneId)
                                                                                        .collect(Collectors.toList())),
                                                             SysClassOne.class);
@@ -62,7 +62,7 @@ public class ProductServiceImpl extends AbstractService<ProductDto, Product, Pro
                                     .ifPresent(s -> d.setOneClassName(s.getChinaName())));
 
         // 2. 二级分类名称
-        List<SysClassTwo> sysClassTwos = BeanMapper.mapList(repository.twoClassNames(ds.stream()
+        List<SysClassTwo> sysClassTwos = BeanMapper.map(repository.twoClassNames(ds.stream()
                                                                                        .map(ProductDto::getClassTwoId)
                                                                                        .collect(Collectors.toList())),
                                                             SysClassTwo.class);
@@ -72,7 +72,7 @@ public class ProductServiceImpl extends AbstractService<ProductDto, Product, Pro
                                     .ifPresent(s -> d.setTwoClassName(s.getChinaName())));
 
         // 3. 三级分类
-        List<SysClassThree> sysClassThrees = BeanMapper.mapList(repository.threeClassNames(ds.stream()
+        List<SysClassThree> sysClassThrees = BeanMapper.map(repository.threeClassNames(ds.stream()
                                                                                              .map(ProductDto::getClassThreeId)
                                                                                              .collect(Collectors.toList())),
                                                                 SysClassThree.class);

@@ -50,7 +50,7 @@ public class SysClassTwoServiceImpl extends AbstractService<SysClassTwoDto, SysC
         ds.forEach(d -> d.setIcon(aliyunOSSComponent.generateDownloadUrl(d.getIcon())));
 
         // 2. 设置一级分类
-        List<SysClassOneDto> classOnes = BeanMapper.mapList(sysClassOneRepository.findName(ds.stream()
+        List<SysClassOneDto> classOnes = BeanMapper.map(sysClassOneRepository.findName(ds.stream()
                                                                                              .map(SysClassTwoDto::getClassOneId)
                                                                                              .collect(Collectors.toList())),
                                                             SysClassOneDto.class);
@@ -87,6 +87,6 @@ public class SysClassTwoServiceImpl extends AbstractService<SysClassTwoDto, SysC
         if (classOneId == null) {
             return new ArrayList<>();
         }
-        return BeanMapper.mapList(repository.find_name_by_one(classOneId), SysClassTwoDto.class);
+        return BeanMapper.map(repository.find_name_by_one(classOneId), SysClassTwoDto.class);
     }
 }

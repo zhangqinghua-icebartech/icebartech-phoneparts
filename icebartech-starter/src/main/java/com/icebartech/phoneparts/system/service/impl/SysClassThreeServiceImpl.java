@@ -56,7 +56,7 @@ public class SysClassThreeServiceImpl extends AbstractService<SysClassThreeDTO, 
         ds.forEach(d -> d.setIcon(aliyunOSSComponent.generateDownloadUrl(d.getIcon())));
 
         // 2. 设置一级分类
-        List<SysClassOneDto> classOnes = BeanMapper.mapList(sysClassOneRepository.findName(ds.stream()
+        List<SysClassOneDto> classOnes = BeanMapper.map(sysClassOneRepository.findName(ds.stream()
                                                                                              .map(SysClassThreeDTO::getClassOneId)
                                                                                              .collect(Collectors.toList())),
                                                             SysClassOneDto.class);
@@ -67,7 +67,7 @@ public class SysClassThreeServiceImpl extends AbstractService<SysClassThreeDTO, 
 
 
         // 3. 设置二级分类
-        List<SysClassTwoDto> classTwos = BeanMapper.mapList(sysClassTwoRepository.findName(ds.stream()
+        List<SysClassTwoDto> classTwos = BeanMapper.map(sysClassTwoRepository.findName(ds.stream()
                                                                                              .map(SysClassThreeDTO::getClassTwoId)
                                                                                              .collect(Collectors.toList())),
                                                             SysClassTwoDto.class);
@@ -92,6 +92,6 @@ public class SysClassThreeServiceImpl extends AbstractService<SysClassThreeDTO, 
         if (classTwoId == null) {
             return new ArrayList<>();
         }
-        return BeanMapper.mapList(repository.find_name_by_two(classTwoId), SysClassThreeDTO.class);
+        return BeanMapper.map(repository.find_name_by_two(classTwoId), SysClassThreeDTO.class);
     }
 }

@@ -41,7 +41,7 @@ public class SysSerialClassServiceImpl extends AbstractService
 
     @Override
     protected void warpDTO(List<Long> ids, List<SysSerialClassDTO> ds) {
-        List<AgentDTO> agents = BeanMapper.mapList(agentRepository.findClassNames(ds.stream()
+        List<AgentDTO> agents = BeanMapper.map(agentRepository.findClassNames(ds.stream()
                                                                                     .map(SysSerialClassDTO::getAgentId)
                                                                                     .collect(Collectors.toList())),
                                                    AgentDTO.class);

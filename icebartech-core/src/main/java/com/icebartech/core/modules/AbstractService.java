@@ -414,7 +414,7 @@ public abstract class AbstractService<D extends P, P extends BasePo, R extends B
 //    }
 
     private List<D> mapDTO(List<P> list) {
-        List<D> ds = BeanMapper.mapList(list, dclass);
+        List<D> ds = BeanMapper.map(list, dclass);
         List<Long> ids = ds.stream().map(BasePo::getId).collect(Collectors.toList());
         // 自定义业务处理
         if (ds.size() > 0) {

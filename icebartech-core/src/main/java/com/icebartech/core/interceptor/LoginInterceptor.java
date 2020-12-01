@@ -104,35 +104,46 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
         String sessionId = request.getHeader("sessionId");
-        String sessionIdKey;
-
-        if (userEnums.contains(UserEnum.no_login)) {
-            // 无需登录 设定空用户对象并放行 return true
-            LocalUser localUser= new LocalUser();
-            localUser.setLevel(0);
-            localUser.setUserId(0L);
-            UserThreadLocal.setUserInfo(localUser);
-            return true;
-        }
-
-        if (StringUtils.isEmpty(sessionId)) {
-            // sessionId为空且接口有权限拦截 return false
-            renderNotLogin(response);
-            return false;
-        }
+        String sessionIdKey = null;
         try {
-            sessionIdKey  = stringEncryptor.decrypt(sessionId);
+            if (StringUtils.isNotBlank(sessionId)) {
+                sessionIdKey = stringEncryptor.decrypt(sessionId);
+            }
         } catch (EncryptionOperationNotPossibleException e) {
             // sessionId解密失败
+            // renderNotLogin(response);
+            // return false;
+            e.printStackTrace();
+        }
+
+        /*
+         * 未登陆或登陆失效的
+         * 1. 没有权限限制，通过
+         * 2. 允许游客访问，通过
+         * 3. 拒绝
+         */
+        if (StringUtils.isBlank(sessionIdKey) && userEnums.size() == 0) {
+            return true;
+        }
+        if (StringUtils.isBlank(sessionIdKey) && userEnums.contains(UserEnum.no_login)) {
+            return true;
+        }
+        if (StringUtils.isBlank(sessionIdKey)) {
             renderNotLogin(response);
             return false;
         }
         LocalUser user = (LocalUser) redisComponent.get(IcebartechConstants.USER_SESSION_GROUP_KEY, sessionIdKey);
-        if (null == user) {
-            // 未找到sessionId对应的用户 return false
+        if (user == null && userEnums.size() == 0) {
+            return true;
+        }
+        if (user == null && userEnums.contains(UserEnum.no_login)) {
+            return true;
+        }
+        if (user == null) {
             renderNotLogin(response);
             return false;
         }
+
         if (!userEnums.contains(user.getUserEnum())) {
             // sessionId所属用户身份和接口所需用户身份不符 return false
             renderNotAuthority(response);
@@ -140,7 +151,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         }
 
         //刷新过期
-        loginComponent.login(request.getHeader("sessionId"), user,user.getTime());
+        loginComponent.login(request.getHeader("sessionId"), user, user.getTime());
         UserThreadLocal.setUserInfo(user);
         return true;
     }

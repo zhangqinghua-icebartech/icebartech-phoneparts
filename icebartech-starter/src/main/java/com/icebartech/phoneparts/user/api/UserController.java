@@ -220,7 +220,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation("后台减少次数")
-    // @RequireLogin({UserEnum.admin, UserEnum.agent})
+     @RequireLogin({UserEnum.admin, UserEnum.agent, UserEnum.no_login})
     @PostMapping("/backReduceUseCount")
     public RespDate<Boolean> reduceUseCount(@ApiParam("用户id") @RequestParam("userId") Long userId,
                                             @ApiParam("减少次数") @RequestParam("num") Integer num) {

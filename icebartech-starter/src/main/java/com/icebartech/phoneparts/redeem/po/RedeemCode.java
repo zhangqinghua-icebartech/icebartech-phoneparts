@@ -1,7 +1,7 @@
 package com.icebartech.phoneparts.redeem.po;
 
-import com.github.annotation.ExcelField;
 import com.icebartech.core.po.BasePo;
+import com.icebartech.excel.annotation.ExcelField;
 import com.icebartech.phoneparts.enums.RedeemStateEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,18 +34,18 @@ public class RedeemCode extends BasePo {
 
     @Column(columnDefinition = "varchar(225) NOT NULL DEFAULT '' COMMENT '兑换码标题'")
     @ApiModelProperty(value = "兑换码标题",example = "兑换码标题")
-    @ExcelField(title = "兑换码标题", order = 1)
+    @ExcelField(value = "兑换码标题")
     private String title;
 
     @Index(name = "index_code")
     @Column(columnDefinition = "varchar(64) NOT NULL DEFAULT '' COMMENT '兑换码'")
     @ApiModelProperty(value = "兑换码",example = "兑换码")
-    @ExcelField(title = "兑换码", order = 2)
+    @ExcelField(value = "兑换码")
     private String code;
 
     @Column(columnDefinition = "int(11) NOT NULL DEFAULT '0' COMMENT '兑换码数量 '")
     @ApiModelProperty(value = "兑换码次数",example = "兑换码次数")
-    @ExcelField(title = "兑换码次数", order = 3)
+    @ExcelField(value = "兑换码次数")
     private Integer useNum;
 
     @Column(columnDefinition = "varchar(64) NOT NULL DEFAULT 'N' COMMENT '兑换码'")

@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.*;
+
 /**
  * 简单封装Dozer, 实现深度转换Bean<->Bean的Mapper.实现:
  * <p>
@@ -22,7 +23,7 @@ import java.util.*;
  *
  * @author calvin
  */
-public class BeanMapper {
+public class BeanMapper{
 
     //private static final Logger log = org.slf4j.LoggerFactory.getLogger(BeanMapper.class);
     /**

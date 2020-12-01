@@ -1,14 +1,14 @@
 package com.icebartech.phoneparts.product.api;
 
-import com.github.ExcelUtils;
 import com.icebartech.core.annotations.RequireLogin;
 import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
-import com.icebartech.core.utils.BeanMapper;
+import com.icebartech.core.utils.BeanMapperNew;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
+import com.icebartech.excel.ExcelUtils;
 import com.icebartech.phoneparts.agent.po.Agent;
 import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -184,14 +183,7 @@ public class UseRecordController extends BaseController {
 
         Page<Map> page = useRecordService.findUserRecord1(param);
 
-        List<UseRecordExcel> list = BeanMapper.mapList(page.getContent(), UseRecordExcel.class);
-        list.forEach(UseRecordExcel::mapTime);
-        ExcelUtils.getInstance().exportObjects2Excel(list,
-                                                     UseRecordExcel.class,
-                                                     true,
-                                                     null,
-                                                     true,
-                                                     response,
-                                                     "切割统计");
+        ExcelUtils.exports(BeanMapperNew.map(page.getContent(), UseRecordExcel.class),
+                           response, "切割统计");
     }
 }

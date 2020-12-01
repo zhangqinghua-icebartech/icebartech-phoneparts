@@ -1,40 +1,29 @@
 package com.icebartech.phoneparts.product.dto;
 
-import com.github.annotation.ExcelField;
+import com.icebartech.excel.annotation.ExcelField;
 import lombok.Data;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 public class UseRecordExcel {
 
-    private LocalDateTime gmtCreated;
+    @ExcelField(value = "切割时间", columnWidth = 25)
+    private String gmtCreated;
 
-    @ExcelField(title = "切割时间")
-    private String gmtCreatedStr;
-
-    @ExcelField(title = "序列号")
+    @ExcelField(value = "序列号", columnWidth = 30)
     private String serialNum;
 
-    @ExcelField(title = "账号")
+    @ExcelField(value = "账号", columnWidth = 30)
     private String email;
 
-    @ExcelField(title = "一级分类")
+    @ExcelField(value = "一级分类")
     private String classOne;
 
-    @ExcelField(title = "二级分类")
+    @ExcelField(value = "二级分类")
     private String classTwo;
 
-    @ExcelField(title = "三级分类")
+    @ExcelField(value = "三级分类")
     private String classThree;
 
-    @ExcelField(title = "产品名称")
+    @ExcelField(value = "产品名称")
     private String product;
-
-    public void mapTime() {
-        if (gmtCreated != null) {
-            this.gmtCreatedStr = gmtCreated.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        }
-    }
 }

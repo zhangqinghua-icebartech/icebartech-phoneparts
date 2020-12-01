@@ -1,5 +1,6 @@
 package com.icebartech.core.exception;
 
+import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.enums.ResultEnum;
 import lombok.Data;
 
@@ -70,6 +71,9 @@ public class ServiceException extends RuntimeException {
         this(errorCode, errorMessage, null);
     }
 
+    public ServiceException(String errorMessage) {
+        this(CommonResultCodeEnum.INTERFACE_INNER_INVOKE_ERROR, errorMessage, null);
+    }
 
     /**
      * 用异常消息和表示异常原因及其他信息的对象构造新实例。

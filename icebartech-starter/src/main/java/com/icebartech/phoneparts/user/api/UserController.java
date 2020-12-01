@@ -1,6 +1,5 @@
 package com.icebartech.phoneparts.user.api;
 
-import com.github.ExcelUtils;
 import com.icebartech.base.message.enums.CodeTypeEnum;
 import com.icebartech.base.message.service.MailService;
 import com.icebartech.core.annotations.RequireLogin;
@@ -15,6 +14,7 @@ import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
+import com.icebartech.excel.ExcelUtils;
 import com.icebartech.phoneparts.user.dto.UserDto;
 import com.icebartech.phoneparts.user.param.UserInsertParam;
 import com.icebartech.phoneparts.user.param.UserOutParam;
@@ -58,9 +58,8 @@ public class UserController extends BaseController {
 
     @ApiOperation("数据导出")
     @GetMapping("/excelOut")
-    public void excelOut(HttpServletResponse response, UserOutParam param) throws Exception {
-        ExcelUtils.getInstance().
-                exportObjects2Excel(userService.export(param), UserDto.class, true, null, true, response, "用户列表");
+    public void excelOut(HttpServletResponse response, UserOutParam param) {
+        ExcelUtils.exports(userService.export(param), response, "用户列表");
     }
 
     @ApiOperation("获取分页")

@@ -1,6 +1,6 @@
 package com.icebartech.core.utils;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

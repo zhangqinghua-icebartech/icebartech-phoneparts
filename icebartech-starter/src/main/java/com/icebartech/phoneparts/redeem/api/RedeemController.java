@@ -3,6 +3,7 @@ package com.icebartech.phoneparts.redeem.api;
 import com.icebartech.core.annotations.RequireLogin;
 import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
+import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.excel.ExcelUtils;
@@ -19,8 +20,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +82,16 @@ public class RedeemController extends BaseController {
     @PostMapping("/delete")
     public RespDate<Boolean> delete(@RequestParam Long id) {
         return getRtnDate(service.deleteAll(id));
+    }
+
+    @ApiOperation("兑换码导入")
+    @PostMapping("/imposrts")
+    public RespDate<Boolean> imposrts(@RequestParam("file") MultipartFile file) throws IOException {
+        List<RedeemImports> imports = ExcelUtils.imports(file.getInputStream(), RedeemImports.class);
+        for (RedeemCustomInsertParam param : BeanMapper.map(imports, RedeemCustomInsertParam.class)) {
+            service.insertCustom(param);
+        }
+        return getRtnDate(true);
     }
 
     @ApiOperation("兑换码导入模版")

@@ -119,6 +119,7 @@ public class SysClassOneController extends BaseController {
     @RequireLogin({UserEnum.admin,UserEnum.app})
     @PostMapping("/update")
     public RespDate<Boolean> update(@Valid @RequestBody SysClassOneUpdateParam param) {
+        System.err.println(param);
         return getRtnDate(service.update(param));
     }
 

@@ -70,5 +70,4 @@ public class RedeemCode extends BasePo {
     @ApiModelProperty(value = "绑定时间",example = "绑定时间")
     @Column(columnDefinition = "datetime DEFAULT NULL COMMENT '绑定时间'")
     private Date useTime;
-
 }

@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.icebartech.core.vo.QueryParam.eq;
 
 @Service
@@ -80,6 +82,25 @@ public class RedeemServiceImpl extends AbstractService<RedeemDTO, Redeem, Redeem
                                                            param.getTitle(),
                                                            param.getCode(),
                                                            param.getUseNum()));
+        return true;
+    }
+
+    @Override
+    public Boolean insertCustom(String title, Long agentId, List<RedeemCode> redeemCodes) {
+        // 1. 创建兑换码
+        Redeem redeem = new Redeem();
+        redeem.setTitle(title);
+        redeem.setAgentId(agentId);
+        redeem.setRedeemNum(redeemCodes.size() + "");
+        redeem.setUseNum("1");
+        Long redeemId = super.insert(redeem);
+
+        // 2. 创建兑换码明细
+        for (RedeemCode redeemCode : redeemCodes) {
+            redeemCode.setRedeemId(redeemId);
+            redeemCode.setTitle(title);
+            redeemCodeService.insert(redeemCode);
+        }
         return true;
     }
 

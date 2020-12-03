@@ -14,7 +14,6 @@ import com.icebartech.phoneparts.system.dto.SysSerialDto;
 import com.icebartech.phoneparts.system.param.SysSerialCreateParam;
 import com.icebartech.phoneparts.system.param.SysSerialInsertParam;
 import com.icebartech.phoneparts.system.po.SysSerial;
-import com.icebartech.phoneparts.system.po.SysSerialClass;
 import com.icebartech.phoneparts.system.repository.SysSerialRepository;
 import com.icebartech.phoneparts.system.service.SysSerialClassService;
 import com.icebartech.phoneparts.system.service.SysSerialService;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -174,14 +172,23 @@ public class SysSerialServiceImpl extends AbstractService
     @Override
     @Transactional
     public Boolean allocation(Long secondAgentId, List<Long> serialIds,Long serialClassId) {
-        serialIds.forEach(serialId->{
+        // 1. 原来是已经分配的无法再次分配。
+        //        serialIds.forEach(serialId->{
+        //            SysSerial sysSerial = serialService.findOne(serialId);
+        //            if(sysSerial.getStatus()!=0){
+        //                throw new ServiceException(CommonResultCodeEnum.INVALID_NULL, "已使用的序列号无法分配！");
+        //            }
+        //            super.update(eq(SysSerialDto::getId,serialId),
+        //                    eq(SysSerialDto::getSecondSerialClassId,serialClassId),
+        //                    eq(SysSerialDto::getSecondAgentId,secondAgentId));
+        //        });
+
+        // 2. 现在是，已经分配的，可以转到其他人头上。
+        serialIds.forEach(serialId -> {
             SysSerial sysSerial = serialService.findOne(serialId);
-            if(sysSerial.getStatus()!=0){
-                throw new ServiceException(CommonResultCodeEnum.INVALID_NULL, "已使用的序列号无法分配！");
-            }
-            super.update(eq(SysSerialDto::getId,serialId),
-                    eq(SysSerialDto::getSecondSerialClassId,serialClassId),
-                    eq(SysSerialDto::getSecondAgentId,secondAgentId));
+            super.update(eq(SysSerialDto::getId, serialId),
+                         eq(SysSerialDto::getSecondSerialClassId, serialClassId),
+                         eq(SysSerialDto::getSecondAgentId, secondAgentId));
         });
         return true;
     }

@@ -22,12 +22,22 @@ public class RedeemImports {
     @ExcelField(value = "兑换次数")
     private Integer useNum;
 
+    @ExcelField("所属代理商（一级分类）")
+    private String className;
+
     public static List<RedeemImports> demo() {
         List<RedeemImports> imports = new ArrayList<>();
-        imports.add(new RedeemImports("标题一", "100101", 12));
-        imports.add(new RedeemImports("标题二", "100102", 26));
-        imports.add(new RedeemImports("标题三", "100103", 55));
-        imports.add(new RedeemImports("标题四", "100104", 33));
+        imports.add(new RedeemImports("标题一", "100101", 12, "Cutter"));
+        imports.add(new RedeemImports("标题二", "100102", 26, "DEVIA"));
+        imports.add(new RedeemImports("标题三", "100103", 55, "Cutter"));
+        imports.add(new RedeemImports("标题四", "100104", 33, "Cutter"));
         return imports;
+    }
+
+    /**
+     * 用于分组
+     */
+    public String group() {
+        return this.title + ":" + this.className;
     }
 }

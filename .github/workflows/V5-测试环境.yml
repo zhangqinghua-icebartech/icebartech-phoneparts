@@ -66,4 +66,4 @@ jobs:
           password: ${{ secrets.TEST_SERVER_PASSWORD }}
           script: |
             cd /data/deploy/Java/icebartech-phoneparts
-            nohup java -jar icebartech-phoneparts.jar --spring.profile.active=test > logs/start.log 2>&1 &
+            nohup java -jar icebartech-phoneparts.jar --spring.profiles.active=test > logs/start.log 2>&1 &

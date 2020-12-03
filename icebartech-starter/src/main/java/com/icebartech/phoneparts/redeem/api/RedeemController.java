@@ -4,9 +4,12 @@ import com.icebartech.core.annotations.RequireLogin;
 import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.utils.BeanMapper;
+import com.icebartech.core.vo.QueryParam;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.excel.ExcelUtils;
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
+import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.redeem.dto.RedeemDTO;
 import com.icebartech.phoneparts.redeem.excel.RedeemImports;
 import com.icebartech.phoneparts.redeem.param.RedeemCustomInsertParam;
@@ -26,6 +29,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.icebartech.core.vo.QueryParam.eq;
 
@@ -35,23 +40,25 @@ import static com.icebartech.core.vo.QueryParam.eq;
 public class RedeemController extends BaseController {
 
     @Autowired
-    RedeemService service;
+    private AgentService agentService;
     @Autowired
-    RedeemCodeService redeemCodeService;
+    private RedeemService redeemService;
+    @Autowired
+    private RedeemCodeService redeemCodeService;
 
 
     @ApiOperation("新增")
     @RequireLogin({UserEnum.admin})
     @PostMapping("/insert")
     public RespDate<Boolean> insert(@Valid @RequestBody RedeemInsertParam param) {
-        return getRtnDate(service.insertAll(param));
+        return getRtnDate(redeemService.insertAll(param));
     }
 
     @ApiOperation("自定义新增")
     @RequireLogin({UserEnum.admin})
     @PostMapping("/custom_insert")
     public RespDate<Boolean> custom_insert(@Valid @RequestBody RedeemCustomInsertParam param) {
-        return getRtnDate(service.insertCustom(param));
+        return getRtnDate(redeemService.insertCustom(param));
     }
 
     @ApiOperation("获取分页")
@@ -74,22 +81,34 @@ public class RedeemController extends BaseController {
         if (is) {
             param.setIdIn(list);
         }
-        return getPageRtnDate(service.findPage(param));
+        return getPageRtnDate(redeemService.findPage(param));
     }
 
     @ApiOperation("删除")
     @RequireLogin({UserEnum.admin})
     @PostMapping("/delete")
     public RespDate<Boolean> delete(@RequestParam Long id) {
-        return getRtnDate(service.deleteAll(id));
+        return getRtnDate(redeemService.deleteAll(id));
     }
 
     @ApiOperation("兑换码导入")
     @PostMapping("/imposrts")
     public RespDate<Boolean> imposrts(@RequestParam("file") MultipartFile file) throws IOException {
         List<RedeemImports> imports = ExcelUtils.imports(file.getInputStream(), RedeemImports.class);
-        for (RedeemCustomInsertParam param : BeanMapper.map(imports, RedeemCustomInsertParam.class)) {
-            service.insertCustom(param);
+
+        // 1. 获取代理商Id
+        List<AgentDTO> agents = agentService.findList(QueryParam.in(AgentDTO::getClassName, imports.stream().map(RedeemImports::getClassName).collect(Collectors.toList())));
+
+        // 2. 对数据按照标题和代理商进行分组
+        Map<String, List<RedeemImports>> group = imports.stream().collect(Collectors.groupingBy(RedeemImports::group));
+
+        // 3. 分别新增数据
+        for (String key : group.keySet()) {
+            String title = key.split(":")[0];
+            String className = key.split(":")[1];
+            Long agentId = agents.stream().filter(a -> a.getClassName().equals(className)).map(AgentDTO::getId).findAny().orElse(null);
+            List<RedeemImports> groupImports = group.get(key);
+            redeemService.insertCustom(title, agentId, BeanMapper.map(groupImports, RedeemCode.class));
         }
         return getRtnDate(true);
     }

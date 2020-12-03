@@ -248,7 +248,7 @@ import java.util.*;
 public class BeanMapper {
 
     public static void copyProperties(Object from, Object to) {
-        copyPropertiesShallow(from, to);
+        copyPropertiesMiddle(from, to);
     }
 
     /**

@@ -30,8 +30,8 @@ templates:
   - 1f12C2
 
 ## 阿里云OSS：
-access-id: LTAIt3vIGEQOyxs7
-access-key: vmlIoysSPo9D14NXheYLpSHdqBAf96
+access-id: 
+access-key: 
 oss-endpoint: http://oss-cn-hongkong.aliyuncs.com/
 oss-url: https://cut0820.oss-cn-hongkong.aliyuncs.com
 bucket-name: cut0820
@@ -65,8 +65,8 @@ templates:
   - 1f12C2
 
 ## 阿里云OSS：
-access-id: LTAIt3vIGEQOyxs7
-access-key: vmlIoysSPo9D14NXheYLpSHdqBAf96
+access-id: 
+access-key: 
 oss-endpoint: http://oss-cn-hongkong.aliyuncs.com/
 oss-url: https://cut0820.oss-cn-hongkong.aliyuncs.com
 bucket-name: cut0820

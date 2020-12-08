@@ -12,6 +12,7 @@ import com.icebartech.excel.ExcelUtils;
 import com.icebartech.phoneparts.agent.po.Agent;
 import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
+import com.icebartech.phoneparts.product.dto.UseRecordDetailExcel;
 import com.icebartech.phoneparts.product.dto.UseRecordExcel;
 import com.icebartech.phoneparts.product.param.UseRecordPageParam;
 import com.icebartech.phoneparts.product.param.UseRecordProductPageParam;
@@ -120,15 +121,16 @@ public class UseRecordController extends BaseController {
     }
 
 
-    @ApiOperation("数据导出")
-    @GetMapping("/excelOut")
-    public void excelOut(HttpServletResponse response,
-                         String serialNum,
-                         String email,
-                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime strTime,
-                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime,
-                         int query,
-                         Long agentId) throws Exception {
+    @ApiOperation("切割统计数据导出")
+    @GetMapping("/use_record_excel_out")
+    public void use_record_excel_out(HttpServletResponse response,
+                                     String serialNum,
+                                     String email,
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime strTime,
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime,
+                                     int query,
+                                     Long agentId) {
+
         UseRecordUserPageParam param = new UseRecordUserPageParam();
         param.setPageSize(1000000000);
         param.setPageIndex(1);
@@ -181,9 +183,75 @@ public class UseRecordController extends BaseController {
 
         System.out.println(param);
 
-        Page<Map> page = useRecordService.findUserRecord1(param);
+        Page<Map> page = useRecordService.findUserRecord(param);
 
         ExcelUtils.exports(BeanMapperNew.map(page.getContent(), UseRecordExcel.class),
                            response, "切割统计");
+    }
+
+    @ApiOperation("切割统计详情数据导出")
+    @GetMapping("/use_record_detail_excel_out")
+    public void use_record_detail_excel_out(HttpServletResponse response,
+                                            @RequestParam Long userId,
+                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime strTime,
+                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime,
+                                            int query,
+                                            Long agentId) {
+
+        UseRecordUserPageParam param = new UseRecordUserPageParam();
+        param.setPageSize(1000000000);
+        param.setPageIndex(1);
+        param.setUserId(userId);
+
+        // 按照条件搜索
+        if (query == 0) {
+            param.setStrTime(strTime);
+            param.setEndTime(endTime);
+        }
+
+        // 查询当天数据
+        if (query == 1) {
+            param.setStrTime(LocalDate.now().atStartOfDay());
+            param.setEndTime(param.getStrTime().plusDays(1));
+        }
+
+
+        // 查询昨天数据
+        if (query == 2) {
+            param.setStrTime(LocalDate.now().minusDays(1).atStartOfDay());
+            param.setEndTime(param.getStrTime().plusDays(1));
+        }
+
+        // 查询近10天数据
+        if (query == 3) {
+            param.setStrTime(LocalDate.now().minusDays(10).atStartOfDay());
+            param.setEndTime(param.getStrTime().plusDays(10));
+        }
+
+        // 查询近半个月数据
+        if (query == 4) {
+            param.setStrTime(LocalDate.now().minusDays(15).atStartOfDay());
+            param.setEndTime(param.getStrTime().plusDays(15));
+        }
+
+        if (agentId != null) {
+            Agent agent = agentService.findOne(agentId);
+            // 代理商一级
+            if (agent.getParentId() == 0) {
+                param.setAgentId(agentId);
+
+            }
+            // 代理商二级
+            else {
+                param.setSecondAgentId(agentId);
+            }
+        }
+
+        System.out.println(param);
+
+        Page<Map> page = useRecordService.findUserRecord1(param);
+
+        ExcelUtils.exports(BeanMapperNew.map(page.getContent(), UseRecordDetailExcel.class),
+                           response, "切割详情");
     }
 }

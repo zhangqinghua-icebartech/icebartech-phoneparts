@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class UseRecordUserPageParam extends PageParam {
 
+
+    @ApiModelProperty(value = "用户Id",example = "100101")
+    private Long userId;
+
     @ApiModelProperty(value = "代理商id",example = "代理商id")
     private Long agentId;
 
@@ -31,5 +35,4 @@ public class UseRecordUserPageParam extends PageParam {
 
     @ApiModelProperty(value = "结束时间")
     private LocalDateTime endTime;
-
 }

@@ -90,16 +90,14 @@ public class AgentServiceImpl extends AbstractService<AgentDTO, Agent, AgentRepo
     @Override
     public Boolean reduceUseCount(Long agentId, Integer num) {
         Agent agent = super.findOne(agentId);
-        int mayUseCount;
-        int reNum = num;
-        if (num > agent.getMayUseCount()) {
-            reNum = agent.getMayUseCount();
-            mayUseCount = 0;
-        } else {
-            mayUseCount = agent.getMayUseCount() - num;
-        }
 
-        //返还次数
+        // 1. 计算授权次数和剩余次数
+        int reNum = num > agent.getMayUseCount() ? agent.getMayUseCount() : num;
+        agent.setUseCount(agent.getUseCount() - reNum);
+        agent.setUseCount(agent.getUseCount() < 0 ? 0 : agent.getUseCount());
+        agent.setMayUseCount(agent.getMayUseCount() - reNum);
+
+        // 2. 返还剩余次数给上级
         LocalUser localUser = UserThreadLocal.getUserInfo();
         if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
             Agent agent2 = super.findOne(localUser.getUserId());
@@ -108,7 +106,10 @@ public class AgentServiceImpl extends AbstractService<AgentDTO, Agent, AgentRepo
                          eq(AgentDTO::getMayUseCount, reNum));
         }
 
-        return super.update(eq(AgentDTO::getId, agent.getId()), eq(AgentDTO::getMayUseCount, mayUseCount));
+        // 3. 设置授权次数和剩余次数
+        return super.update(eq(AgentDTO::getId, agent.getId()),
+                            eq(AgentDTO::getUseCount, agent.getUseCount()),
+                            eq(AgentDTO::getMayUseCount, agent.getMayUseCount()));
     }
 
     @Override

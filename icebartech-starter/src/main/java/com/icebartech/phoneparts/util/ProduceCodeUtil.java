@@ -31,7 +31,7 @@ public class ProduceCodeUtil {
     public static String findDateNum(){
 
         Date data = new Date();
-        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sf = new SimpleDateFormat("MMdd");
         return sf.format(data);
     }
 

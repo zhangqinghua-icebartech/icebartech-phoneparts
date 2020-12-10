@@ -11,7 +11,9 @@ import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.phoneparts.system.dto.SysSerialClassDTO;
 import com.icebartech.phoneparts.system.dto.SysSerialDto;
-import com.icebartech.phoneparts.system.param.*;
+import com.icebartech.phoneparts.system.param.SysSerialClassInsertParam;
+import com.icebartech.phoneparts.system.param.SysSerialClassPageParam;
+import com.icebartech.phoneparts.system.param.SysSerialClassUpdateParam;
 import com.icebartech.phoneparts.system.service.SysSerialClassService;
 import com.icebartech.phoneparts.system.service.SysSerialService;
 import io.swagger.annotations.Api;
@@ -42,75 +44,78 @@ public class SysSerialClassController extends BaseController {
 
 
     @ApiOperation("获取分页")
-    @RequireLogin({UserEnum.admin,UserEnum.app,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})
     @PostMapping("/find_page")
     public RespPage<SysSerialClassDTO> findPage(@Valid @RequestBody SysSerialClassPageParam param) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
-        if(localUser.getLevel() == 0){
+
+        // 1. 超级管理员
+        if (localUser.getLevel() == 0) {
             param.setParentId(0L);
-        }else if(localUser.getLevel() == 1){
-            if(param.getAgentId()==null){
-                param.setParentId(localUser.getUserId());
-            }else {
-                param.setParentId(0L);
-            }
         }
-        if(localUser.getLevel() == 2){
+
+        // 2. 一级代理商，只能查看parentId=localUser.getUserId()的数据
+        if (localUser.getLevel() == 1) {
+            param.setParentId(localUser.getUserId());
+        }
+
+        // 3. 二级代理商
+        if (localUser.getLevel() == 2) {
             param.setParentId(localUser.getParentId());
         }
         return getPageRtnDate(service.findPage(param));
     }
 
     @ApiOperation("获取列表")
-    @RequireLogin({UserEnum.admin,UserEnum.app,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})
     @PostMapping("/find_list")
     public RespDate<List<SysSerialClassDTO>> findList() {
         LocalUser localUser = UserThreadLocal.getUserInfo();
         Long parentId = UserThreadLocal.getUserId();
-        if(localUser.getLevel() == 0){
+        if (localUser.getLevel() == 0) {
             parentId = 0L;
         }
-        if(localUser.getLevel() == 2){
+        if (localUser.getLevel() == 2) {
             parentId = localUser.getParentId();
         }
-        return getRtnDate(service.findList(eq(SysSerialClassDTO::getParentId,parentId)));
+        return getRtnDate(service.findList(eq(SysSerialClassDTO::getParentId, parentId)));
     }
 
     @ApiOperation("获取详情")
-    @RequireLogin({UserEnum.admin,UserEnum.app,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})
     @PostMapping("/find_detail")
     public RespDate<SysSerialClassDTO> findDetail(@RequestParam Long id) {
         return getRtnDate(service.findDetail(id));
     }
 
     @ApiOperation("新增")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/insert")
     public RespDate<Long> insert(@Valid @RequestBody SysSerialClassInsertParam param) {
         return getRtnDate(service.insert(param));
     }
 
     @ApiOperation("修改")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/update")
     public RespDate<Boolean> update(@Valid @RequestBody SysSerialClassUpdateParam param) {
         return getRtnDate(service.update(param));
     }
 
     @ApiOperation("修改排序")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/changeSort")
     public RespDate<Boolean> changeSort(@RequestParam("id") Long id,
                                         @RequestParam("sort") Integer sort) {
-        return getRtnDate(service.changeSort(id,sort));
+        return getRtnDate(service.changeSort(id, sort));
     }
 
     @ApiOperation("删除")
-    @RequireLogin({UserEnum.admin,UserEnum.agent})
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/delete")
     public RespDate<Boolean> delete(@RequestParam Long id) {
         SysSerialDto sysSerial = sysSerialService.findBySerialClassId(id);
-        if(sysSerial!=null)
+        if (sysSerial != null)
             throw new ServiceException(CommonResultCodeEnum.INVALID_OPERATION, "请先删除其菜单下序列号");
         return getRtnDate(service.delete(id));
     }

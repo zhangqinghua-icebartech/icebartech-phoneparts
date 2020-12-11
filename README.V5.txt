@@ -22,3 +22,6 @@
 
 9. ✔ 兑换码管理新增一个【自定义兑换码】功能，支持单个兑换码自定义生成。
 9. ✘ 切割导出（数据量巨大）
+
+9. Duplicate key name 'userId'
+9. Duplicate key name 'second_agent_id'

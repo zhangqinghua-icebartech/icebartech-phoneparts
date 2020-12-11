@@ -67,4 +67,5 @@ public class RedeemCodeController extends BaseController {
     public void excelOut(HttpServletResponse response, Long redeemId) {
         ExcelUtils.exports(BeanMapper.map(service.exportData(redeemId), RedeemExports.class), response, "兑换码明细");
     }
+
 }

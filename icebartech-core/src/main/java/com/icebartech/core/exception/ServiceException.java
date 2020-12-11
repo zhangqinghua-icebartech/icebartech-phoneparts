@@ -58,6 +58,7 @@ public class ServiceException extends RuntimeException {
      */
     public ServiceException(String errorMessage, Throwable cause) {
         super(null, cause);
+        this.errorCode = CommonResultCodeEnum.INTERFACE_INNER_INVOKE_ERROR;
         this.errorMessage = errorMessage;
     }
 

@@ -463,6 +463,16 @@ public class BeanMapper {
             }
         }
 
+        // 转换枚举
+        if (destClz.isEnum()) {
+            try {
+                return parseEnum(String.valueOf(source), destClz);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ServiceException("转换枚举异常：" + e.getMessage(), e);
+            }
+        }
+
         // 7.2 Object -> Object destFields.forEach tps: 100000 destFields.parallelStream().forEach tps: 50000 奇怪了更少了
         // todo 已知道 List，Enum无法newInstance
         try {
@@ -968,10 +978,27 @@ public class BeanMapper {
 //        Object[] objs = new Object[]{"userName", "zhangsan"};
 //        System.out.println(BeanMapper.map(objs, AdminUserAdminInsertParam.class));
 
-        System.out.println(BeanMapper.map(new Date(), String.class));
-
-        System.out.println(BeanMapper.map(LocalDate.now(), String.class));
+        // System.out.println(BeanMapper.map(new Date(), String.class));
+        //
+        // System.out.println(BeanMapper.map(LocalDate.now(), String.class));
     }
 
+    /**
+     * 字符串转枚举
+     * @param text  字符串 例如 unpaid
+     * @param clazz 枚举类 例如 OrderStatus
+     * @return OrderStatus.unpaid
+     */
+    private static <D> D parseEnum(String text, Class<D> clazz) {
+        if (!clazz.isEnum())
+            throw new ServiceException("目标对象不是枚举类型，无法转换");
 
+        D[] enumConstants = clazz.getEnumConstants();
+        if (Objects.isNull(enumConstants) || enumConstants.length == 0)
+            return null;
+        return Arrays.stream(enumConstants)
+                     .filter(member -> member.toString().equalsIgnoreCase(text))
+                     .findFirst()
+                     .orElse(null);
+    }
 }

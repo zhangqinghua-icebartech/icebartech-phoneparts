@@ -1,6 +1,7 @@
 package com.icebartech.phoneparts.redeem.service.impl;
 
 import com.icebartech.core.modules.AbstractService;
+import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.utils.QRCodeUtil;
 import com.icebartech.phoneparts.redeem.dto.RedeemCodeDTO;
 import com.icebartech.phoneparts.redeem.po.RedeemCode;
@@ -10,6 +11,7 @@ import com.icebartech.phoneparts.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,8 +22,7 @@ import java.util.List;
  */
 
 @Service
-public class RedeemCodeServiceImpl extends AbstractService
-<RedeemCodeDTO, RedeemCode, RedeemCodeRepository> implements RedeemCodeService {
+public class RedeemCodeServiceImpl extends AbstractService<RedeemCodeDTO, RedeemCode, RedeemCodeRepository> implements RedeemCodeService {
 
     @Autowired
     UserService userService;
@@ -36,7 +37,7 @@ public class RedeemCodeServiceImpl extends AbstractService
 //        }
         try {
             redeemCode.setQrCode(QRCodeUtil.qrCode(redeemCode.getCode()));
-        }catch (Exception e){
+        } catch (Exception e) {
             redeemCode.setQrCode(null);
         }
     }
@@ -45,5 +46,11 @@ public class RedeemCodeServiceImpl extends AbstractService
     @Override
     public List<Long> findRedeemIdList(String email) {
         return repository.findRedeemIdList(email);
+    }
+
+    @Override
+    public List<RedeemCode> exportData(Long redeemId) {
+        if (redeemId == null) return new ArrayList<>();
+        return BeanMapper.map(repository.exportData(redeemId), RedeemCode.class);
     }
 }

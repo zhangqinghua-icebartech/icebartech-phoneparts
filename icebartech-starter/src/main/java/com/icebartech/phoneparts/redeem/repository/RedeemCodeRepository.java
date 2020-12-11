@@ -5,6 +5,7 @@ import com.icebartech.phoneparts.redeem.po.RedeemCode;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author pc
@@ -16,4 +17,7 @@ public interface RedeemCodeRepository extends BaseRepository<RedeemCode> {
 
     @Query(nativeQuery = true, value = "SELECT s.redeem_id FROM redeem_code s WHERE s.email = ?1")
     List<Long> findRedeemIdList(String email);
+
+    @Query(nativeQuery = true, value = "select code, title, state, email, gmt_created as gmtCreated from redeem_code where is_deleted = 'n' and redeem_id = ?1")
+    List<Map<String, Object>>  exportData(Long redeemId);
 }

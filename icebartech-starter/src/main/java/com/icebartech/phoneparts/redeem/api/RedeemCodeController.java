@@ -5,11 +5,12 @@ import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
+import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.excel.ExcelUtils;
 import com.icebartech.phoneparts.redeem.dto.RedeemCodeDTO;
-import com.icebartech.phoneparts.redeem.param.RedeemCodeOutParam;
+import com.icebartech.phoneparts.redeem.excel.RedeemExports;
 import com.icebartech.phoneparts.redeem.param.RedeemCodePageParam;
 import com.icebartech.phoneparts.redeem.service.RedeemCodeService;
 import io.swagger.annotations.Api;
@@ -34,7 +35,7 @@ import static com.icebartech.core.vo.QueryParam.eq;
 public class RedeemCodeController extends BaseController {
 
     @Autowired
-    RedeemCodeService service;
+    private RedeemCodeService service;
 
     @ApiOperation("获取分页")
     @RequireLogin({UserEnum.admin})
@@ -42,15 +43,6 @@ public class RedeemCodeController extends BaseController {
     public RespPage<RedeemCodeDTO> findPage(@Valid @RequestBody RedeemCodePageParam param) {
         return getPageRtnDate(service.findPage(param));
     }
-
-    @ApiOperation("数据导出")
-    @PostMapping("/excelOut")
-    @RequireLogin({UserEnum.admin})
-    public void excelOut(HttpServletResponse response,
-                         RedeemCodeOutParam param) throws Exception {
-        ExcelUtils.exports(service.findList(param), response, "兑换码导出");
-    }
-
 
     @ApiOperation("根据兑换码获取详情")
     @RequireLogin({UserEnum.admin, UserEnum.app})
@@ -70,5 +62,9 @@ public class RedeemCodeController extends BaseController {
         return getRtnDate(service.findDetail(id));
     }
 
-
+    @ApiOperation("数据导出")
+    @GetMapping("/excelOut")
+    public void excelOut(HttpServletResponse response, Long redeemId) {
+        ExcelUtils.exports(BeanMapper.map(service.exportData(redeemId), RedeemExports.class), response, "兑换码明细");
+    }
 }

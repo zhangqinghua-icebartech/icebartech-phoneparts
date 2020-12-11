@@ -12,8 +12,9 @@ import java.util.List;
  * @Description 兑换码
  */
 
-public interface RedeemCodeService extends BaseService
-<RedeemCodeDTO, RedeemCode> {
+public interface RedeemCodeService extends BaseService<RedeemCodeDTO, RedeemCode> {
 
     List<Long> findRedeemIdList(String email);
+
+    List<RedeemCode> exportData(Long redeemId);
 }

@@ -119,7 +119,8 @@
     <!-- 生产环境日志级别为INFO/并只记录错误日志文件 -->
     <springProfile name="prod">
         <root level="INFO">
-            <!--<appender-ref ref="fileInfoLog" />-->
+            <appender-ref ref="console"/>
+            <appender-ref ref="fileInfoLog" />
             <appender-ref ref="fileErrorLog"/>
         </root>
     </springProfile>

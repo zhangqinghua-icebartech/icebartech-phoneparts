@@ -231,7 +231,7 @@ public class UserController extends BaseController {
     private UserRepository userRepository;
 
     @ApiOperation("去除重复账号")
-    @PostMapping("/test")
+    @GetMapping("/test")
     public RespDate<Boolean> test() {
         // 重复的邮箱
         List<String> emails = userRepository.repeatEmail();

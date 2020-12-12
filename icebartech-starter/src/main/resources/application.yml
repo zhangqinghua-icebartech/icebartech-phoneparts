@@ -16,4 +16,4 @@ spring:
     timeout: 30m
 
 # 默认使用开发环境
-spring.profiles.active: prod
+spring.profiles.active: dev

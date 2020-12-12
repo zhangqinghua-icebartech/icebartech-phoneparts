@@ -37,7 +37,7 @@ import static com.icebartech.core.vo.QueryParam.eq;
 
 @Service
 public class SysSerialServiceImpl extends AbstractService
-<SysSerialDto, SysSerial, SysSerialRepository> implements SysSerialService {
+                                                  <SysSerialDto, SysSerial, SysSerialRepository> implements SysSerialService {
 
     @Autowired
     AgentService agentService;
@@ -54,36 +54,38 @@ public class SysSerialServiceImpl extends AbstractService
     @Override
     protected void warpDTO(Long id, SysSerialDto serial) {
 
-        if(serial.getEndTime() !=null && new Date().compareTo(serial.getEndTime())>0)
+        if (serial.getEndTime() != null && new Date().compareTo(serial.getEndTime()) > 0)
             serial.setStatus(SerialEnum.NO_STATUS.getKey());
 
-        LocalUser localUser = UserThreadLocal.getUserInfo();
+        LocalUser localUser = UserThreadLocal.getUserInfo(true);
 
         //后台代理商
-        if(localUser.getLevel() == 0){
+        if (localUser != null && localUser.getLevel() == 0) {
             //二级代理商名称
             AgentDTO agent = agentService.findOneOrNull(serial.getAgentId());
-            if(agent!=null){
+            if (agent != null) {
                 serial.setAgentClassName(agent.getClassName());
             }
             SysSerialClassDTO sysSerialClass = sysSerialClassService.findOneOrNull(serial.getSerialClassId());
-            if(sysSerialClass != null){
+            if (sysSerialClass != null) {
                 serial.setSerialClassName(sysSerialClass.getChinaName());
             }
 
 
-        } else if(localUser.getLevel() == 1 || localUser.getLevel() == 2){
+        }
+
+        if (localUser != null && (localUser.getLevel() == 1 || localUser.getLevel() == 2)) {
             //二级代理商名称
             AgentDTO agent = agentService.findOneOrNull(serial.getSecondAgentId());
-            if(agent!=null){
+            if (agent != null) {
                 serial.setAgentClassName(agent.getClassName());
             }
             SysSerialClassDTO sysSerialClass = sysSerialClassService.findOneOrNull(serial.getSecondSerialClassId());
-            if(sysSerialClass != null){
+            if (sysSerialClass != null) {
                 serial.setSerialClassName(sysSerialClass.getChinaName());
             }
             SysSerialClassDTO sysSerialClass2 = sysSerialClassService.findOneOrNull(serial.getSerialClassId());
-            if(sysSerialClass2 != null){
+            if (sysSerialClass2 != null) {
                 serial.setBatchName(sysSerialClass2.getChinaName());
             }
         }
@@ -92,7 +94,7 @@ public class SysSerialServiceImpl extends AbstractService
 
     @Override
     protected void preDelete(Long id) {
-        userService.delete(eq(User::getSerialId,id));
+        userService.delete(eq(User::getSerialId, id));
     }
 
     @Override
@@ -103,8 +105,8 @@ public class SysSerialServiceImpl extends AbstractService
     @Override
     @Transactional
     public Boolean excelInput(List<SysSerialInsertParam> sysSerialInsertParams) {
-        sysSerialInsertParams.forEach(serial-> {
-            if(findBySerialNum(serial.getSerialNum())==null){
+        sysSerialInsertParams.forEach(serial -> {
+            if (findBySerialNum(serial.getSerialNum()) == null) {
                 super.insert(serial);
             }
         });
@@ -113,13 +115,13 @@ public class SysSerialServiceImpl extends AbstractService
 
     @Override
     public SysSerialDto findBySerialNum(String serialNum) {
-        return super.findOneOrNull(eq(SysSerialDto::getSerialNum,serialNum));
+        return super.findOneOrNull(eq(SysSerialDto::getSerialNum, serialNum));
     }
 
     @Override
     public Boolean useNumAdd(SysSerialDto serialDTO) {
         Integer useNum = serialDTO.getUseNum();
-        useNum ++;
+        useNum++;
         serialDTO.setUseNum(useNum);
         return super.update(serialDTO);
     }
@@ -127,12 +129,12 @@ public class SysSerialServiceImpl extends AbstractService
     @Override
     public Boolean isValid(String serialNum) {
         SysSerialDto sysSerial = findBySerialNum(serialNum);
-        if(sysSerial==null) return false;
+        if (sysSerial == null) return false;
         //判断过期
-        if(sysSerial.getStatus() == SerialEnum.NO_STATUS.getKey())
+        if (sysSerial.getStatus() == SerialEnum.NO_STATUS.getKey())
             return false;
 
-        if(sysSerial.getEndTime() != null && new Date().compareTo(sysSerial.getEndTime())>0)
+        if (sysSerial.getEndTime() != null && new Date().compareTo(sysSerial.getEndTime()) > 0)
             throw new ServiceException(CommonResultCodeEnum.NO_SERIAL, "已过期");
 
         //判断上限
@@ -142,12 +144,12 @@ public class SysSerialServiceImpl extends AbstractService
     @Override
     public String create(SysSerialCreateParam param) {
         String randomStr = ProduceCodeUtil.findSerialNum("random");
-        for (int i=0;i<param.getNum();i++){
+        for (int i = 0; i < param.getNum(); i++) {
             Agent agent = agentService.findOne(param.getAgentId());
             String title = agent.getClassName();
             //序列号
             String serialNum = ProduceCodeUtil.findSerialNum(title);
-            super.insert(new SysSerialInsertParam(serialNum,param.getAgentId(),param.getSerialClassId(),randomStr));
+            super.insert(new SysSerialInsertParam(serialNum, param.getAgentId(), param.getSerialClassId(), randomStr));
         }
         return randomStr;
     }
@@ -156,12 +158,12 @@ public class SysSerialServiceImpl extends AbstractService
     @Transactional
     public Boolean init(Long id) {
         repository.init(id);
-        return userService.delete(eq(User::getSerialId,id));
+        return userService.delete(eq(User::getSerialId, id));
     }
 
     @Override
     public SysSerialDto findBySerialClassId(Long id) {
-        return super.findOneOrNull(eq(SysSerialDto::getSerialClassId,id));
+        return super.findOneOrNull(eq(SysSerialDto::getSerialClassId, id));
     }
 
     @Override
@@ -171,7 +173,7 @@ public class SysSerialServiceImpl extends AbstractService
 
     @Override
     @Transactional
-    public Boolean allocation(Long secondAgentId, List<Long> serialIds,Long serialClassId) {
+    public Boolean allocation(Long secondAgentId, List<Long> serialIds, Long serialClassId) {
         // 1. 原来是已经分配的无法再次分配。
         //        serialIds.forEach(serialId->{
         //            SysSerial sysSerial = serialService.findOne(serialId);

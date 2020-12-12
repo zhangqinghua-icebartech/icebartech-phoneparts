@@ -90,4 +90,12 @@ public interface UserService extends BaseService
      * 序列号、邮箱、一级分类、总切割数、剩余切割术、注册时间
      */
     List<UserDto> export(UserOutParam param);
+
+    /**
+     * 重新分配用户
+     * @param serialId
+     * @param secondAgentId
+     * @param serialClassId
+     */
+    void allocation(Long serialId, Long secondAgentId, Long serialClassId);
 }

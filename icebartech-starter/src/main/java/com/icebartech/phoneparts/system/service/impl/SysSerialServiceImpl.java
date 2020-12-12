@@ -191,6 +191,9 @@ public class SysSerialServiceImpl extends AbstractService
             super.update(eq(SysSerialDto::getId, serialId),
                          eq(SysSerialDto::getSecondSerialClassId, serialClassId),
                          eq(SysSerialDto::getSecondAgentId, secondAgentId));
+
+            //重新分配用户
+            userService.allocation(serialId,secondAgentId,serialClassId);
         });
         return true;
     }

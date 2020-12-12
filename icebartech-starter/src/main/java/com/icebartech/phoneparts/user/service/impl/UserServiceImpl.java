@@ -408,4 +408,9 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
 
         return list;
     }
+
+    @Override
+    public void allocation(Long serialId, Long secondAgentId, Long serialClassId) {
+        repository.allocation(serialId, secondAgentId, serialClassId);
+    }
 }

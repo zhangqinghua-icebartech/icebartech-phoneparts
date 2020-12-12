@@ -433,9 +433,6 @@ public abstract class AbstractService<D extends P, P extends BasePo, R extends B
         this.warpDetail(d.getId(), d);
     }
 
-    protected void warpDTO(D d) {
-    }
-
     protected void warpDTO(Long id, D d) {
     }
 

@@ -7,7 +7,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.Index;
 
+import javax.persistence.Column;
 import java.util.Date;
 
 @Data
@@ -30,6 +32,9 @@ public class UserDto extends User {
     @ExcelField(value = "一级分类")
     @ApiModelProperty(value = "一级分类名称", example = "一级分类名称")
     private String agentClassName;
+
+    @ApiModelProperty(value = "二级分类称", example = "二级分类称")
+    private String serialClassName;
 
     @ExcelField(value = "注册时间")
     @ApiModelProperty(value = "注册时间")

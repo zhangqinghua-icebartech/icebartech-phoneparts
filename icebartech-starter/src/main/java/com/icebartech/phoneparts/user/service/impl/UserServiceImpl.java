@@ -22,7 +22,10 @@ import com.icebartech.phoneparts.redeem.po.Redeem;
 import com.icebartech.phoneparts.redeem.po.RedeemCode;
 import com.icebartech.phoneparts.redeem.service.RedeemCodeService;
 import com.icebartech.phoneparts.redeem.service.RedeemService;
+import com.icebartech.phoneparts.system.dto.SysSerialClassDTO;
 import com.icebartech.phoneparts.system.dto.SysSerialDto;
+import com.icebartech.phoneparts.system.po.SysSerialClass;
+import com.icebartech.phoneparts.system.service.SysSerialClassService;
 import com.icebartech.phoneparts.system.service.SysSerialService;
 import com.icebartech.phoneparts.system.service.SysUseConfigService;
 import com.icebartech.phoneparts.user.dto.UserDto;
@@ -45,8 +48,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.icebartech.core.vo.QueryParam.eq;
+import static com.icebartech.core.vo.QueryParam.in;
 
 @Slf4j
 @Service
@@ -75,7 +80,8 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
     private SysUseConfigService sysUseConfigService;
     @Autowired
     private AddUseRecordService addUseRecordService;
-
+    @Autowired
+    private SysSerialClassService sysSerialClassService;
 
     @Override
     protected void postUpdate(Long id) {
@@ -87,6 +93,29 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
     protected void postDelete(Long id) {
         // 删除缓存
         cacheComponent.delUserDetail(id);
+    }
+
+    @Override
+    protected void warpDTO(List<Long> ids, List<UserDto> ds) {
+//        // 1. 设置一级分类名称
+//        List<AgentDTO> agents = agentService.findList(in(Agent::getId, ds.stream().map(UserDto::getAgentId).collect(Collectors.toList())));
+//        ds.forEach(d->agents.stream().filter(a->a.getId().equals(d.getAgentId())).findAny().ifPresent(a-> {
+//            d.setOrigin(a.getCompanyName());
+//            d.setAgentClassName(a.getClassName());
+//        }));
+//
+//        // 2. 设置二级分类名称
+//
+//
+//        // 3. 头像，过期时间
+//        for (UserDto d : ds) {
+//            d.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(d.getHeadPortrait()));
+//            d.setPastTime(DateTimeUtility.delayTime(d.getGmtCreated(), 1));
+//        }
+
+//        // 1. 设置二级分类名称
+        List<SysSerialClassDTO> sysSerialClasses = sysSerialClassService.findList(in(SysSerialClass::getId, ds.stream().map(UserDto::getSerialClassId).collect(Collectors.toList())));
+        ds.forEach(d -> sysSerialClasses.stream().filter(sc -> sc.getId().equals(d.getSerialClassId())).findAny().ifPresent(sc -> d.setSerialClassName(sc.getChinaName())));
     }
 
     @Override
@@ -103,6 +132,7 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
             if (localUser.getLevel() == 0) {
                 user.setAgentClassName(agent.getClassName());
                 //一级代理商
+
             } else if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
                 Agent agent2 = agentService.findOneOrNull(user.getSecondAgentId());
                 if (agent2 != null) {

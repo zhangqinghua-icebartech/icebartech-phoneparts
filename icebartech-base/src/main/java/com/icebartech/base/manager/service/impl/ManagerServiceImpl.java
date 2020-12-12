@@ -21,10 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.icebartech.core.vo.QueryParam.attr;
-import static com.icebartech.core.vo.QueryParam.eq;
+import static com.icebartech.core.vo.QueryParam.*;
 
 @Service
 @Slf4j
@@ -61,8 +62,9 @@ public class ManagerServiceImpl extends AbstractService<Manager, SysManager, Man
     }
 
     @Override
-    protected void warpDTO(Manager d) {
-        d.setRoleName(roleService.findOne(d.getRoleId()).getRoleName());
+    protected void warpDTO(List<Long> ids, List<Manager> ds) {
+        List<Role> roles = roleService.findList(in(Role::getId, ds.stream().map(Manager::getRoleId).collect(Collectors.toList())));
+        ds.forEach(d->d.setRoleName(roles.stream().filter(r->r.getId().equals(d.getRoleId())).map(Role::getRoleName).findAny().orElse(null)));
     }
 
     @Override

@@ -81,6 +81,12 @@ public class SysSerialClassController extends BaseController {
         return getRtnDate(service.findList(eq(SysSerialClassDTO::getParentId, parentId)));
     }
 
+    @ApiOperation("获取代理商的序列号")
+    @PostMapping("/agent_find_list")
+    public RespDate<List<SysSerialClassDTO>> agent_find_list(@Valid @RequestBody SysSerialClassPageParam param) {
+        return getRtnDate(service.findList(eq(SysSerialClassDTO::getAgentId, param.getAgentId())));
+    }
+
     @ApiOperation("获取详情")
     @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})
     @PostMapping("/find_detail")

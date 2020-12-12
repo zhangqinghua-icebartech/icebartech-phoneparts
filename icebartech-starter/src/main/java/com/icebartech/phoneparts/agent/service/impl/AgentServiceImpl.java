@@ -51,7 +51,7 @@ public class AgentServiceImpl extends AbstractService<AgentDTO, Agent, AgentRepo
     }
 
     @Override
-    protected void warpDTO(AgentDTO d) {
+    protected void warpDTO(Long id, AgentDTO d) {
         // 解密密码
         if (d.getPassword() != null) d.setPassword(encryptUtil.Base64Decode(d.getPassword()));
     }

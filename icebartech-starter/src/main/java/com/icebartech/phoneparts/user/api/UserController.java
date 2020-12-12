@@ -68,11 +68,14 @@ public class UserController extends BaseController {
     public RespPage<UserDto> findPage(@Valid @RequestBody UserPageParam param) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
 
-        //一级代理商
+        // 一级代理商，查询
         if (localUser.getLevel() == 1) {
+            param.setSecondAgentId(param.getAgentId());
             param.setAgentId(localUser.getUserId());
-            //二级代理商
-        } else if (localUser.getLevel() == 2) {
+        }
+
+        // 二级代理商
+        else if (localUser.getLevel() == 2) {
             param.setSecondAgentId(localUser.getUserId());
         }
 
@@ -220,7 +223,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation("后台减少次数")
-     @RequireLogin({UserEnum.admin, UserEnum.agent, UserEnum.no_login})
+    @RequireLogin({UserEnum.admin, UserEnum.agent, UserEnum.no_login})
     @PostMapping("/backReduceUseCount")
     public RespDate<Boolean> reduceUseCount(@ApiParam("用户id") @RequestParam("userId") Long userId,
                                             @ApiParam("减少次数") @RequestParam("num") Integer num) {

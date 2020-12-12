@@ -33,8 +33,11 @@ public class UserDto extends User {
     @ApiModelProperty(value = "一级分类名称", example = "一级分类名称")
     private String agentClassName;
 
-    @ApiModelProperty(value = "二级分类称", example = "二级分类称")
+    @ApiModelProperty(value = "批次", example = "二级分类称")
     private String serialClassName;
+
+    @ApiModelProperty(value = "二级分类称", example = "二级分类称")
+    private String secondSerialClassName;
 
     @ExcelField(value = "注册时间")
     @ApiModelProperty(value = "注册时间")

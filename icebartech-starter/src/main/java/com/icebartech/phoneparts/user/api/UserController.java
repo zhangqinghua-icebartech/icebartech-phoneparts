@@ -67,16 +67,15 @@ public class UserController extends BaseController {
     @PostMapping("/find_page")
     public RespPage<UserDto> findPage(@Valid @RequestBody UserPageParam param) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
-
         // 一级代理商，查询
         if (localUser.getLevel() == 1) {
-            param.setSecondAgentId(param.getAgentId());
-            param.setAgentId(localUser.getUserId());
+             param.setSecondAgentId(param.getAgentId());
+             param.setAgentId(localUser.getUserId());
         }
 
         // 二级代理商
         else if (localUser.getLevel() == 2) {
-            param.setSecondAgentId(localUser.getUserId());
+             param.setSecondAgentId(localUser.getUserId());
         }
 
         return getPageRtnDate(userService.findPage(param));

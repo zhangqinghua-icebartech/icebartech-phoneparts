@@ -16,19 +16,21 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class UserPageParam extends PageParam {
 
-    @ApiModelProperty(value = "序列号",example = "序列号（选填）")
+    @ApiModelProperty(value = "序列号", example = "序列号（选填）")
     private String serialNumLike;
 
-    @ApiModelProperty(value = "邮箱",example = "邮箱（选填）")
+    @ApiModelProperty(value = "邮箱", example = "邮箱（选填）")
     private String emailLike;
 
-    @ApiModelProperty(value = "代理商id",example = "代理商id")
+    @ApiModelProperty(value = "代理商id", example = "代理商id")
     private Long agentId;
 
-    @ApiModelProperty(value = "次级代理商id",example = "次级代理商id")
+    @ApiModelProperty(value = "次级代理商id", example = "次级代理商id")
     private Long secondAgentId;
 
-    @ApiModelProperty(value = "二级分类id",example = "二级分类id")
+    @ApiModelProperty(value = "二级分类id", example = "二级分类id")
     private Long serialClassId;
 
+    @ApiModelProperty(value = "一级代理商的二级分类id", example = "一级代理商的二级分类id")
+    private Long secondSerialClassId;
 }

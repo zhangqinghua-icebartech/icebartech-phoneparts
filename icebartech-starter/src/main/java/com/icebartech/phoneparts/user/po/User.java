@@ -74,4 +74,9 @@ public class User extends BasePo {
     @ApiModelProperty(value = "二级分类id", example = "二级分类id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '二级分类id'")
     private Long serialClassId;
+
+    @Index(name = "secondSerialClassId")
+    @ApiModelProperty(value = "一级代理商的二级分类id",example = "一级代理商的二级分类id")
+    @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '二级分类id'")
+    private Long secondSerialClassId;
 }

@@ -39,6 +39,9 @@ public class UserInsertParam {
     @ApiModelProperty(value = "二级分类id",hidden = true)
     private Long serialClassId;
 
+    @ApiModelProperty(value = "一级代理商的二级分类id", example = "一级代理商的二级分类id")
+    private Long secondSerialClassId;
+
     @ApiModelProperty(value = "次级代理商id",example = "次级代理商id")
     private Long secondAgentId;
 

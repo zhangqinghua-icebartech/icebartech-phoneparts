@@ -113,9 +113,14 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
 //            d.setPastTime(DateTimeUtility.delayTime(d.getGmtCreated(), 1));
 //        }
 
-//        // 1. 设置二级分类名称
+        // 1. 设置批次
         List<SysSerialClassDTO> sysSerialClasses = sysSerialClassService.findList(in(SysSerialClass::getId, ds.stream().map(UserDto::getSerialClassId).collect(Collectors.toList())));
         ds.forEach(d -> sysSerialClasses.stream().filter(sc -> sc.getId().equals(d.getSerialClassId())).findAny().ifPresent(sc -> d.setSerialClassName(sc.getChinaName())));
+
+
+        // 2. 设置二级分类名称
+        List<SysSerialClassDTO> secondSysSerialClasses = sysSerialClassService.findList(in(SysSerialClass::getId, ds.stream().map(UserDto::getSecondSerialClassId).collect(Collectors.toList())));
+        ds.forEach(d -> secondSysSerialClasses.stream().filter(sc -> sc.getId().equals(d.getSecondSerialClassId())).findAny().ifPresent(sc -> d.setSecondSerialClassName(sc.getChinaName())));
     }
 
     @Override
@@ -161,8 +166,10 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
         param.setSecondAgentId(serialDTO.getSecondAgentId());
 
 
-        //用户所属代理商分类
+        //用户所属代理商批次
         param.setSerialClassId(serialDTO.getSerialClassId());
+        //用户所属代理商分类
+        param.setSecondSerialClassId(serialDTO.getSecondSerialClassId());
 
 
         //增加使用次数绑定邮箱

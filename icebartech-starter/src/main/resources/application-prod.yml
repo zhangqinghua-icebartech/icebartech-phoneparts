@@ -8,7 +8,7 @@ site:
 spring:
   # 生产环境Redis（切换成为1号Redis）
   redis:
-    database: 1
+    database: 2
     host: 172.31.123.122
     port: 6579
     password: bH360891

@@ -39,10 +39,10 @@ jobs:
           WELCOME: "ssh scp ssh pipelines"
           LASTSSH: "Doing something after copying"
         with:
-          host: ${{ secrets.RPOD_SERVER_HOST }}
-          port: ${{ secrets.RPOD_SERVER_PORT }}
-          user: ${{ secrets.RPOD_SERVER_USERNAME }}
-          pass: ${{ secrets.RPOD_SERVER_PASSWORD }}
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          port: ${{ secrets.PROD_SERVER_PORT }}
+          user: ${{ secrets.PROD_SERVER_USERNAME }}
+          pass: ${{ secrets.PROD_SERVER_PASSWORD }}
 
           connect_timeout: 100s
           # 创建目录 + 停止之前的应用
@@ -60,10 +60,10 @@ jobs:
       - name: Start Application
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.RPOD_SERVER_HOST }}
-          port: ${{ secrets.RPOD_SERVER_PORT }}
-          username: ${{ secrets.RPOD_SERVER_USERNAME }}
-          password: ${{ secrets.RPOD_SERVER_PASSWORD }}
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          port: ${{ secrets.PROD_SERVER_PORT }}
+          username: ${{ secrets.PROD_SERVER_USERNAME }}
+          password: ${{ secrets.PROD_SERVER_PASSWORD }}
           script: |
             cd /data/deploy/Java/icebartech-phoneparts
             nohup java -jar icebartech-phoneparts.jar --spring.profiles.active=prod > /u01/logs/phoneparts.log 2>&1 &

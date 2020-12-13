@@ -12,6 +12,11 @@ site:
   session-expires: 7D
 
 spring:
+  jpa:
+    show-sql: true # 不显示sql
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update # 设置变动了则改变表结构
   redis:
     timeout: 30m
 

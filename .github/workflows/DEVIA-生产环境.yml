@@ -2,7 +2,7 @@ name: V5-生产环境
 # 触发条件：v5 分支提交就触发活动。
 on:
   push:
-    branches: v6
+    branches: devia
 # 步骤流程：
 jobs:
   job_1:
@@ -39,10 +39,10 @@ jobs:
           WELCOME: "ssh scp ssh pipelines"
           LASTSSH: "Doing something after copying"
         with:
-          host: ${{ secrets.PROD_SERVER_HOST }}
-          port: ${{ secrets.PROD_SERVER_PORT }}
-          user: ${{ secrets.PROD_SERVER_USERNAME }}
-          pass: ${{ secrets.PROD_SERVER_PASSWORD }}
+          host: ${{ secrets.DEVIA_PROD_SERVER_HOST }}
+          port: ${{ secrets.DEVIA_PROD_SERVER_PORT }}
+          user: ${{ secrets.DEVIA_PROD_SERVER_USERNAME }}
+          pass: ${{ secrets.DEVIA_PROD_SERVER_PASSWORD }}
 
           connect_timeout: 100s
           # 创建目录 + 停止之前的应用
@@ -60,10 +60,10 @@ jobs:
       - name: Start Application
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.PROD_SERVER_HOST }}
-          port: ${{ secrets.PROD_SERVER_PORT }}
-          username: ${{ secrets.PROD_SERVER_USERNAME }}
-          password: ${{ secrets.PROD_SERVER_PASSWORD }}
+          host: ${{ secrets.DEVIA_PROD_SERVER_HOST }}
+          port: ${{ secrets.DEVIA_PROD_SERVER_PORT }}
+          username: ${{ secrets.DEVIA_PROD_SERVER_USERNAME }}
+          password: ${{ secrets.DEVIA_PROD_SERVER_PASSWORD }}
           script: |
             cd /data/deploy/Java/icebartech-phoneparts
             nohup java -jar icebartech-phoneparts.jar --spring.profiles.active=prod > /u01/logs/phoneparts.log 2>&1 &

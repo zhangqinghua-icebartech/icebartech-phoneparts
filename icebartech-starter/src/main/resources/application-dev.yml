@@ -1,46 +1,30 @@
-# 手机膜-开发环境（开发环境）
+# 手机膜-开发环境（本地开发使用）
 site:
   app-name: icebartech-enweis-test
-  explanation: 手机膜开发环境
-  #host: phoneparts.icebartech.com
+  explanation: 手机膜开发环境（思腾）
   host: localhost:60901
 
 spring:
-  # 测试环境Redis
+  # 开发环境Redis（外网IP）
   redis:
     database: 0
-    host: 120.78.135.29
-    port: 6379
-    password:
-
-  # 测试环境MySQL
+    host: 47.242.210.88
+    port: 6579
+    password: bH360891
+  # 开发环境MySQL（外网IP）
   datasource:
-    url: jdbc:mysql://120.78.135.29:3306/phoneparts_v4_bak?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://47.242.210.88:3306/devia?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
     username: phoneparts
     password: phoneparts
-  jpa:
-    show-sql: true # 不显示sql
-    generate-ddl: true
-    hibernate:
-      ddl-auto: update # 设置变动了则改变表结构
-
-  # sms短信
+  # 短信
   sms:
     url: https://api.mysubmail.com/message/xsend.json
-    appId: 52983
-    appKey: cab23130148380dc4adc9ceb72e2b4d8
+    appId: 58781
+    appKey: 30f7a253a0c16274a8f0956a8bcd52e6
     mode: prod
+    # 验证码模板
     project-codes:
-      - p3b9J1 #验证码模板
-
-  # SUBMAIL邮箱
-  mail:
-    from: phone
-    url: https://api.mysubmail.com/mail/xsend.json
-    appid: 14561
-    appKey: fe8dfa6bf7883c20cbb7f14ab8abe35a
-    templates:
-      - 1f12C2
+      - nqx8I2
 
 # 阿里云OSS
 aliyun:
@@ -49,4 +33,3 @@ aliyun:
   oss-endpoint: http://oss-cn-hongkong.aliyuncs.com/
   oss-url: https://cut0820.oss-accelerate.aliyuncs.com
   bucket-name: cut0820
-

@@ -49,6 +49,7 @@ jobs:
           first_ssh: |
             pkill -f icebartech-phoneparts
             mkdir -p /data/deploy/Java/icebartech-phoneparts
+            cd /data/deploy/Java/icebartech-phoneparts
 
             if [ ! -f "/icebartech-phoneparts.jar" ]; then
               datename=$(date +%Y%m%d%H%M%S)

@@ -47,8 +47,13 @@ jobs:
           connect_timeout: 100s
           # 创建目录 + 停止之前的应用
           first_ssh: |
-            mkdir -p /data/deploy/Java/icebartech-phoneparts
             pkill -f icebartech-phoneparts
+            mkdir -p /data/deploy/Java/icebartech-phoneparts
+
+            if [ ! -f "/icebartech-phoneparts.jar" ]; then
+              datename=$(date +%Y%m%d%H%M%S)
+              mv icebartech-phoneparts.jar icebartech-phoneparts.jar.bak.$datename
+            fi
           # 推送文件到服务器
           scp: |
             icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts

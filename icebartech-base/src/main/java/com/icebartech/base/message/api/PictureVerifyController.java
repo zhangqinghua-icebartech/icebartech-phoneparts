@@ -43,6 +43,4 @@ public class PictureVerifyController extends BaseController {
 
     }
 
-
-
 }

@@ -25,6 +25,8 @@ public class PictureVerifyServiceImpl implements PictureVerifyService {
     public boolean verify(String code,String ip) {
         log.info("验证码={}，ip={}",code,ip);
         String code1 = (String) redisComponent.get(RANDOMCODEKEY,ip);
+        System.out.println("param code: " + code);
+        System.out.println("redis code: " + code1);
         if(code1==null) return false;
         return code1.equalsIgnoreCase(code);
     }

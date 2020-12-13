@@ -81,9 +81,9 @@ public class AdminManagerController extends BaseController {
     public RespDate<String> adminLogin(@RequestParam String loginName,
                                        @RequestParam String password,
                                        @RequestParam String code) {
-        //验证码校验
-        if(!mailService.verify(loginName, CodeTypeEnum.REGISTER.name(),code))
-            throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "手机验证码错误");
+//        //验证码校验
+//        if(!mailService.verify(loginName, CodeTypeEnum.REGISTER.name(),code))
+//            throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "手机验证码错误");
         return getRtnDate(service.adminLogin(loginName, password));
     }
 
@@ -93,8 +93,8 @@ public class AdminManagerController extends BaseController {
                                        @RequestParam String password,
                                        @RequestParam String code) {
         //验证码校验
-        if(!pictureVerifyService.verify(code,getRemoteIP()))
-            throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "图形验证码错误");
+//        if(!pictureVerifyService.verify(code,getRemoteIP()))
+//            throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "图形验证码错误");
         return getRtnDate(service.agentLogin(loginName, password));
     }
 

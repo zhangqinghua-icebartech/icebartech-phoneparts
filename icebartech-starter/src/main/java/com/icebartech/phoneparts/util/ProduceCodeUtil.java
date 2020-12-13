@@ -20,18 +20,34 @@ public class ProduceCodeUtil {
     }
 
 
+    /**
+     * 生成序列号
+     * @param title 标题
+     * @return 序列号
+     */
     public static String findSerialNum(String title){
-        return title + findDateNum() + findChar(6);
+        return title + findDateNum("yyyyMM") + findChar(6);
     }
 
     /**
-     * 获取时间数字串 00000000
+     * 获取时间数字串 20201213
      * @return 数字串
      */
     public static String findDateNum(){
 
         Date data = new Date();
-        SimpleDateFormat sf = new SimpleDateFormat("MMdd");
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+        return sf.format(data);
+    }
+
+
+    /**
+     * 获取时间数字串 1213
+     * @return 数字串
+     */
+    public static String findDateNum(String format){
+        Date data = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat(format);
         return sf.format(data);
     }
 

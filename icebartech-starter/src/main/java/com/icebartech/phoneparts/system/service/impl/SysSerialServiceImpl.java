@@ -187,7 +187,6 @@ public class SysSerialServiceImpl extends AbstractService
 
         // 1. 现在是，已经分配的，可以转到其他人头上。
         serialIds.forEach(serialId -> {
-            SysSerial sysSerial = serialService.findOne(serialId);
             super.update(eq(SysSerialDto::getId, serialId),
                          eq(SysSerialDto::getSecondSerialClassId, serialClassId),
                          eq(SysSerialDto::getSecondAgentId, secondAgentId));

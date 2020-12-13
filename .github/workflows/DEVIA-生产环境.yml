@@ -45,16 +45,15 @@ jobs:
           pass: ${{ secrets.DEVIA_PROD_SERVER_PASSWORD }}
 
           connect_timeout: 100s
-          # 创建目录 + 停止之前的应用
+          # 停止应用 + 创建目录（可选） + 备份数据（可选）
           first_ssh: |
             pkill -f icebartech-phoneparts
             mkdir -p /data/deploy/Java/icebartech-phoneparts
             cd /data/deploy/Java/icebartech-phoneparts
 
-            if [ ! -f "/icebartech-phoneparts.jar" ]; then
-              datename=$(date +%Y%m%d%H%M%S)
-              mv icebartech-phoneparts.jar icebartech-phoneparts.jar.bak.$datename
-            fi
+            datename=$(date +%Y%m%d%H%M%S)
+            mv icebartech-phoneparts.jar icebartech-phoneparts.jar.bak.$datename
+
           # 推送文件到服务器
           scp: |
             icebartech-starter/target/icebartech-phoneparts.jar => /data/deploy/Java/icebartech-phoneparts

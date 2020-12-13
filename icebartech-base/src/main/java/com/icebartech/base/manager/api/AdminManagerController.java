@@ -98,6 +98,7 @@ public class AdminManagerController extends BaseController {
         return getRtnDate(service.agentLogin(loginName, password));
     }
 
+
     @ApiOperation("重置密码")
     @PostMapping("/reset_passowrd")
     public RespDate<Boolean> resetPassowrd(@RequestParam String oldPassword, @RequestParam String newPassword) {

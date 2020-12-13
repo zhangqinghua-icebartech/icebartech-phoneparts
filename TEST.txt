@@ -1,0 +1,35 @@
+deviaboss.purcellcut.com
+deviacloud.purcellcut.com
+
+
+# 接口和管理员后台
+server {
+    listen 80;
+    server_name deviaboss.purcellcut.com;
+    limit_conn icphone_conn 30;
+    ssl_protocols TLSv1.2;
+
+    error_log  /u01/logs/nginx.deviaboss.purcellcut.com.error.log error;
+    access_log  /u01/logs/nginx.deviaboss.purcellcut.com.access.log combined;
+
+    set $remote_addrx $http_x_forwarded_for;
+    if ( $remote_addrx ~ " " ) {
+         set $remote_addrx $remote_addr;
+    }
+
+    location ^~ /sys {
+        alias /data/deploy/Web/icebartech-phoneparts/icebartech-phoneparts-sys/dist;
+        try_files $uri $uri/ /sys/index.html;
+    }
+
+    # 接口地址
+    location ^~ /api {
+        proxy_pass http://localhost:60901;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header X-nginx-real-ip $remote_addr;
+        proxy_set_header x-forwarded-for $proxy_add_x_forwarded_for;
+    }
+}
+
+# 代理商管理后台

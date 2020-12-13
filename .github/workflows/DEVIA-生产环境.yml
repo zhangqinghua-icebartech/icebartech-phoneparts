@@ -49,10 +49,9 @@ jobs:
           first_ssh: |
             pkill -f icebartech-phoneparts
             mkdir -p /data/deploy/Java/icebartech-phoneparts
-            cd /data/deploy/Java/icebartech-phoneparts
 
             datename=$(date +%Y%m%d%H%M%S)
-            mv icebartech-phoneparts.jar icebartech-phoneparts.jar.bak.$datename
+            mv /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar /data/deploy/Java/icebartech-phoneparts/icebartech-phoneparts.jar.bak.$datename
 
           # 推送文件到服务器
           scp: |

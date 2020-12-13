@@ -16,7 +16,7 @@ public class ProduceCodeUtil {
      * @return 兑换码
      */
     public static String findRedeemCode(){
-        return findDateNum() + findChar(6);
+        return findDateNum("yyMMdd") + findChar(6);
     }
 
 
@@ -26,7 +26,7 @@ public class ProduceCodeUtil {
      * @return 序列号
      */
     public static String findSerialNum(String title){
-        return title + findDateNum("yyyyMM") + findChar(6);
+        return title + findDateNum() + findChar(6);
     }
 
     /**

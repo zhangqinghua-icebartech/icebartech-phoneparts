@@ -6,14 +6,17 @@ import lombok.Data;
 @Data
 public class UserExports {
 
-    @ExcelField(value = "序列号", columnWidth = 20)
+    @ExcelField(value = "序列号", columnWidth = 30)
     private String serialNum;
 
-    @ExcelField(value = "邮箱", columnWidth = 20)
+    @ExcelField(value = "邮箱", columnWidth = 30)
     private String email;
 
     @ExcelField(value = "一级分类")
     private String agentClassName;
+
+    @ExcelField(value = "二级分类称")
+    private String secondSerialClassName;
 
     @ExcelField(value = "总切割次数")
     private Integer useCount;

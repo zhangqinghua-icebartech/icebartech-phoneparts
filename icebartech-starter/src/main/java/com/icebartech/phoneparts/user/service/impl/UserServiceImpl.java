@@ -400,8 +400,10 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
             user.setSerialNum(map.get("serial_num") + "");
             user.setEmail(map.get("email") + "");
             user.setAgentClassName(map.get("class_name") + "");
+            user.setSecondSerialClassName(map.get("china_name") == null ? "" : map.get("china_name") + "");
             user.setUseCount((int) map.get("use_count"));
             user.setMayUseCount((int) map.get("may_use_count"));
+
             user.setRegisterTime(((Timestamp) map.get("gmt_created")).toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             list.add(user);
         }

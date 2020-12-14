@@ -1,7 +1,7 @@
 # 手机膜-测试环境
 site:
   app-name: icebartech-enweis-test
-  explanation: 手机膜开发环境
+  explanation: 手机膜开发环境（202012140924）
   #host: phoneparts.icebartech.com
   host: localhost:60901
 

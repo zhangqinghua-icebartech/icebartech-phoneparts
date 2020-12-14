@@ -64,4 +64,11 @@ public interface SysSerialService extends BaseService
     Integer unUseNum(Long userId);
 
     Boolean allocation(Long secondAgentId, List<Long> serialIds,Long serialClassId);
+
+    /**
+     * 批量导出
+     * @param randomStr 序列号
+     * @return 导出数据
+     */
+    List<SysSerialDto> excelExports(String randomStr);
 }

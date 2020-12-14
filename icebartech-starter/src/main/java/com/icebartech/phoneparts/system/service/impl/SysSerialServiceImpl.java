@@ -5,6 +5,7 @@ import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.modules.AbstractService;
+import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.po.Agent;
 import com.icebartech.phoneparts.agent.service.AgentService;
@@ -198,4 +199,8 @@ public class SysSerialServiceImpl extends AbstractService
         return true;
     }
 
+    @Override
+    public List<SysSerialDto> excelExports(String randomStr) {
+        return BeanMapper.map(repository.manager_excelExports(randomStr), SysSerialDto.class);
+    }
 }

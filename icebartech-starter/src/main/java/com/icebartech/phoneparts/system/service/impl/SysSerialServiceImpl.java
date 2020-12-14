@@ -5,6 +5,7 @@ import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.modules.AbstractService;
+import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.po.Agent;
 import com.icebartech.phoneparts.agent.service.AgentService;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.icebartech.core.vo.QueryParam.eq;
+import static com.icebartech.core.vo.QueryParam.in;
 
 /**
  * @author pc
@@ -36,8 +38,7 @@ import static com.icebartech.core.vo.QueryParam.eq;
  */
 
 @Service
-public class SysSerialServiceImpl extends AbstractService
-                                                  <SysSerialDto, SysSerial, SysSerialRepository> implements SysSerialService {
+public class SysSerialServiceImpl extends AbstractService<SysSerialDto, SysSerial, SysSerialRepository> implements SysSerialService {
 
     @Autowired
     AgentService agentService;
@@ -70,8 +71,6 @@ public class SysSerialServiceImpl extends AbstractService
             if (sysSerialClass != null) {
                 serial.setSerialClassName(sysSerialClass.getChinaName());
             }
-
-
         }
 
         if (localUser != null && (localUser.getLevel() == 1 || localUser.getLevel() == 2)) {
@@ -90,7 +89,6 @@ public class SysSerialServiceImpl extends AbstractService
             }
         }
     }
-
 
     @Override
     protected void preDelete(Long id) {
@@ -111,6 +109,32 @@ public class SysSerialServiceImpl extends AbstractService
             }
         });
         return true;
+    }
+
+    @Override
+    public List<SysSerialDto> excelExports(String randomStr) {
+        // List<SysSerialDto> ds = super.findList(eq(SysSerialDto::getRandomStr, randomStr));
+        //
+        // // 算后台代理商
+        //
+        // List<AgentDTO> agents = agentService.findList(in(Agent::getId, ds.stream().map(SysSerialDto::)));
+        // //二级代理商名称
+        //
+        //
+        //
+        // AgentDTO agent = agentService.findOneOrNull(serial.getSecondAgentId());
+        // if (agent != null) {
+        //     serial.setAgentClassName(agent.getClassName());
+        // }
+        // SysSerialClassDTO sysSerialClass = sysSerialClassService.findOneOrNull(serial.getSecondSerialClassId());
+        // if (sysSerialClass != null) {
+        //     serial.setSerialClassName(sysSerialClass.getChinaName());
+        // }
+        // SysSerialClassDTO sysSerialClass2 = sysSerialClassService.findOneOrNull(serial.getSerialClassId());
+        // if (sysSerialClass2 != null) {
+        //     serial.setBatchName(sysSerialClass2.getChinaName());
+        // }
+        return BeanMapper.map( repository.manager_excelExports(randomStr), SysSerialDto.class);
     }
 
     @Override
@@ -192,7 +216,7 @@ public class SysSerialServiceImpl extends AbstractService
                          eq(SysSerialDto::getSecondAgentId, secondAgentId));
 
             //重新分配用户
-            userService.allocation(serialId,secondAgentId,serialClassId);
+            userService.allocation(serialId, secondAgentId, serialClassId);
         });
         return true;
     }

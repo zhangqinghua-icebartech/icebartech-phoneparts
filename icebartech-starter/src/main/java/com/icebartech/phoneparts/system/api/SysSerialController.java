@@ -7,14 +7,12 @@ import com.icebartech.core.enums.CommonResultCodeEnum;
 import com.icebartech.core.exception.ServiceException;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
+import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.excel.ExcelUtils;
 import com.icebartech.phoneparts.system.dto.SysSerialDto;
-import com.icebartech.phoneparts.system.param.SysSerialCreateParam;
-import com.icebartech.phoneparts.system.param.SysSerialInsertParam;
-import com.icebartech.phoneparts.system.param.SysSerialPageParam;
-import com.icebartech.phoneparts.system.param.SysSerialUpdateParam;
+import com.icebartech.phoneparts.system.param.*;
 import com.icebartech.phoneparts.system.po.SysSerial;
 import com.icebartech.phoneparts.system.service.SysSerialService;
 import io.swagger.annotations.Api;
@@ -183,7 +181,7 @@ public class SysSerialController extends BaseController {
     @GetMapping("/excelOut")
     @RequireLogin(UserEnum.no_login)
     public void createExcelOut(HttpServletResponse response, @RequestParam String randomStr) {
-        List<SysSerialDto> sysSerialDtos = service.findList(eq(SysSerialDto::getRandomStr, randomStr));
-        ExcelUtils.exports(sysSerialDtos, response, "生成序列号列表");
+        List<SysSerialDto> sysSerialDtos = service.excelExports(randomStr);
+        ExcelUtils.exports(BeanMapper.map(sysSerialDtos, SysSerialExports.class), response, "生成序列号列表");
     }
 }

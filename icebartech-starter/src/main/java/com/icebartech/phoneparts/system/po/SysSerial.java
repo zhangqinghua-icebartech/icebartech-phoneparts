@@ -24,7 +24,6 @@ import java.util.Date;
 @Table(appliesTo = "sys_serial", comment = "序列号表")
 public class SysSerial extends BasePo {
 
-    @ExcelField(value = "序列号")
     @ApiModelProperty(value = "序列号", example = "序列号")
     @Column(columnDefinition = "varchar(225) NOT NULL COMMENT '序列号'")
     private String serialNum;

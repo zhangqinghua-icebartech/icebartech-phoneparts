@@ -8,14 +8,7 @@ import com.icebartech.phoneparts.system.po.SysSerial;
 
 import java.util.List;
 
-/**
- * @author pc
- * @Date 2019-06-18T11:09:42.138
- * @Description 序列号表
- */
-
-public interface SysSerialService extends BaseService
-        <SysSerialDto, SysSerial> {
+public interface SysSerialService extends BaseService<SysSerialDto, SysSerial> {
 
     /**
      * 批量导入
@@ -23,6 +16,13 @@ public interface SysSerialService extends BaseService
      * @return Boolean
      */
     Boolean excelInput(List<SysSerialInsertParam> sysSerialInsertParams);
+
+    /**
+     * 批量导出
+     * @param randomStr 序列号
+     * @return 导出数据
+     */
+    List<SysSerialDto> excelExports(String randomStr);
 
     /**
      * 获取通过序列号
@@ -63,5 +63,5 @@ public interface SysSerialService extends BaseService
 
     Integer unUseNum(Long userId);
 
-    Boolean allocation(Long secondAgentId, List<Long> serialIds,Long serialClassId);
+    Boolean allocation(Long secondAgentId, List<Long> serialIds, Long serialClassId);
 }

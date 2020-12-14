@@ -16,10 +16,7 @@ import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.excel.ExcelUtils;
 import com.icebartech.phoneparts.user.dto.UserDto;
-import com.icebartech.phoneparts.user.param.UserInsertParam;
-import com.icebartech.phoneparts.user.param.UserOutParam;
-import com.icebartech.phoneparts.user.param.UserPageParam;
-import com.icebartech.phoneparts.user.param.UserUpdateParam;
+import com.icebartech.phoneparts.user.param.*;
 import com.icebartech.phoneparts.user.po.LoginDto;
 import com.icebartech.phoneparts.user.repository.UserRepository;
 import com.icebartech.phoneparts.user.service.UserService;
@@ -59,7 +56,7 @@ public class UserController extends BaseController {
     @ApiOperation("数据导出")
     @GetMapping("/excelOut")
     public void excelOut(HttpServletResponse response, UserOutParam param) {
-        ExcelUtils.exports(userService.export(param), response, "用户列表");
+        ExcelUtils.exports(BeanMapper.map(userService.export(param), UserExports.class), response, "用户列表");
     }
 
     @ApiOperation("获取分页")
@@ -69,13 +66,13 @@ public class UserController extends BaseController {
         LocalUser localUser = UserThreadLocal.getUserInfo();
         // 一级代理商，查询
         if (localUser.getLevel() == 1) {
-             param.setSecondAgentId(param.getAgentId());
-             param.setAgentId(localUser.getUserId());
+            param.setSecondAgentId(param.getAgentId());
+            param.setAgentId(localUser.getUserId());
         }
 
         // 二级代理商
         else if (localUser.getLevel() == 2) {
-             param.setSecondAgentId(localUser.getUserId());
+            param.setSecondAgentId(localUser.getUserId());
         }
 
         return getPageRtnDate(userService.findPage(param));

@@ -1,7 +1,6 @@
 package com.icebartech.phoneparts.user.po;
 
 import com.icebartech.core.po.BasePo;
-import com.icebartech.excel.annotation.ExcelField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,7 +28,6 @@ public class User extends BasePo {
     private Long serialId;
 
     @ApiModelProperty(value = "序列号", example = "序列号")
-    @ExcelField(value = "序列号")
     @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '序列号'")
     private String serialNum;
 
@@ -38,7 +36,6 @@ public class User extends BasePo {
     private String headPortrait;
 
     @ApiModelProperty(value = "邮箱", example = "邮箱")
-    @ExcelField(value = "邮箱")
     @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '邮箱'")
     private String email;
 
@@ -50,12 +47,10 @@ public class User extends BasePo {
     @Column(columnDefinition = "int(1) NOT NULL DEFAULT '0' COMMENT '是否有效，0有效 1无效'")
     private Integer enable;
 
-    @ExcelField(value = "总切割次数")
     @ApiModelProperty(value = "总切割次数", example = "总切割次数")
     @Column(columnDefinition = "int(11) NOT NULL DEFAULT '0' COMMENT '总切割次数'")
     private Integer useCount;
 
-    @ExcelField(value = "剩余切割次数")
     @ApiModelProperty(value = "剩余切割次数", example = "剩余切割次数")
     @Column(columnDefinition = "int(11) NOT NULL DEFAULT '0' COMMENT '剩余切割次数'")
     private Integer mayUseCount;
@@ -76,7 +71,7 @@ public class User extends BasePo {
     private Long serialClassId;
 
     @Index(name = "secondSerialClassId")
-    @ApiModelProperty(value = "一级代理商的二级分类id",example = "一级代理商的二级分类id")
+    @ApiModelProperty(value = "一级代理商的二级分类id", example = "一级代理商的二级分类id")
     @Column(columnDefinition = "bigint(20) NOT NULL DEFAULT '0' COMMENT '二级分类id'")
     private Long secondSerialClassId;
 }

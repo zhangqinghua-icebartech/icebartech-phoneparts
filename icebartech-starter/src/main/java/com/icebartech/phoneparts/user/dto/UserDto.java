@@ -1,6 +1,5 @@
 package com.icebartech.phoneparts.user.dto;
 
-import com.icebartech.excel.annotation.ExcelField;
 import com.icebartech.phoneparts.user.po.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -36,7 +35,6 @@ public class UserDto extends User {
     @ApiModelProperty(value = "二级分类称", example = "二级分类称")
     private String secondSerialClassName;
 
-    @ExcelField(value = "注册时间")
     @ApiModelProperty(value = "注册时间")
     private String registerTime;
 }

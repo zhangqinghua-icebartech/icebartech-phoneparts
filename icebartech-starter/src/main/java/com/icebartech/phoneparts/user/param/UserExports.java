@@ -20,4 +20,7 @@ public class UserExports {
 
     @ExcelField(value = "剩余切割次数")
     private Integer mayUseCount;
+
+    @ExcelField(value = "注册时间")
+    private String registerTime;
 }

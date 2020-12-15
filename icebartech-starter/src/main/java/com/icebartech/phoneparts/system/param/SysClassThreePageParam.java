@@ -3,27 +3,30 @@ package com.icebartech.phoneparts.system.param;
 import com.icebartech.core.params.PageParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.List;
 
 
-/**
- * @author Created by liuao on 2020/6/8 0008$.
- * @desc
- */
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class SysClassThreePageParam extends PageParam {
 
-    @ApiModelProperty(value = "所属一级分类",example = "所属一级分类（选填）")
+    @ApiModelProperty(value = "所属三级分类")
+    private Long id;
+
+    @ApiModelProperty(value = "所属一级分类", example = "所属一级分类（选填）")
     private Long classOneId;
 
-    @ApiModelProperty(value = "二级分类id",example = "二级分类id")
+    @ApiModelProperty(value = "二级分类id", example = "二级分类id")
     private Long classTwoId;
 
-    @ApiModelProperty(value = "分类中文名称",example = "分类中文名称（选填）")
+    @ApiModelProperty(value = "分类中文名称", example = "分类中文名称（选填）")
     private String chinaNameLike;
 
-    @ApiModelProperty(value = "分类英文名称",example = "分类英文名称（选填）")
+    @ApiModelProperty(value = "分类英文名称", example = "分类英文名称（选填）")
     private String englishNameLike;
 
     @ApiModelProperty(value = "递减排序", hidden = true)

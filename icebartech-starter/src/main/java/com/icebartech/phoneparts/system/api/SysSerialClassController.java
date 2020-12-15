@@ -18,11 +18,13 @@ import com.icebartech.phoneparts.system.service.SysSerialClassService;
 import com.icebartech.phoneparts.system.service.SysSerialService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.icebartech.core.vo.QueryParam.eq;
@@ -66,6 +68,7 @@ public class SysSerialClassController extends BaseController {
         return getPageRtnDate(service.findPage(param));
     }
 
+
     @ApiOperation("获取列表")
     @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})
     @PostMapping("/find_list")
@@ -84,6 +87,10 @@ public class SysSerialClassController extends BaseController {
     @ApiOperation("获取代理商的序列号")
     @PostMapping("/agent_find_list")
     public RespDate<List<SysSerialClassDTO>> agent_find_list(@Valid @RequestBody SysSerialClassPageParam param) {
+        // 必须指定代理商
+        if (param.getAgentId() == null) {
+            return getRtnDate(new ArrayList<>());
+        }
         return getRtnDate(service.findList(eq(SysSerialClassDTO::getAgentId, param.getAgentId())));
     }
 

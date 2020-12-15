@@ -17,6 +17,9 @@ public class RedeemCustomInsertParam {
     @ApiModelProperty(value = "兑换码", example = "兑换码")
     private String code;
 
+    @ApiModelProperty(value = "兑换码数量", example = "兑换码数量", hidden = true)
+    private Integer redeemNum = 1;
+
     @NotNull
     @ApiModelProperty(value = "兑换码次数", example = "兑换码次数")
     private Integer useNum;

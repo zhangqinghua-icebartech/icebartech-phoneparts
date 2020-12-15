@@ -1,10 +1,11 @@
 package com.icebartech.phoneparts.user.service;
 
 import com.icebartech.core.modules.BaseService;
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
+import com.icebartech.phoneparts.system.dto.SysSerialClassDTO;
 import com.icebartech.phoneparts.user.dto.UserDto;
 import com.icebartech.phoneparts.user.param.UserInsertParam;
 import com.icebartech.phoneparts.user.param.UserOutParam;
-import com.icebartech.phoneparts.user.po.LoginDto;
 import com.icebartech.phoneparts.user.po.User;
 
 import java.util.List;
@@ -16,10 +17,11 @@ import java.util.List;
  */
 
 public interface UserService extends BaseService
-<UserDto, User> {
+                                             <UserDto, User> {
 
     /**
      * 注册
+     *
      * @param param
      * @return
      */
@@ -27,37 +29,42 @@ public interface UserService extends BaseService
 
     /**
      * 登录
+     *
      * @param email 邮箱
-     * @param pwd 密码
+     * @param pwd   密码
      * @return
      */
     UserDto login(String email, String pwd);
 
     /**
      * 修改头像
-     * @param id 用户id
+     *
+     * @param id           用户id
      * @param headPortrait 头像
      * @return
      */
-    Boolean changeHead(Long id,String headPortrait);
+    Boolean changeHead(Long id, String headPortrait);
 
     /**
      * 忘记密码
+     *
      * @param email 邮箱
      * @return
      */
-    Boolean changePwd(String email,String pwd);
+    Boolean changePwd(String email, String pwd);
 
     /**
      * 添加次数
+     *
      * @param userId 用户id
-     * @param num 数量
+     * @param num    数量
      * @return
      */
     Boolean addUseCount(Long userId, Integer num);
 
     /**
      * 添加次数
+     *
      * @param code 兑换码
      * @return
      */
@@ -65,21 +72,22 @@ public interface UserService extends BaseService
 
     /**
      * 减少次数
-     * @param userId 用户id
-     * @return
-     */
-    Boolean reduceUseCount(Long productId,Long userId);
-
-    /**
      *
      * @param userId 用户id
-     * @param num 减少次数
      * @return
      */
-    Boolean reduceUseCount(Long userId,Integer num);
+    Boolean reduceUseCount(Long productId, Long userId);
+
+    /**
+     * @param userId 用户id
+     * @param num    减少次数
+     * @return
+     */
+    Boolean reduceUseCount(Long userId, Integer num);
 
     /**
      * 序列号登录
+     *
      * @param serialNum 序列号
      * @return
      */
@@ -93,9 +101,41 @@ public interface UserService extends BaseService
 
     /**
      * 重新分配用户
+     *
      * @param serialId
      * @param secondAgentId
      * @param serialClassId
      */
     void allocation(Long serialId, Long secondAgentId, Long serialClassId);
+
+    /**
+     * 获取所有用户对应的一级代理商
+     *
+     * @return 代理商列表
+     */
+    List<AgentDTO> find_user_first_agent_list();
+
+    /**
+     * 获取一级代理商下面用户对应的二级代理商
+     *
+     * @param agentId 一级代理商Id
+     * @return 二级代理商列表
+     */
+    List<AgentDTO> find_user_second_agent_list(Long agentId);
+
+
+    /**
+     * 获取所有用户对应的二级分类
+     *
+     * @return 二级分类列表
+     */
+    List<SysSerialClassDTO> find_second_serial_class_list();
+
+    /**
+     * 获取一级代理商下面用户对应的二级代理商
+     *
+     * @param agentId 一级代理商Id
+     * @return 二级分类列表
+     */
+    List<SysSerialClassDTO> find_second_serial_class_list(Long agentId);
 }

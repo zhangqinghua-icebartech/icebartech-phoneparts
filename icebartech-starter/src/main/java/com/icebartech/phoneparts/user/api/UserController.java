@@ -15,6 +15,8 @@ import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.excel.ExcelUtils;
+import com.icebartech.phoneparts.agent.dto.AgentDTO;
+import com.icebartech.phoneparts.system.dto.SysSerialClassDTO;
 import com.icebartech.phoneparts.user.dto.UserDto;
 import com.icebartech.phoneparts.user.param.*;
 import com.icebartech.phoneparts.user.po.LoginDto;
@@ -78,12 +80,33 @@ public class UserController extends BaseController {
         return getPageRtnDate(userService.findPage(param));
     }
 
-//    @ApiOperation("获取列表")
-//    @RequireLogin(UserEnum.admin)
-//    @PostMapping("/find_list")
-//    public RespDate<List<UserDTO>> findList() {
-//        return getRtnDate(service.findList());
-//    }
+    @ApiOperation("获取一级分类列表")
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
+    @PostMapping("/find_user_agent_list")
+    public RespDate<List<AgentDTO>> find_user_agent_list() {
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+        if (localUser.getLevel() == 0) {
+            return getRtnDate(userService.find_user_first_agent_list());
+        }
+        if (localUser.getLevel() == 1) {
+            return getRtnDate(userService.find_user_second_agent_list(localUser.getUserId()));
+        }
+        return getRtnDate(new ArrayList<>());
+    }
+
+    @ApiOperation("获取二级分类列表")
+    @RequireLogin({UserEnum.admin, UserEnum.agent})
+    @PostMapping("/find_user_second_serial_class_list")
+    public RespDate<List<SysSerialClassDTO>> find_second_serial_class_list() {
+        LocalUser localUser = UserThreadLocal.getUserInfo();
+        if (localUser.getLevel() == 0) {
+            return getRtnDate(userService.find_second_serial_class_list());
+        }
+        if (localUser.getLevel() == 1) {
+            return getRtnDate(userService.find_second_serial_class_list(localUser.getUserId()));
+        }
+        return getRtnDate(new ArrayList<>());
+    }
 
     @ApiOperation("获取详情")
     @RequireLogin({UserEnum.admin, UserEnum.app, UserEnum.agent})

@@ -9,6 +9,7 @@ import com.icebartech.core.lock.RedisLock;
 import com.icebartech.core.modules.AbstractService;
 import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.utils.DateTimeUtility;
+import com.icebartech.core.vo.QueryParam;
 import com.icebartech.phoneparts.agent.dto.AgentDTO;
 import com.icebartech.phoneparts.agent.po.Agent;
 import com.icebartech.phoneparts.agent.repository.AgentRepository;
@@ -107,44 +108,65 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
 //        // 2. 设置二级分类名称
 //
 //
-//        // 3. 头像，过期时间
-//        for (UserDto d : ds) {
-//            d.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(d.getHeadPortrait()));
-//            d.setPastTime(DateTimeUtility.delayTime(d.getGmtCreated(), 1));
-//        }
 
-        // 1. 设置批次
+
+        // 1. 头像，过期时间
+        for (UserDto d : ds) {
+            d.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(d.getHeadPortrait()));
+            d.setPastTime(DateTimeUtility.delayTime(d.getGmtCreated(), 1));
+        }
+
+        // 2. 设置一级分类（上级代理商）
+        LocalUser localUser = UserThreadLocal.getUserInfo(true);
+        if (localUser != null && localUser.getLevel() == 0) {
+            List<AgentDTO> agents = agentService.findList(QueryParam.in(AgentDTO::getId, ds.stream().map(UserDto::getAgentId).collect(Collectors.toList())));
+            ds.forEach(d -> agents.stream().filter(a -> a.getId().equals(d.getAgentId())).findAny().ifPresent(a -> {
+                d.setOrigin(a.getCompanyName());
+                d.setAgentClassName(a.getClassName());
+            }));
+        }
+
+        if (localUser != null) {
+            List<AgentDTO> agents = agentService.findList(QueryParam.in(AgentDTO::getId, ds.stream().map(UserDto::getSecondAgentId).collect(Collectors.toList())));
+            ds.forEach(d -> agents.stream().filter(a -> a.getId().equals(d.getSecondAgentId())).findAny().ifPresent(a -> {
+                d.setOrigin(a.getCompanyName());
+                d.setAgentClassName(a.getClassName());
+            }));
+        }
+
+
+        // 3. 设置二级分类名称
+        List<SysSerialClassDTO> secondSysSerialClasses = sysSerialClassService.findList(in(SysSerialClass::getId, ds.stream().map(UserDto::getSecondSerialClassId).collect(Collectors.toList())));
+        ds.forEach(d -> secondSysSerialClasses.stream().filter(sc -> sc.getId().equals(d.getSecondSerialClassId())).findAny().ifPresent(sc -> d.setSecondSerialClassName(sc.getChinaName())));
+
+        // 2. 设置批次
         List<SysSerialClassDTO> sysSerialClasses = sysSerialClassService.findList(in(SysSerialClass::getId, ds.stream().map(UserDto::getSerialClassId).collect(Collectors.toList())));
         ds.forEach(d -> sysSerialClasses.stream().filter(sc -> sc.getId().equals(d.getSerialClassId())).findAny().ifPresent(sc -> d.setSerialClassName(sc.getChinaName())));
 
-
-        // 2. 设置二级分类名称
-        List<SysSerialClassDTO> secondSysSerialClasses = sysSerialClassService.findList(in(SysSerialClass::getId, ds.stream().map(UserDto::getSecondSerialClassId).collect(Collectors.toList())));
-        ds.forEach(d -> secondSysSerialClasses.stream().filter(sc -> sc.getId().equals(d.getSecondSerialClassId())).findAny().ifPresent(sc -> d.setSecondSerialClassName(sc.getChinaName())));
     }
 
     @Override
     protected void warpDTO(Long id, UserDto user) {
-        user.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(user.getHeadPortrait()));
-        user.setPastTime(DateTimeUtility.delayTime(user.getGmtCreated(), 1));
+//        user.setHeadPortrait(aliyunOSSComponent.generateDownloadUrl(user.getHeadPortrait()));
+//        user.setPastTime(DateTimeUtility.delayTime(user.getGmtCreated(), 1));
 
         LocalUser localUser = UserThreadLocal.getUserInfo(true);
 
-        if (localUser != null && user.getAgentId() != 0) {
-            Agent agent = agentService.findOne(user.getAgentId());
-            user.setOrigin(agent.getCompanyName());
-            //总后台
-            if (localUser.getLevel() == 0) {
-                user.setAgentClassName(agent.getClassName());
-                //一级代理商
-
-            } else if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
-                Agent agent2 = agentService.findOneOrNull(user.getSecondAgentId());
-                if (agent2 != null) {
-                    user.setAgentClassName(agent2.getClassName());
-                }
-            }
-        }
+//        if (localUser != null && user.getAgentId() != 0) {
+//            Agent agent = agentService.findOne(user.getAgentId());
+//            user.setOrigin(agent.getCompanyName());
+//            //总后台
+//            if (localUser.getLevel() == 0) {
+//                user.setAgentClassName(agent.getClassName());
+//                //一级代理商
+//
+//            } else if (localUser.getLevel() == 1 || localUser.getLevel() == 2) {
+//                Agent agent2 = agentService.findOneOrNull(user.getSecondAgentId());
+//                if (agent2 != null) {
+//                    user.setAgentClassName(agent2.getClassName());
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -414,5 +436,25 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
     @Override
     public void allocation(Long serialId, Long secondAgentId, Long serialClassId) {
         repository.allocation(serialId, secondAgentId, serialClassId);
+    }
+
+    @Override
+    public List<AgentDTO> find_user_first_agent_list() {
+        return BeanMapper.map(repository.find_user_first_agent_list(), AgentDTO.class);
+    }
+
+    @Override
+    public List<AgentDTO> find_user_second_agent_list(Long agentId) {
+        return BeanMapper.map(repository.find_user_second_agent_list(agentId), AgentDTO.class);
+    }
+
+    @Override
+    public List<SysSerialClassDTO> find_second_serial_class_list() {
+        return BeanMapper.map(repository.find_second_serial_class_list(), SysSerialClassDTO.class);
+    }
+
+    @Override
+    public List<SysSerialClassDTO> find_second_serial_class_list(Long agentId) {
+        return BeanMapper.map(repository.find_second_serial_class_list(agentId), SysSerialClassDTO.class);
     }
 }

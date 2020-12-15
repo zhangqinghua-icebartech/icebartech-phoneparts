@@ -70,6 +70,8 @@ public class RedeemController extends BaseController {
         if (param.getEmail() != null && !param.getEmail().equals("")) {
             is = true;
             list = redeemCodeService.findRedeemIdList(param.getEmail());
+            // 防止数据为空
+            list.add(-11111L);
         }
         if (param.getCode() != null && !param.getCode().equals("")) {
             is = true;

@@ -125,17 +125,10 @@ public interface UserService extends BaseService
 
 
     /**
-     * 获取所有用户对应的二级分类
-     *
-     * @return 二级分类列表
-     */
-    List<SysSerialClassDTO> find_second_serial_class_list();
-
-    /**
      * 获取一级代理商下面用户对应的二级代理商
      *
      * @param agentId 一级代理商Id
      * @return 二级分类列表
      */
-    List<SysSerialClassDTO> find_second_serial_class_list(Long agentId);
+    List<SysSerialClassDTO> find_second_serial_class_list(Long agentId, Long secondAgentId);
 }

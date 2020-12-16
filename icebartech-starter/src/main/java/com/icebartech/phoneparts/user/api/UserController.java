@@ -16,6 +16,8 @@ import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.excel.ExcelUtils;
 import com.icebartech.phoneparts.agent.dto.AgentDTO;
+import com.icebartech.phoneparts.agent.po.Agent;
+import com.icebartech.phoneparts.agent.service.AgentService;
 import com.icebartech.phoneparts.system.dto.SysSerialClassDTO;
 import com.icebartech.phoneparts.user.dto.UserDto;
 import com.icebartech.phoneparts.user.param.*;
@@ -36,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +51,8 @@ public class UserController extends BaseController {
     private UserService userService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private AgentService agentService;
     @Autowired
     private LoginComponent loginComponent;
     @Autowired
@@ -80,6 +85,7 @@ public class UserController extends BaseController {
         return getPageRtnDate(userService.findPage(param));
     }
 
+
     @ApiOperation("获取一级分类列表")
     @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/find_user_agent_list")
@@ -91,7 +97,10 @@ public class UserController extends BaseController {
         if (localUser.getLevel() == 1) {
             return getRtnDate(userService.find_user_second_agent_list(localUser.getUserId()));
         }
-        return getRtnDate(new ArrayList<>());
+
+        // 返回此代理商的上一级
+        Agent agent = agentService.findOne(localUser.getUserId());
+        return getRtnDate(new ArrayList<>(Collections.singleton(agentService.findOne(agent.getParentId()))));
     }
 
     @ApiOperation("获取二级分类列表")
@@ -100,12 +109,12 @@ public class UserController extends BaseController {
     public RespDate<List<SysSerialClassDTO>> find_second_serial_class_list() {
         LocalUser localUser = UserThreadLocal.getUserInfo();
         if (localUser.getLevel() == 0) {
-            return getRtnDate(userService.find_second_serial_class_list());
+            return getRtnDate(userService.find_second_serial_class_list(null, null));
         }
         if (localUser.getLevel() == 1) {
-            return getRtnDate(userService.find_second_serial_class_list(localUser.getUserId()));
+            return getRtnDate(userService.find_second_serial_class_list(localUser.getUserId(), null));
         }
-        return getRtnDate(new ArrayList<>());
+        return getRtnDate(userService.find_second_serial_class_list(null, localUser.getUserId()));
     }
 
     @ApiOperation("获取详情")

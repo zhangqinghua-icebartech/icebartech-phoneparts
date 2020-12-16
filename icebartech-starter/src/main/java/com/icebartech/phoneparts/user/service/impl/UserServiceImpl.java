@@ -415,4 +415,19 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
     public void allocation(Long serialId, Long secondAgentId, Long serialClassId) {
         repository.allocation(serialId, secondAgentId, serialClassId);
     }
+
+    @Override
+    public List<AgentDTO> find_user_first_agent_list() {
+        return BeanMapper.map(repository.find_user_first_agent_list(), AgentDTO.class);
+    }
+
+    @Override
+    public List<AgentDTO> find_user_second_agent_list(Long agentId) {
+        return BeanMapper.map(repository.find_user_second_agent_list(agentId), AgentDTO.class);
+    }
+
+    @Override
+    public List<SysSerialClassDTO> find_second_serial_class_list(Long agentId, Long secondAgentId) {
+        return BeanMapper.map(repository.find_second_serial_class_list(agentId, secondAgentId), SysSerialClassDTO.class);
+    }
 }

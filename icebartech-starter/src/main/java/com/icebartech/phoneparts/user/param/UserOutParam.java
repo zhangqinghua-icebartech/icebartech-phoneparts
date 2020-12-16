@@ -23,4 +23,7 @@ public class UserOutParam {
 
     @ApiModelProperty(value = "次级代理商id", example = "次级代理商id")
     private Long secondAgentId;
+
+    @ApiModelProperty(value = "二级分类", example = "次级代理商id")
+    private Long secondSerialClassId;
 }

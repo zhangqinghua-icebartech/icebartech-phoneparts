@@ -28,7 +28,9 @@ public interface UserRepository extends BaseRepository<User> {
                                        "and if(:#{#p.serialNumLike} is null, 1=1, u.serial_num like %:#{#p.serialNumLike}%) " +
                                        "and if(:#{#p.emailLike} is null, 1=1, u.email like %:#{#p.emailLike}%) " +
                                        "and if(:#{#p.agentId} is null, 1=1, u.agent_id = :#{#p.agentId}) " +
-                                       "and if(:#{#p.secondAgentId} is null, 1=1, u.second_agent_id = :#{#p.secondAgentId}) ")
+                                       "and if(:#{#p.secondAgentId} is null, 1=1, u.second_agent_id = :#{#p.secondAgentId}) " +
+                                       "and if(:#{#p.secondSerialClassId} is null, 1=1, u.second_serial_class_id = :#{#p.secondSerialClassId}) " +
+                                       "order by u.id desc")
     List<Map<String, Object>> export(@Param("p") UserOutParam param);
 
     @Transactional
@@ -72,7 +74,7 @@ public interface UserRepository extends BaseRepository<User> {
     List<Map<String, Object>> find_user_first_agent_list();
 
     @Query(nativeQuery = true, value = "select a.id, a.class_name as className from user u left join agent a on a.id = u.second_agent_id and u.is_deleted = 'n' where u.is_deleted = 'n' and a.id is not null and u.agent_id = ?1 group by id")
-    List<Map<String, Object>>  find_user_second_agent_list(Long agentId);
+    List<Map<String, Object>> find_user_second_agent_list(Long agentId);
 
     @Query(nativeQuery = true, value = "select c.id, c.china_name as chinaName from user u left join sys_serial_class c on c.id = u.second_serial_class_id and c.is_deleted = 'n' where u.is_deleted = 'n' and c.id is not null group by id")
     List<Map<String, Object>> find_second_serial_class_list();

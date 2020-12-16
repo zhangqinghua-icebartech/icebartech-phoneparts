@@ -29,7 +29,9 @@ public interface UserRepository extends BaseRepository<User> {
                                        "and if(:#{#p.serialNumLike} is null, 1=1, u.serial_num like %:#{#p.serialNumLike}%) " +
                                        "and if(:#{#p.emailLike} is null, 1=1, u.email like %:#{#p.emailLike}%) " +
                                        "and if(:#{#p.agentId} is null, 1=1, u.agent_id = :#{#p.agentId}) " +
-                                       "and if(:#{#p.secondAgentId} is null, 1=1, u.second_agent_id = :#{#p.secondAgentId}) ")
+                                       "and if(:#{#p.secondAgentId} is null, 1=1, u.second_agent_id = :#{#p.secondAgentId}) " +
+                                       "and if(:#{#p.secondSerialClassId} is null, 1=1, u.second_serial_class_id = :#{#p.secondSerialClassId}) " +
+                                       "order by u.id desc")
     List<Map<String, Object>> export(@Param("p") UserOutParam param);
 
     @Transactional

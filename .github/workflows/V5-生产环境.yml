@@ -2,7 +2,7 @@ name: V5-生产环境
 # 触发条件：v5 分支提交就触发活动。
 on:
   push:
-    branches: v6
+    branches: v5
 # 步骤流程：
 jobs:
   job_1:

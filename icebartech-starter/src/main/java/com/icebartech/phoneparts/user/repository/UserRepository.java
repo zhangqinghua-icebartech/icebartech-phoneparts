@@ -20,9 +20,10 @@ import java.util.Map;
 
 public interface UserRepository extends BaseRepository<User> {
 
-    @Query(nativeQuery = true, value = "select u.serial_num, u.email, u.use_count, u.may_use_count, u.gmt_created, a.class_name, b.china_name " +
+    @Query(nativeQuery = true, value = "select u.serial_num, u.email, u.use_count, u.may_use_count, u.gmt_created, a.class_name, b.china_name, a2.class_name as second_agent_class_name " +
                                        "from user u " +
                                        "left join agent a on a.id = u.agent_id " +
+                                       "left join agent a2 on a2.id = u.second_agent_id " +
                                        "left join sys_serial_class b on b.id = u.second_serial_class_id " +
                                        "where u.is_deleted = 'n' " +
                                        "and if(:#{#p.serialNumLike} is null, 1=1, u.serial_num like %:#{#p.serialNumLike}%) " +

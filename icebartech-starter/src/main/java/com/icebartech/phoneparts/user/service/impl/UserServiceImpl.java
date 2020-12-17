@@ -399,7 +399,13 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
             UserDto user = new UserDto();
             user.setSerialNum(map.get("serial_num") + "");
             user.setEmail(map.get("email") + "");
-            user.setAgentClassName(map.get("class_name") + "");
+
+            if (param.getAgentlevel() == 0) {
+                user.setAgentClassName(map.get("class_name") + "");
+            }else {
+                user.setAgentClassName(map.get("second_agent_class_name") == null ? "" : String.valueOf(map.get("second_agent_class_name")));
+            }
+
             user.setSecondSerialClassName(map.get("china_name") == null ? "" : map.get("china_name") + "");
             user.setUseCount((int) map.get("use_count"));
             user.setMayUseCount((int) map.get("may_use_count"));

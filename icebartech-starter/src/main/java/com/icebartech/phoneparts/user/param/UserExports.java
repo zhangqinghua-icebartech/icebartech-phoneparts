@@ -15,7 +15,7 @@ public class UserExports {
     @ExcelField(value = "一级分类")
     private String agentClassName;
 
-    @ExcelField(value = "二级分类称")
+    @ExcelField(value = "二级分类")
     private String secondSerialClassName;
 
     @ExcelField(value = "总切割次数")

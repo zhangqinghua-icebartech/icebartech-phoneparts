@@ -12,13 +12,13 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class UserOutParam {
 
-    @ApiModelProperty(value = "序列号",example = "序列号（选填）")
+    @ApiModelProperty(value = "序列号", example = "序列号（选填）")
     private String serialNumLike;
 
-    @ApiModelProperty(value = "邮箱",example = "邮箱（选填）")
+    @ApiModelProperty(value = "邮箱", example = "邮箱（选填）")
     private String emailLike;
 
-    @ApiModelProperty(value = "代理商id",example = "代理商id")
+    @ApiModelProperty(value = "代理商id", example = "代理商id")
     private Long agentId;
 
     @ApiModelProperty(value = "次级代理商id", example = "次级代理商id")
@@ -26,4 +26,7 @@ public class UserOutParam {
 
     @ApiModelProperty(value = "二级分类", example = "次级代理商id")
     private Long secondSerialClassId;
+
+    @ApiModelProperty(value = "判断查询是什么类型的 0 管理员 1 一级代理 2 二级代理 ")
+    private Integer agentlevel;
 }

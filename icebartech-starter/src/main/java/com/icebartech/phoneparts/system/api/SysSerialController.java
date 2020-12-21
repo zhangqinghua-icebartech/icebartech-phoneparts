@@ -176,11 +176,21 @@ public class SysSerialController extends BaseController {
         List<SysSerialInsertParam> sysSerialInsertParams = ExcelUtils.imports(file.getInputStream(), SysSerialInsertParam.class);
         return getRtnDate(service.excelInput(sysSerialInsertParams));
     }
+
     @ApiOperation("下载序列号")
     @GetMapping("/excelOut")
     @RequireLogin(UserEnum.no_login)
     public void createExcelOut(HttpServletResponse response, @RequestParam String randomStr) {
         List<SysSerialDto> sysSerialDtos = service.excelExports(randomStr);
         ExcelUtils.exports(BeanMapper.map(sysSerialDtos, SysSerialExports.class), response, "生成序列号列表");
+    }
+
+    @ApiOperation("设备写入")
+    @PostMapping("/write")
+    public RespDate<Boolean> write(@RequestParam Long id) {
+        SysSerial sysSerial = new SysSerial();
+        sysSerial.setId(id);
+        sysSerial.setWriteStatus(1);
+        return getRtnDate(service.update(sysSerial));
     }
 }

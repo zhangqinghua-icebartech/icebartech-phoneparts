@@ -19,6 +19,14 @@ spring:
       ddl-auto: update # 设置变动了则改变表结构
   redis:
     timeout: 30m
+  #SUBMAIL邮箱
+  mail:
+    from: phone
+    url: https://api.mysubmail.com/mail/xsend.json
+    appid: 14561
+    appKey: fe8dfa6bf7883c20cbb7f14ab8abe35a
+    templates:
+      - 1f12C2
 
 # 默认使用开发环境
 spring.profiles.active: dev

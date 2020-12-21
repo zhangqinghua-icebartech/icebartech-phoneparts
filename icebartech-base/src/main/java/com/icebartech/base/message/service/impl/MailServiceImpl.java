@@ -55,7 +55,7 @@ public class MailServiceImpl implements MailService {
         if (codeY==null) return false;
         if(codeY.equals(code)){
             //验证完毕清除掉
-            redisComponent.del(type,mail);
+            // redisComponent.del(type,mail);
             return true;
         }
         return false;

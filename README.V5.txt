@@ -25,3 +25,8 @@
 
 9. Duplicate key name 'userId'
 9. Duplicate key name 'second_agent_id'
+
+
+1. 测试环境超级管理员账号 13169920185    13169920185
+2. 测试环境一级代理商账号 18889634544    qwer1234/123456
+2. 测试环境二级代理商账号 ?

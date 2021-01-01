@@ -2,6 +2,7 @@ package com.icebartech.phoneparts.redeem.service;
 
 import com.icebartech.core.modules.BaseService;
 import com.icebartech.phoneparts.redeem.dto.RedeemCodeDTO;
+import com.icebartech.phoneparts.redeem.excel.RedeemExports;
 import com.icebartech.phoneparts.redeem.po.RedeemCode;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface RedeemCodeService extends BaseService<RedeemCodeDTO, RedeemCode
 
     List<Long> findRedeemIdList(String email);
 
-    List<RedeemCode> exportData(Long redeemId);
+    List<RedeemExports> exportData(Long redeemId);
 }

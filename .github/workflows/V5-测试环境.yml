@@ -68,3 +68,4 @@ jobs:
           script: |
             cd /data/deploy/Java/icebartech-phoneparts
             nohup java -jar icebartech-phoneparts.jar --spring.profiles.active=test > logs/start.log 2>&1 &
+

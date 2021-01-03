@@ -24,8 +24,8 @@ import javax.persistence.Enumerated;
 @Table(appliesTo = "sys_device", comment = "设备")
 public class SysDevice extends BasePo {
 
-    @ApiModelProperty(value = "设备类型 0-APP 1-横竖屏", example = "0")
-    @Column(columnDefinition = "int(1) NOT NULL DEFAULT '0' COMMENT '类型 0-设置APP 1-横竖屏设备'")
+    @ApiModelProperty(value = "设备类型 0-手机版 1-竖屏版 2-横屏版", example = "0")
+    @Column(columnDefinition = "int(1) NOT NULL DEFAULT '0' COMMENT '设备类型 0-手机版 1-竖屏版 2-横屏版'")
     private Integer type;
 
     @ApiModelProperty(value = "设备名称", example = "设备名称")

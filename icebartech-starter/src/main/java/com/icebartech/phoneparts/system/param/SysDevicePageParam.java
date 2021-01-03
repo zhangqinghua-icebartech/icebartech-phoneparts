@@ -37,6 +37,6 @@ public class SysDevicePageParam extends PageParam {
     @ApiModelProperty(value = "用户id",example = "用户id")
     private Long userId;
 
-    @ApiModelProperty(value = "设备类型 0-APP 1-横竖屏", example = "0")
-    private Integer type = 0;
+    @ApiModelProperty(value = "设备类型 0-手机版 1-竖屏版 2-横屏版", example = "0")
+    private Integer type;
 }

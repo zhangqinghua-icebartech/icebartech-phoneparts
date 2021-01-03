@@ -106,13 +106,13 @@ public class UserController extends BaseController {
     @ApiOperation("获取二级分类列表")
     @RequireLogin({UserEnum.admin, UserEnum.agent})
     @PostMapping("/find_user_second_serial_class_list")
-    public RespDate<List<SysSerialClassDTO>> find_second_serial_class_list() {
+    public RespDate<List<SysSerialClassDTO>> find_second_serial_class_list(Long agentId) {
         LocalUser localUser = UserThreadLocal.getUserInfo();
         if (localUser.getLevel() == 0) {
-            return getRtnDate(userService.find_second_serial_class_list(null, null));
+            return getRtnDate(userService.find_second_serial_class_list(agentId, null));
         }
         if (localUser.getLevel() == 1) {
-            return getRtnDate(userService.find_second_serial_class_list(localUser.getUserId(), null));
+            return getRtnDate(userService.find_second_serial_class_list(localUser.getUserId(), agentId));
         }
         return getRtnDate(userService.find_second_serial_class_list(null, localUser.getUserId()));
     }

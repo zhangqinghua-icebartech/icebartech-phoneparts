@@ -14,25 +14,27 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysDevicePageParam extends PageParam {
 
-    @ApiModelProperty(value = "设备名称",example = "设备名称")
+    @ApiModelProperty(value = "设备名称", example = "设备名称")
     private String nameLike;
 
-    @ApiModelProperty(value = "代理商id",example = "代理商id")
+    @ApiModelProperty(value = "代理商id", example = "代理商id")
     private Long agentId;
 
-    @ApiModelProperty(value = "文件名称",example = "文件名称")
+    @ApiModelProperty(value = "文件名称", example = "文件名称")
     private String fileNameLike;
 
-    @ApiModelProperty(value = "使用状态",example = "使用状态")
+    @ApiModelProperty(value = "使用状态", example = "使用状态")
     private ChooseType state;
 
-    @ApiModelProperty(value = "更新时间倒序",example = "更新时间正序")
+    @ApiModelProperty(value = "更新时间倒序", example = "更新时间正序")
     private Boolean gmtModifiedDESC = false;
 
-    @ApiModelProperty(value = "更新时间倒序",example = "更新时间正序")
+    @ApiModelProperty(value = "更新时间倒序", example = "更新时间正序")
     private Boolean gmtModifiedASC = false;
 
-    @ApiModelProperty(value = "用户id",example = "用户id")
+    @ApiModelProperty(value = "用户id", example = "用户id")
     private Long userId;
 
+    @ApiModelProperty(value = "设备类型 0-手机版 1-竖屏版 2-横屏版", example = "0")
+    private Integer type;
 }

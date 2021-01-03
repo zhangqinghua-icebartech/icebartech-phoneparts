@@ -4,6 +4,7 @@ import com.icebartech.core.modules.AbstractService;
 import com.icebartech.core.utils.BeanMapper;
 import com.icebartech.core.utils.QRCodeUtil;
 import com.icebartech.phoneparts.redeem.dto.RedeemCodeDTO;
+import com.icebartech.phoneparts.redeem.excel.RedeemExports;
 import com.icebartech.phoneparts.redeem.po.RedeemCode;
 import com.icebartech.phoneparts.redeem.repository.RedeemCodeRepository;
 import com.icebartech.phoneparts.redeem.service.RedeemCodeService;
@@ -49,8 +50,8 @@ public class RedeemCodeServiceImpl extends AbstractService<RedeemCodeDTO, Redeem
     }
 
     @Override
-    public List<RedeemCode> exportData(Long redeemId) {
+    public List<RedeemExports> exportData(Long redeemId) {
         if (redeemId == null) return new ArrayList<>();
-        return BeanMapper.map(repository.exportData(redeemId), RedeemCode.class);
+        return BeanMapper.map(repository.exportData(redeemId), RedeemExports.class);
     }
 }

@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -253,5 +254,27 @@ public class UseRecordController extends BaseController {
 
         ExcelUtils.exports(BeanMapperNew.map(page.getContent(), UseRecordDetailExcel.class),
                            response, "切割详情");
+    }
+
+    @ApiOperation("使用记录-日统计")
+    @PostMapping("/find_day_stats")
+    @RequireLogin(UserEnum.app)
+    public RespDate<List<Map<String, Object>>> find_day_stats() {
+        return getRtnDate(useRecordService.find_day_stats(UserThreadLocal.getUserId()));
+    }
+
+    @ApiOperation("使用记录-月统计")
+    @PostMapping("/find_month_stats")
+    @RequireLogin(UserEnum.app)
+    public RespDate<List<Map<String, Object>>> find_month_stats() {
+        return getRtnDate(useRecordService.find_month_stats(UserThreadLocal.getUserId()));
+    }
+
+    @ApiOperation("使用记录-历史统计")
+    @PostMapping("/find_user_record2")
+    @RequireLogin(UserEnum.app)
+    public RespPage<Map> find_user_record2(@Valid @RequestBody UseRecordUserPageParam param) {
+        param.setUserId(UserThreadLocal.getUserId());
+        return getPageRtnDate(useRecordService.findUserRecord1(param));
     }
 }

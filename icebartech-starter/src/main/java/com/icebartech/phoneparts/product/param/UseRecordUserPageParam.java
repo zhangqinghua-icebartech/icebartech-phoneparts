@@ -12,27 +12,27 @@ import java.time.LocalDateTime;
 public class UseRecordUserPageParam extends PageParam {
 
 
-    @ApiModelProperty(value = "用户Id",example = "100101")
+    @ApiModelProperty(value = "用户Id", example = "100101")
     private Long userId;
 
-    @ApiModelProperty(value = "代理商id",example = "代理商id")
+    @ApiModelProperty(value = "代理商id", example = "代理商id")
     private Long agentId;
 
-    @ApiModelProperty(value = "次级代理商id",example = "次级代理商id")
+    @ApiModelProperty(value = "次级代理商id", example = "次级代理商id")
     private Long secondAgentId;
 
     @ApiModelProperty(value = "是否倒序")
     private Boolean useCountDESC = true;
 
-    @ApiModelProperty(value = "序列号",example = "序列号")
-    private String serialNum = "";
+    @ApiModelProperty(value = "序列号", example = "序列号")
+    private String serialNum;
 
-    @ApiModelProperty(value = "邮箱",example = "邮箱")
-    private String email = "";
+    @ApiModelProperty(value = "邮箱", example = "邮箱")
+    private String email;
 
     @ApiModelProperty(value = "开始时间")
-    private LocalDateTime strTime;
+    private LocalDateTime strTime = LocalDateTime.now().minusMonths(1);
 
     @ApiModelProperty(value = "结束时间")
-    private LocalDateTime endTime;
+    private LocalDateTime endTime = LocalDateTime.now();
 }

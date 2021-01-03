@@ -1,6 +1,7 @@
 package com.icebartech.phoneparts.product.service.impl;
 
 import com.icebartech.core.modules.AbstractService;
+import com.icebartech.core.params.PageParam;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
 import com.icebartech.phoneparts.product.param.UseRecordInsertParam;
 import com.icebartech.phoneparts.product.param.UseRecordProductPageParam;
@@ -46,10 +47,10 @@ public class UseRecordServiceImpl extends AbstractService
     @Override
     public Page<Map> findUserRecord(UseRecordUserPageParam param) {
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize());
-        if(param.getUseCountDESC()){
-            return repository.findUserRecordDESC(param,pageable);
+        if (param.getUseCountDESC()) {
+            return repository.findUserRecordDESC(param, pageable);
         }
-        return repository.findUserRecordASC(param,pageable);
+        return repository.findUserRecordASC(param, pageable);
     }
 
     @Override
@@ -73,5 +74,15 @@ public class UseRecordServiceImpl extends AbstractService
         Map<String, Object> map = new HashMap<>();
         map.put("countRecord", countRecord);
         return map;
+    }
+
+    @Override
+    public Page<Map<String, Object>> find_day_stats(Long userId, PageParam param) {
+        return repository.find_day_stats(userId, PageRequest.of(param.getPageIndex() - 1, param.getPageSize()));
+    }
+
+    @Override
+    public Page<Map<String, Object>> find_month_stats(Long userId, PageParam param) {
+        return repository.find_month_stats(userId, PageRequest.of(param.getPageIndex() - 1, param.getPageSize()));
     }
 }

@@ -1,6 +1,7 @@
 package com.icebartech.phoneparts.product.service;
 
 import com.icebartech.core.modules.BaseService;
+import com.icebartech.core.params.PageParam;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
 import com.icebartech.phoneparts.product.param.UseRecordProductPageParam;
 import com.icebartech.phoneparts.product.param.UseRecordUserPageParam;
@@ -14,14 +15,14 @@ import java.util.Map;
  * @desc
  */
 public interface UseRecordService extends BaseService
-        <UseRecordDTO, UseRecord> {
+                                                  <UseRecordDTO, UseRecord> {
 
     /**
      * 添加记录
      * @param userId 用户
      * @param productId 产品
      */
-    void add(Long userId, Long productId,Long agentId,Long secondAgentId);
+    void add(Long userId, Long productId, Long agentId, Long secondAgentId);
 
     Page<Map> findUserRecord(UseRecordUserPageParam param);
 
@@ -29,5 +30,9 @@ public interface UseRecordService extends BaseService
 
     Page<Map> findProductRecord(UseRecordProductPageParam param);
 
-    Map<String,Object> findUserRecordCount(UseRecordUserPageParam param);
+    Map<String, Object> findUserRecordCount(UseRecordUserPageParam param);
+
+    Page<Map<String, Object>> find_day_stats(Long userId, PageParam param);
+
+    Page<Map<String, Object>> find_month_stats(Long userId, PageParam param);
 }

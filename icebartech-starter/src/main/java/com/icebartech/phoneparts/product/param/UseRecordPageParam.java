@@ -32,6 +32,4 @@ public class UseRecordPageParam extends PageParam {
 
     @ApiModelProperty(value = "产品id",example = "产品id")
     private Long productId;
-
-
 }

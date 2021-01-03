@@ -5,6 +5,7 @@ import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
+import com.icebartech.core.params.PageParam;
 import com.icebartech.core.utils.BeanMapperNew;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
@@ -253,5 +254,27 @@ public class UseRecordController extends BaseController {
 
         ExcelUtils.exports(BeanMapperNew.map(page.getContent(), UseRecordDetailExcel.class),
                            response, "切割详情");
+    }
+
+    @ApiOperation("使用记录-日统计")
+    @PostMapping("/find_day_stats")
+    @RequireLogin(UserEnum.app)
+    public RespPage<Map<String, Object>> find_day_stats(@Valid @RequestBody PageParam param) {
+        return getPageRtnDate(useRecordService.find_day_stats(UserThreadLocal.getUserId(), param));
+    }
+
+    @ApiOperation("使用记录-月统计")
+    @PostMapping("/find_month_stats")
+    @RequireLogin(UserEnum.app)
+    public RespPage<Map<String, Object>> find_month_stats(@Valid @RequestBody PageParam param) {
+        return getPageRtnDate(useRecordService.find_month_stats(UserThreadLocal.getUserId(), param));
+    }
+
+    @ApiOperation("使用记录-历史统计")
+    @PostMapping("/find_user_record2")
+    @RequireLogin(UserEnum.app)
+    public RespPage<Map> find_user_record2(@Valid @RequestBody UseRecordUserPageParam param) {
+        param.setUserId(UserThreadLocal.getUserId());
+        return getPageRtnDate(useRecordService.findUserRecord1(param));
     }
 }

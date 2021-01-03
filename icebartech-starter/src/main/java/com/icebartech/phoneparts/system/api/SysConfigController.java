@@ -76,5 +76,4 @@ public class SysConfigController extends BaseController {
     public RespDate<Boolean> update(@Valid @RequestBody SysConfigUpdateParam param) {
         return getRtnDate(service.update(param));
     }
-
 }

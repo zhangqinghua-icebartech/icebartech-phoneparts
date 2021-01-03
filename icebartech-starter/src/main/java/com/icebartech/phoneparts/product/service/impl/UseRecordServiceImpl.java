@@ -1,7 +1,7 @@
 package com.icebartech.phoneparts.product.service.impl;
 
+import com.google.common.collect.ImmutableMap;
 import com.icebartech.core.modules.AbstractService;
-import com.icebartech.core.params.PageParam;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
 import com.icebartech.phoneparts.product.param.UseRecordInsertParam;
 import com.icebartech.phoneparts.product.param.UseRecordProductPageParam;
@@ -17,8 +17,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author Created by liuao on 2019/10/16.
@@ -77,12 +84,68 @@ public class UseRecordServiceImpl extends AbstractService
     }
 
     @Override
-    public Page<Map<String, Object>> find_day_stats(Long userId, PageParam param) {
-        return repository.find_day_stats(userId, PageRequest.of(param.getPageIndex() - 1, param.getPageSize()));
+    public List<Map<String, Object>> find_day_stats(Long userId) {
+
+
+        LocalDate start = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate findish = LocalDate.now();
+
+
+        List<String> list = new ArrayList<>();
+        long distance = ChronoUnit.DAYS.between(start, findish);
+        Stream.iterate(start, d -> d.plusDays(1)).limit(distance + 1).forEach(f -> list.add(f.toString()));
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        List<Map<String, Object>> maps = repository.find_day_stats(userId);
+        for (String date : list) {
+            result.add(ImmutableMap.of("date", date,
+                                       "count",
+                                       maps.stream().filter(m -> m.get("date").equals(date))
+                                           .map(m -> m.get("count")).findAny().orElse(0)));
+        }
+
+        return result;
     }
 
     @Override
-    public Page<Map<String, Object>> find_month_stats(Long userId, PageParam param) {
-        return repository.find_month_stats(userId, PageRequest.of(param.getPageIndex() - 1, param.getPageSize()));
+    public List<Map<String, Object>> find_month_stats(Long userId) {
+        LocalDate start = LocalDate.now().minusDays(6).with(TemporalAdjusters.firstDayOfYear());
+        LocalDate findish = LocalDate.now();
+
+        System.out.println("start: " + start);
+        System.out.println("end  : " + findish);
+
+        List<String> list = new ArrayList<>();
+
+        long distance = ChronoUnit.MONTHS.between(start, findish);
+        Stream.iterate(start, d -> d.plusMonths(1)).limit(distance + 1).forEach(f -> list.add(f.format(DateTimeFormatter.ofPattern("yyyy-MM"))));
+
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        List<Map<String, Object>> maps = repository.find_month_stats(userId);
+        for (String date : list) {
+            result.add(ImmutableMap.of("date", date,
+                                       "count",
+                                       maps.stream().filter(m -> m.get("date").equals(date))
+                                           .map(m -> m.get("count")).findAny().orElse(0)));
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        LocalDate start = LocalDate.now().with(TemporalAdjusters.firstDayOfYear());
+        LocalDate findish = LocalDate.now();
+
+        System.out.println("start: " + start);
+        System.out.println("end  : " + findish);
+
+        List<String> list = new ArrayList<>();
+
+        long distance = ChronoUnit.MONTHS.between(start, findish);
+        Stream.iterate(start, d -> d.plusMonths(1)).limit(distance + 1).forEach(f -> list.add(f.format(DateTimeFormatter.ofPattern("yyyy-MM"))));
+
+        System.out.println(list);
     }
 }
+

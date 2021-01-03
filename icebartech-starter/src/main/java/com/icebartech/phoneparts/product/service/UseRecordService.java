@@ -1,13 +1,13 @@
 package com.icebartech.phoneparts.product.service;
 
 import com.icebartech.core.modules.BaseService;
-import com.icebartech.core.params.PageParam;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
 import com.icebartech.phoneparts.product.param.UseRecordProductPageParam;
 import com.icebartech.phoneparts.product.param.UseRecordUserPageParam;
 import com.icebartech.phoneparts.product.po.UseRecord;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +32,7 @@ public interface UseRecordService extends BaseService
 
     Map<String, Object> findUserRecordCount(UseRecordUserPageParam param);
 
-    Page<Map<String, Object>> find_day_stats(Long userId, PageParam param);
+    List<Map<String, Object>> find_day_stats(Long userId);
 
-    Page<Map<String, Object>> find_month_stats(Long userId, PageParam param);
+    List<Map<String, Object>> find_month_stats(Long userId);
 }

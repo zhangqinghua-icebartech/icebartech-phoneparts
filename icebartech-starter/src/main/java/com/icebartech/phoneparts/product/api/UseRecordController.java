@@ -5,7 +5,6 @@ import com.icebartech.core.constants.UserEnum;
 import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
-import com.icebartech.core.params.PageParam;
 import com.icebartech.core.utils.BeanMapperNew;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
@@ -31,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -259,15 +259,15 @@ public class UseRecordController extends BaseController {
     @ApiOperation("使用记录-日统计")
     @PostMapping("/find_day_stats")
     @RequireLogin(UserEnum.app)
-    public RespPage<Map<String, Object>> find_day_stats(@Valid @RequestBody PageParam param) {
-        return getPageRtnDate(useRecordService.find_day_stats(UserThreadLocal.getUserId(), param));
+    public RespDate<List<Map<String, Object>>> find_day_stats() {
+        return getRtnDate(useRecordService.find_day_stats(UserThreadLocal.getUserId()));
     }
 
     @ApiOperation("使用记录-月统计")
     @PostMapping("/find_month_stats")
     @RequireLogin(UserEnum.app)
-    public RespPage<Map<String, Object>> find_month_stats(@Valid @RequestBody PageParam param) {
-        return getPageRtnDate(useRecordService.find_month_stats(UserThreadLocal.getUserId(), param));
+    public RespDate<List<Map<String, Object>>> find_month_stats() {
+        return getRtnDate(useRecordService.find_month_stats(UserThreadLocal.getUserId()));
     }
 
     @ApiOperation("使用记录-历史统计")

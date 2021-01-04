@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class UseRecordUserPageParam extends PageParam {
 
-
     @ApiModelProperty(value = "用户Id", example = "100101")
     private Long userId;
 

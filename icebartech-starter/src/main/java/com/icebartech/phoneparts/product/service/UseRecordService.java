@@ -1,6 +1,7 @@
 package com.icebartech.phoneparts.product.service;
 
 import com.icebartech.core.modules.BaseService;
+import com.icebartech.core.vo.PageData;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
 import com.icebartech.phoneparts.product.param.UseRecordProductPageParam;
 import com.icebartech.phoneparts.product.param.UseRecordUserPageParam;
@@ -26,7 +27,7 @@ public interface UseRecordService extends BaseService
 
     Page<Map> findUserRecord(UseRecordUserPageParam param);
 
-    Page<Map> findUserRecord1(UseRecordUserPageParam param);
+    PageData<Map> findUserRecord1(UseRecordUserPageParam param);
 
     Page<Map> findProductRecord(UseRecordProductPageParam param);
 

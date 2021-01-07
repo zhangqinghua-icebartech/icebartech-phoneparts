@@ -63,7 +63,6 @@ public class RedeemServiceImpl extends AbstractService<RedeemDTO, Redeem, Redeem
     }
 
 
-
     /**
      * 新增自定义兑换码
      */
@@ -71,12 +70,6 @@ public class RedeemServiceImpl extends AbstractService<RedeemDTO, Redeem, Redeem
     @Transactional
     public Boolean insertCustom(RedeemCustomInsertParam param) {
         Long id = super.insert(param);
-
-        // 查询代理商所属的设备分类名称
-        String className = "";
-        if (param.getAgentId() != null) {
-            className = agentService.findOne(param.getAgentId()).getClassName();
-        }
 
         //添加兑换码
         // code 需要加上agentId设备一级分类

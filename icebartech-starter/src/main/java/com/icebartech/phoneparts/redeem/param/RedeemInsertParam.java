@@ -28,5 +28,4 @@ public class RedeemInsertParam {
     @NotNull
     @ApiModelProperty(value = "代理商id", example = "代理商id")
     private Long agentId;
-
 }

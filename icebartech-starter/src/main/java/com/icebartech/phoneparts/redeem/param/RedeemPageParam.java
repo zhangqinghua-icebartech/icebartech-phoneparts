@@ -26,6 +26,4 @@ public class RedeemPageParam extends PageParam {
 
     @ApiModelProperty(value = "ids",example = "ids",hidden = true)
     private List<Long> idIn;
-
-
 }

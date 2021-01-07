@@ -46,8 +46,8 @@ public class RedeemServiceImpl extends AbstractService<RedeemDTO, Redeem, Redeem
         Long id = super.insert(param);
 
         // 查询代理商所属的设备分类名称
-        String className = "";
-        if (param.getAgentId() != null) {
+        String className = "ALL";
+        if (param.getAgentId() != null && param.getAgentId() != 0L) {
             className = agentService.findOne(param.getAgentId()).getClassName();
         }
 
@@ -61,6 +61,8 @@ public class RedeemServiceImpl extends AbstractService<RedeemDTO, Redeem, Redeem
         }
         return true;
     }
+
+
 
     /**
      * 新增自定义兑换码

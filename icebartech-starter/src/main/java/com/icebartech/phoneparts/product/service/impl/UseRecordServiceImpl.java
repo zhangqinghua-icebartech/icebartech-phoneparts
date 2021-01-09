@@ -2,7 +2,6 @@ package com.icebartech.phoneparts.product.service.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.icebartech.core.modules.AbstractService;
-import com.icebartech.core.vo.PageData;
 import com.icebartech.phoneparts.product.dto.UseRecordDTO;
 import com.icebartech.phoneparts.product.param.UseRecordInsertParam;
 import com.icebartech.phoneparts.product.param.UseRecordProductPageParam;
@@ -62,14 +61,9 @@ public class UseRecordServiceImpl extends AbstractService
     }
 
     @Override
-    public PageData<Map>  findUserRecord1(UseRecordUserPageParam param) {
+    public Page<Map> findUserRecord1(UseRecordUserPageParam param) {
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize());
-        Page<Map> page = repository.findUserRecordDesc1(param, pageable);
-
-        PageData<Map> pageData = new PageData<>((int) page.getTotalElements(), page.getTotalPages(), page.getContent());
-        // pageData.setExt(ImmutableMap.of("总数", repository.findUserRecordCount1(param)));
-
-        return pageData;
+        return repository.findUserRecordDesc1(param, pageable);
     }
 
     @Override
@@ -115,7 +109,7 @@ public class UseRecordServiceImpl extends AbstractService
 
     @Override
     public List<Map<String, Object>> find_month_stats(Long userId) {
-        LocalDate start = LocalDate.now().with(TemporalAdjusters.firstDayOfYear());
+        LocalDate start = LocalDate.now().minusDays(6).with(TemporalAdjusters.firstDayOfYear());
         LocalDate findish = LocalDate.now();
 
         System.out.println("start: " + start);

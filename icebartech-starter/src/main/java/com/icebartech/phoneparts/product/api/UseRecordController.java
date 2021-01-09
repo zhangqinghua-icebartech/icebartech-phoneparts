@@ -6,7 +6,6 @@ import com.icebartech.core.controller.BaseController;
 import com.icebartech.core.local.LocalUser;
 import com.icebartech.core.local.UserThreadLocal;
 import com.icebartech.core.utils.BeanMapperNew;
-import com.icebartech.core.vo.PageData;
 import com.icebartech.core.vo.RespDate;
 import com.icebartech.core.vo.RespPage;
 import com.icebartech.excel.ExcelUtils;
@@ -84,10 +83,7 @@ public class UseRecordController extends BaseController {
             param.setSecondAgentId(localUser.getUserId());
         }
 
-        PageData<Map> pageData = useRecordService.findUserRecord1(param);
-        RespPage<Map> respJson = new RespPage<>();
-        respJson.setData(pageData);
-        return respJson;
+        return getPageRtnDate(useRecordService.findUserRecord1(param));
     }
 
     @ApiOperation("获取用户切割总数")
@@ -254,8 +250,9 @@ public class UseRecordController extends BaseController {
 
         System.out.println(param);
 
-        PageData<Map> pageData = useRecordService.findUserRecord1(param);
-        ExcelUtils.exports(BeanMapperNew.map(pageData.getBussData(), UseRecordDetailExcel.class),
+        Page<Map> page = useRecordService.findUserRecord1(param);
+
+        ExcelUtils.exports(BeanMapperNew.map(page.getContent(), UseRecordDetailExcel.class),
                            response, "切割详情");
     }
 
@@ -278,9 +275,6 @@ public class UseRecordController extends BaseController {
     @RequireLogin(UserEnum.app)
     public RespPage<Map> find_user_record2(@Valid @RequestBody UseRecordUserPageParam param) {
         param.setUserId(UserThreadLocal.getUserId());
-        PageData<Map> pageData = useRecordService.findUserRecord1(param);
-        RespPage<Map> respJson = new RespPage<>();
-        respJson.setData(pageData);
-        return respJson;
+        return getPageRtnDate(useRecordService.findUserRecord1(param));
     }
 }

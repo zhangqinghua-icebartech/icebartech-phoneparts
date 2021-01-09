@@ -148,9 +148,9 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
     }
 
     @Override
-    @RedisLock(key = "#email")
+    @RedisLock(key = "#serialNum")
     @Transactional
-    public Long register(String email, UserInsertParam param) {
+    public Long register(String serialNum, UserInsertParam param) {
         log.info("注册{}", param.toString());
         //邮箱重复
         if (findByEmail(param.getEmail()) != null)
@@ -199,6 +199,7 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
 
 
     @Override
+    @RedisLock(key = "#serialNum")
     @Transactional
     public UserDto codeLogin(String serialNum) {
         // 1. 用户已存在，校验
@@ -215,7 +216,7 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
         String email = ProduceCodeUtil.findRedeemCode() + "@sys.com";
         String pwd = "dev123456";
         UserInsertParam userInsertParam = new UserInsertParam(serialNum, email, pwd);
-        Long id = this.register(userInsertParam.getEmail(), userInsertParam);
+        Long id = this.register(serialNum, userInsertParam);
 
         return BeanMapper.map(repository.loginById(id), UserDto.class);
     }

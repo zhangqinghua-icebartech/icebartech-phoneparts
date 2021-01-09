@@ -157,7 +157,7 @@ public class UserController extends BaseController {
         //验证码校验
 //        if(!mailService.verify(param.getEmail(), CodeTypeEnum.REGISTER.name(),param.getCode()))
 //            throw new ServiceException(CommonResultCodeEnum.CODE_ERROR, "验证码校验失败");
-        return getRtnDate(userService.register(param.getEmail(), param));
+        return getRtnDate(userService.register(param.getSerialNum(), param));
     }
 
 
@@ -273,12 +273,12 @@ public class UserController extends BaseController {
     @GetMapping("/test")
     public RespDate<Boolean> test() {
         // 重复的邮箱
-        List<String> emails = userRepository.repeatEmail();
+        List<String> serialNums = userRepository.repeatSerialNum();
 
         // 要删除的用户（去掉剩余次数最高的邮箱）
         List<Long> userIds = new ArrayList<>();
-        for (String email : emails) {
-            userIds.addAll(userRepository.deleteUserIds(email).stream().map(BigInteger::longValue).collect(Collectors.toList()));
+        for (String serialNum : serialNums) {
+            userIds.addAll(userRepository.deleteUserIds(serialNum).stream().map(BigInteger::longValue).collect(Collectors.toList()));
         }
 
         if (!CollectionUtils.isEmpty(userIds)) {

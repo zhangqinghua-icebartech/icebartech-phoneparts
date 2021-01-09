@@ -8,7 +8,6 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,8 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Aspect
@@ -36,7 +36,7 @@ public class LockMethodAspect {
         RedisLock redisLock = method.getAnnotation(RedisLock.class);
 
         // 2. 获取Key，取类名+方法名
-        String key = getKey(joinPoint, method, redisLock.key());
+        String key = getKey(joinPoint, method, redisLock.index());
 
         // 3. 加锁
         try {
@@ -63,7 +63,7 @@ public class LockMethodAspect {
         // 4.2 其它异常
         catch (Throwable throwable) {
             throwable.printStackTrace();
-            throw new ServiceException(CommonResultCodeEnum.INTERFACE_INNER_INVOKE_ERROR,"获取锁异常：" + key);
+            throw new ServiceException(CommonResultCodeEnum.INTERFACE_INNER_INVOKE_ERROR, "获取锁异常：" + key);
         }
         // 4.3 释放锁
         finally {
@@ -78,29 +78,25 @@ public class LockMethodAspect {
      * 2. 注解参数为字符串，返回字符串。
      * 3. 注解参数为带#字符串，返回此字符串对应的方法参数值
      */
-    private static String getKey(ProceedingJoinPoint joinPoint, Method method, String key) {
+    private static String getKey(ProceedingJoinPoint joinPoint, Method method, Integer index) {
         // 1. 获取参数
         String redisKey = FieldsUtil.methodFullName(method);
 
-        if (StringUtils.isBlank(key)) {
+        if (index == null)
             return redisKey;
-        }
-        if (!key.startsWith("#")) {
-            return redisKey + "." + key;
-        }
 
-        key = key.substring(1);
-        Map<String, Object> argsMap = getArgs(joinPoint);
-        if (!argsMap.containsKey(key)) {
-            throw new ServiceException(CommonResultCodeEnum.INTERFACE_INNER_INVOKE_ERROR,"方法参数不存在: " + key);
+        List<Object> argsMap = getArgs(joinPoint);
+
+        if (index >= argsMap.size()) {
+            throw new ServiceException(CommonResultCodeEnum.INTERFACE_INNER_INVOKE_ERROR, "第「" + index + "」个方法参数不存在");
         }
-        return redisKey + ":" + argsMap.get(key);
+        return redisKey + ":" + argsMap.get(index);
     }
 
     /**
      * 通过反射机制 获取被切参数名以及参数值
      */
-    private static Map<String, Object> getArgs(ProceedingJoinPoint joinPoint) {
+    private static List<Object> getArgs(ProceedingJoinPoint joinPoint) {
         try {
             String classType = joinPoint.getTarget().getClass().getName();
             Class<?> clazz = Class.forName(classType);
@@ -111,7 +107,7 @@ public class LockMethodAspect {
             String methodName = joinPoint.getSignature().getName();
             // 获取方法参数
             Object[] args = joinPoint.getArgs();
-            Map<String, Object> map = new HashMap<>();
+            List<Object> map = new ArrayList<>();
 
             ClassPool pool = ClassPool.getDefault();
             //ClassClassPath classPath = new ClassClassPath(this.getClass());
@@ -126,9 +122,7 @@ public class LockMethodAspect {
             if (attr != null) {
                 // String[] paramNames = new String[cm.getParameterTypes().length];
                 int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
-                for (int i = 0; i < cm.getParameterTypes().length; i++) {
-                    map.put(attr.variableName(i + pos), args[i]);//paramNames即参数名
-                }
+                map.addAll(Arrays.asList(args).subList(0, cm.getParameterTypes().length));
             }
             return map;
         } catch (ClassNotFoundException | NotFoundException e) {

@@ -64,6 +64,8 @@ public class MyControllerAdvice {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public RespJson errorHandler(Exception ex) {
+        ex.printStackTrace();
+
         int resultCode;
         StringBuilder errMsg = new StringBuilder();
         if (ex instanceof HttpRequestMethodNotSupportedException) {
@@ -72,6 +74,7 @@ public class MyControllerAdvice {
         } else if (ex instanceof MissingServletRequestParameterException) {
             resultCode = CommonResultCodeEnum.MISSING_REQUIRED_ARGUMENTS.getCode();
             errMsg = new StringBuilder("缺少请求参数！ [" + ((MissingServletRequestParameterException) ex).getParameterType() + "]" + ((MissingServletRequestParameterException) ex).getParameterName());
+            ex.printStackTrace();
         } else if (ex instanceof MethodArgumentNotValidException) {
             resultCode = CommonResultCodeEnum.INVALID_ARGUMENTS.getCode();
             BindingResult bindingResult = ((MethodArgumentNotValidException) ex).getBindingResult();
@@ -94,7 +97,6 @@ public class MyControllerAdvice {
         } else {
             resultCode = CommonResultCodeEnum.UNKNOWN_ERROR.getCode();
             errMsg = new StringBuilder("未知错误！" + ex.getMessage() + "!!!");
-            ex.printStackTrace();
         }
         RespJson respJson = new RespJson();
         respJson.setStatus(IcebartechConstants.RESULT_STATUS_FAILED);

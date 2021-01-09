@@ -148,7 +148,7 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
     }
 
     @Override
-    @RedisLock(key = "#serialNum")
+    @RedisLock(index = 0)
     @Transactional
     public Long register(String serialNum, UserInsertParam param) {
         log.info("注册{}", param.toString());
@@ -199,7 +199,7 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
 
 
     @Override
-    @RedisLock(key = "#serialNum")
+    @RedisLock(index = 0)
     @Transactional
     public UserDto codeLogin(String serialNum) {
         // 1. 用户已存在，校验
@@ -403,7 +403,7 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
 
             if (param.getAgentlevel() == 0) {
                 user.setAgentClassName(map.get("class_name") + "");
-            }else {
+            } else {
                 user.setAgentClassName(map.get("second_agent_class_name") == null ? "" : String.valueOf(map.get("second_agent_class_name")));
             }
 

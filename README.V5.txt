@@ -41,3 +41,5 @@
 3. 对用户表加上唯一索引
 4. 对用户注册加上分布式锁
 5. 切割统计-今日切割数量（userecordrespositry）
+6. MyControllerAdvice 打印异常信息
+7. RedisLock 修复Bug

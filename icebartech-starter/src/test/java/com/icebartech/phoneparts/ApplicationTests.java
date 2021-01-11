@@ -53,7 +53,7 @@ public class ApplicationTests {
      */
     @Test
     public void test1() {
-        List<String> emails = userRepository.repeatEmail();
+        List<String> emails = userRepository.repeatSerialNum();
 
         System.out.println(emails.size());
 

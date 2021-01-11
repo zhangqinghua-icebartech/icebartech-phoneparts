@@ -9,9 +9,9 @@ import java.lang.annotation.*;
 public @interface RedisLock {
 
     /**
-     * 锁Key
+     * 第几个参数
      */
-    String key();
+    int index();
 
     /**
      * 锁的过期秒数,默认是5秒

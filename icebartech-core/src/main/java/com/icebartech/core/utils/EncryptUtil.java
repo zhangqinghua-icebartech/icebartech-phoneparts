@@ -2,7 +2,6 @@ package com.icebartech.core.utils;
 
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
@@ -292,26 +291,26 @@ public class EncryptUtil {
     }
 
 
-    @Test
-    public void test(){
-        String pwd = "cbhfdnbgnfgnjgrhtrhrtdgvdsgb";
-        String key = "dev";
-
-        System.out.println("base64加解密");
-        System.out.println(Base64Encode(pwd));
-        System.out.println(Base64Decode(Base64Encode(pwd)));
-
-        System.out.println("异或加解密");
-        System.out.println(XORencode(pwd,key));
-        System.out.println(XORdecode(XORencode(pwd,key),key));
-
-        System.out.println("AES加解密");
-        System.out.println(AESencode(pwd,key));
-        System.out.println(AESdecode(AESencode(pwd,key),key));
-
-        System.out.println("DES加解密");
-        System.out.println(DESencode(pwd,key));
-        System.out.println(DESdecode(DESencode(pwd,key),key));
-
-    }
+//    @Test
+//    public void test(){
+//        String pwd = "cbhfdnbgnfgnjgrhtrhrtdgvdsgb";
+//        String key = "dev";
+//
+//        System.out.println("base64加解密");
+//        System.out.println(Base64Encode(pwd));
+//        System.out.println(Base64Decode(Base64Encode(pwd)));
+//
+//        System.out.println("异或加解密");
+//        System.out.println(XORencode(pwd,key));
+//        System.out.println(XORdecode(XORencode(pwd,key),key));
+//
+//        System.out.println("AES加解密");
+//        System.out.println(AESencode(pwd,key));
+//        System.out.println(AESdecode(AESencode(pwd,key),key));
+//
+//        System.out.println("DES加解密");
+//        System.out.println(DESencode(pwd,key));
+//        System.out.println(DESdecode(DESencode(pwd,key),key));
+//
+//    }
 }

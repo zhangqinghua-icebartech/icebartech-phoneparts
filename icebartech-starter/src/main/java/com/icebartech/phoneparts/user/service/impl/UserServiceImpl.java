@@ -148,7 +148,7 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
     }
 
     @Override
-    @RedisLock(key = "#email")
+    @RedisLock(index = 0)
     @Transactional
     public Long register(String email, UserInsertParam param) {
         log.info("注册{}", param.toString());
@@ -197,8 +197,8 @@ public class UserServiceImpl extends AbstractService<UserDto, User, UserReposito
         return id;
     }
 
-
     @Override
+    @RedisLock(index = 0)
     @Transactional
     public UserDto codeLogin(String serialNum) {
         // 1. 用户已存在，校验

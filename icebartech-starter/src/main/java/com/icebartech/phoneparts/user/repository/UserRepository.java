@@ -54,10 +54,10 @@ public interface UserRepository extends BaseRepository<User> {
     @Query(nativeQuery = true, value = "select u.id, u.head_portrait as headPortrait, u.password as password, u.enable as enable, s.end_time as endTime from user u left join sys_serial s on s.id = u.serial_id where u.is_deleted = 'n' and u.serial_num = ?1")
     Map<String, Object> loginBySerialNum(String serialNum);
 
-    @Query(nativeQuery = true, value = "select email from (select email, count(1) c from `user` where is_deleted = 'n' group by email)c where c.c > 1")
-    List<String> repeatEmail();
+    @Query(nativeQuery = true, value = "select serial_num c from (select serial_num, count(1) c from `user` where is_deleted = 'n' group by serial_num)c where c.c > 1")
+    List<String> repeatSerialNum();
 
-    @Query(nativeQuery = true, value = "select id from user where email = ?1 order by may_use_count desc limit 1,1000")
+    @Query(nativeQuery = true, value = "select id from user where serial_num = ?1 order by may_use_count desc limit 1,1000")
     List<BigInteger> deleteUserIds(String email);
 
     @Modifying

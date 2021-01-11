@@ -33,3 +33,12 @@ redis
 配置文件	/usr/local/redis/etc/redis.conf
 日志文件	/usr/local/redis/logs/redis.log
 启动关闭	启动： sudo -u redis /usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf关闭:kill 进程号
+
+2021-01-09
+1. 删除EncryptUtil测试数据
+2. 删除重复序列号的账号（物理删除）
+3. 对用户表加上唯一索引
+4. 对用户注册加上分布式锁
+5. 切割统计-今日切割数量（userecordrespositry）
+6. MyControllerAdvice 打印异常信息
+7. RedisLock 修复Bug

@@ -2,7 +2,7 @@ name: 思腾-生产环境
 # 触发条件：v5 分支提交就触发活动。
 on:
   push:
-    branches: v61
+    branches: devia
 # 步骤流程：
 jobs:
   job_1:
@@ -70,5 +70,5 @@ jobs:
           password: ${{ secrets.DEVIA_PROD_SERVER_PASSWORD }}
           script: |
             cd /data/deploy/Java/icebartech-phoneparts
-            nohup java -jar icebartech-phoneparts.jar --spring.profiles.active=dev > /u01/logs/phoneparts.log 2>&1 &
+            nohup java -jar icebartech-phoneparts.jar --spring.profiles.active=prod > /u01/logs/phoneparts.log 2>&1 &
 

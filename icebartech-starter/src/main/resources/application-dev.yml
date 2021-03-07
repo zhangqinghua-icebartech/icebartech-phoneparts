@@ -8,12 +8,12 @@ spring:
   # 开发环境Redis（外网IP）
   redis:
     database: 0
-    host: 47.242.210.88
+    host: 120.78.135.29
     port: 6579
     password: bH360891
   # 开发环境MySQL（外网IP）
   datasource:
-    url: jdbc:mysql://47.242.210.88:3306/devia?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://120.78.135.29:3306/phoneparts_devia?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&useCompression=true&zeroDateTimeBehavior=convertToNull
     username: phoneparts
     password: phoneparts
   # 短信

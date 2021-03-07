@@ -27,7 +27,19 @@ public interface UseRecordRepository extends BaseRepository<UseRecord> {
     Page<Map> findUserRecordDESC(@Param("param") UseRecordUserPageParam param, Pageable pageable);
 
     @Query(nativeQuery = true,
-           value = "SELECT u.serial_num AS serialNum, u.email AS email, one.china_name as classOne, two.china_name as classTwo, three.china_name as classThree, p.china_name as product, ur.user_id AS userId, ur.gmt_created as gmtCreated " +
+           value = "SELECT " +
+                   "u.serial_num AS serialNum, " +
+                   "u.email AS email, " +
+                   "one.china_name as classOne, " +
+                   "one.english_name as classOneEng, " +
+                   "two.china_name as classTwo, " +
+                   "two.english_name as classTwoEng, " +
+                   "three.china_name as classThree, " +
+                   "three.english_name as classThreeEng, " +
+                   "p.china_name as product, " +
+                   "p.english_name as productEng, " +
+                   "ur.user_id AS userId, " +
+                   "ur.gmt_created as gmtCreated " +
                    "FROM use_record ur " +
                    "LEFT JOIN `user` u ON ur.user_id = u.id " +
                    "LEFT JOIN `product` p ON ur.product_id = p.id " +

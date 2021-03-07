@@ -20,11 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.icebartech.core.vo.QueryParam.eq;
-
-/**
- * @author Created by liuao on 2020/4/2.
- * @desc
- */
+import static com.icebartech.core.vo.QueryParam.ge;
 
 @Api(tags = "系统升级配置接口")
 @RestController
@@ -36,45 +32,54 @@ public class SysConfigController extends BaseController {
 
 
     @ApiOperation("获取分页")
-    @RequireLogin({UserEnum.admin,UserEnum.app})
+    @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/find_page")
     public RespPage<SysConfigDTO> findPage(@Valid @RequestBody SysConfigPageParam param) {
         return getPageRtnDate(service.findPage(param));
     }
 
     @ApiOperation("获取列表")
-    @RequireLogin({UserEnum.admin,UserEnum.app})
+    @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/find_list")
     public RespDate<List<SysConfigDTO>> findList() {
         return getRtnDate(service.findList());
     }
 
     @ApiOperation("获取详情")
-    @RequireLogin({UserEnum.admin,UserEnum.app})
+    @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/find_detail")
     public RespDate<SysConfigDTO> findDetail(@RequestParam Long id) {
         return getRtnDate(service.findDetail(id));
     }
 
     @ApiOperation("获取配置")
-    @RequireLogin({UserEnum.admin,UserEnum.app})
+    @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/find_config")
     public RespDate<SysConfigDTO> findConfig(@RequestParam Integer type) {
-        return getRtnDate(service.findDetail(eq(SysConfigDTO::getType,type)));
+        return getRtnDate(service.findDetail(eq(SysConfigDTO::getType, type)));
     }
 
     @ApiOperation("新增")
-    @RequireLogin({UserEnum.admin,UserEnum.app})
+    @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/insert")
     public RespDate<Long> insert(@Valid @RequestBody SysConfigInsertParam param) {
         return getRtnDate(service.insert(param));
     }
 
     @ApiOperation("修改")
-    @RequireLogin({UserEnum.admin,UserEnum.app})
+    @RequireLogin({UserEnum.admin, UserEnum.app})
     @PostMapping("/update")
     public RespDate<Boolean> update(@Valid @RequestBody SysConfigUpdateParam param) {
         return getRtnDate(service.update(param));
     }
 
+    @ApiOperation("删除")
+    @RequireLogin({UserEnum.admin, UserEnum.app})
+    @PostMapping("/deletes")
+    public RespDate<Boolean> update(@RequestParam List<Long> ids) {
+        for (Long id : ids) {
+            service.delete(id);
+        }
+        return getRtnDate(true);
+    }
 }
